@@ -1,9 +1,12 @@
 package org.nekoweb.amycatgirl.revolt.models.websocket
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PingEvent(val data: Int) : BaseEvent("Ping")
+@SerialName("Ping")
+data class PingEvent(val data: Int) : BaseEvent()
 
 @Serializable
-data class PongEvent(val data: Int) : BaseEvent("Pong")
+@SerialName("Pong")
+data class PongEvent(val data: Int) : BaseEvent()

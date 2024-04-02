@@ -7,4 +7,4 @@ import kotlinx.serialization.json.JsonClassDiscriminator
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
 @JsonClassDiscriminator("type")
-open class BaseEvent(val type: String)
+sealed class BaseEvent()

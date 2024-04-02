@@ -25,6 +25,7 @@ fun ChatBubble(author: String? = null) {
         modifier = Modifier
             .height(IntrinsicSize.Min)
     ) {
+
         if (author != null) {
             Text(author)
         }
