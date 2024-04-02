@@ -4,9 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.WebSockets
-import io.ktor.client.plugins.websocket.receiveDeserialized
 import io.ktor.client.plugins.websocket.wss
-import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
@@ -21,7 +19,6 @@ import org.nekoweb.amycatgirl.revolt.models.websocket.BaseEvent
 import org.nekoweb.amycatgirl.revolt.models.websocket.SocketListener
 import org.nekoweb.amycatgirl.revolt.models.websocket.UnimplementedEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
-import java.lang.Exception
 
 class ApiClient {
     companion object {

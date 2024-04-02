@@ -1,16 +1,10 @@
 package org.nekoweb.amycatgirl.revolt.models.app
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
-import org.nekoweb.amycatgirl.revolt.models.api.PartialMessage
 import org.nekoweb.amycatgirl.revolt.models.websocket.PartialMessageEvent
 import org.nekoweb.amycatgirl.revolt.models.websocket.ReadyEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
