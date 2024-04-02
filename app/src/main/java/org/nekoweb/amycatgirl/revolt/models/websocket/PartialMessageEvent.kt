@@ -1,14 +1,14 @@
-package org.nekoweb.amycatgirl.revolt.models.api
+package org.nekoweb.amycatgirl.revolt.models.websocket
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.nekoweb.amycatgirl.revolt.models.api.Attachment
 
 @Serializable
 @SerialName("Message")
-data class PartialMessage(
+data class PartialMessageEvent(
     @SerialName("_id")
     val id: String,
-    val nonce: String? = null,
     @SerialName("channel")
     val channelId: String,
     @SerialName("author")
@@ -16,5 +16,6 @@ data class PartialMessage(
     val content: String? = null,
     val attachments: List<Attachment>? = null,
     val edited: String? = null,
-    val replies: List<String>? = null,
-)
+    @SerialName("replies")
+    val replyIds: List<String>? = null
+) : BaseEvent()

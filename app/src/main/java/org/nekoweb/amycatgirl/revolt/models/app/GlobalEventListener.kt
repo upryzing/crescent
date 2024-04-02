@@ -1,14 +1,22 @@
 package org.nekoweb.amycatgirl.revolt.models.app
 
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import org.nekoweb.amycatgirl.revolt.models.websocket.BaseEvent
 import org.nekoweb.amycatgirl.revolt.models.websocket.SocketListener
+import org.nekoweb.amycatgirl.revolt.models.websocket.UnimplementedEvent
 
 class GlobalEventListener : SocketListener {
 
     val json = Json {
         ignoreUnknownKeys = true
         isLenient = true
+        serializersModule = SerializersModule {
+            polymorphic(BaseEvent::class) {
+                defaultDeserializer { UnimplementedEvent.serializer() }
+            }
+        }
     }
     override fun onConnect() {
         println("Connected!")
