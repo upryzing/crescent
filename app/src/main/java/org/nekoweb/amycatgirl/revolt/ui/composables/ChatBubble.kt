@@ -4,12 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,25 +18,28 @@ import androidx.compose.ui.unit.dp
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @Composable
-fun ChatBubble(author: String? = null) {
+fun ChatBubble(author: String? = null, message: String? = null) {
     Column(
         modifier = Modifier
             .height(IntrinsicSize.Min)
     ) {
 
         if (author != null) {
-            Text(author)
+            Text(author, color = MaterialTheme.colorScheme.onSecondaryContainer)
         }
         Spacer(modifier = Modifier.height(10.dp))
         Box(
             modifier = Modifier
                 .clip(
+                    // Isn't supposed to allow different cornering shape?
                     RoundedCornerShape(10.dp)
                 )
-                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .background(MaterialTheme.colorScheme.tertiaryContainer)
                 .padding(5.dp)
         ) {
-            Text("meowmeowmeowmeowmeowmeowmeowmeowmeowm")
+            if (message != null) {
+                Text(message, color = MaterialTheme.colorScheme.onTertiaryContainer)
+            }
         }
     }
 }
@@ -48,8 +49,8 @@ fun ChatBubble(author: String? = null) {
 fun ChatBubblePreview() {
     RevoltTheme {
         Column {
-            ChatBubble("Amy")
-            ChatBubble()
+            ChatBubble("Amy", "Meow :3")
+            ChatBubble("Amy", "Meow :3")
         }
     }
 }
