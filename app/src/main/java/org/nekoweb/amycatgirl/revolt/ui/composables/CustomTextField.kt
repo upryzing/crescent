@@ -34,17 +34,18 @@ fun CustomTextField(
         shape = RoundedCornerShape(10.dp),
         colors = TextFieldDefaults.colors(
             focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.surface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(.5f),
             cursorColor = MaterialTheme.colorScheme.primary,
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
             focusedIndicatorColor = Color.Transparent,
-            focusedContainerColor = Color.Transparent,
+            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(.7f),
             errorIndicatorColor = Color.Transparent,
+            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(.5f),
+            focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(.5f),
         ),
         placeholder = placeholder,
         modifier = modifier,
-        isError = value.isEmpty(),
         singleLine = singleLine
     )
 }

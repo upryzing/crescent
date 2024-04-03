@@ -15,10 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @Composable
 fun ChatBubble(author: String? = null, message: String? = null) {
+    // TODO: Needed a check whenever the authorID needed to be same as the authorID of the message.
     Column(
         modifier = Modifier
             .height(IntrinsicSize.Min)
@@ -35,10 +37,14 @@ fun ChatBubble(author: String? = null, message: String? = null) {
                     RoundedCornerShape(10.dp)
                 )
                 .background(MaterialTheme.colorScheme.tertiaryContainer)
-                .padding(5.dp)
+                .padding(10.dp)
         ) {
             if (message != null) {
-                Text(message, color = MaterialTheme.colorScheme.onTertiaryContainer)
+                Text(
+                    message,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    fontSize = 16.sp
+                )
             }
         }
     }
