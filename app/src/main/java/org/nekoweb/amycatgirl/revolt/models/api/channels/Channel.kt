@@ -1,32 +1,54 @@
 package org.nekoweb.amycatgirl.revolt.models.api.channels
 
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonClassDiscriminator
 import org.nekoweb.amycatgirl.revolt.models.api.Attachment
 
-sealed class Channel(
-    val channelType: String,
-    val id: String
-) {
-    class SavedMessages(
-        id: String,
-        val userId: String
-    ) : Channel("SavedMessages", id)
+@OptIn(ExperimentalSerializationApi::class)
+@Serializable
+@JsonClassDiscriminator("channel_type")
+sealed class Channel {
+    @SerialName("_id")
+    abstract val id: String
 
+    @Serializable
+    @SerialName("SavedMessages")
+    class SavedMessages(
+        @SerialName("_id")
+        override val id: String,
+        @SerialName("user")
+        val userId: String
+    ) : Channel()
+
+    @Serializable
+    @SerialName("DirectMessage")
     class DirectMessage(
-        id: String,
+        @SerialName("_id")
+        override val id: String,
         val active: Boolean,
         val recipients: List<String>,
-        val lastSentMessageId: String? = null
-    ) : Channel("DirectMessage", id)
+        @SerialName("last_message_id")
+        val lastSentMessage: String? = null
+    ) : Channel()
 
+    @Serializable
+    @SerialName("Group")
     class Group(
-        id: String,
+        @SerialName("_id")
+        override val id: String,
         val name: String,
+        @SerialName("owner")
         val ownerId: String,
         val description: String? = null,
         val recipients: List<String>,
-        val icon: Attachment,
-        val lastSentMessage: String,
-        val memberPermissions: Int,
-        val notSafeForWork: Boolean
-    ) : Channel("Group", id)
+        val icon: Attachment? = null,
+        @SerialName("last_message_id")
+        val lastSentMessage: String? = null,
+        @SerialName("permissions")
+        val memberPermissions: Int? = null,
+        @SerialName("nsfw")
+        val notSafeForWork: Boolean? = null
+    ) : Channel()
 }

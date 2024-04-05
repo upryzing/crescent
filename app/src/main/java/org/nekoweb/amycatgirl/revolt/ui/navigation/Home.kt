@@ -1,35 +1,62 @@
 package org.nekoweb.amycatgirl.revolt.ui.navigation
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.style.TextOverflow
+import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
+import org.nekoweb.amycatgirl.revolt.models.app.HomeViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.composables.PeopleListItem
-import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomePage() {
+fun HomePage(
+    homeViewmodel: HomeViewmodel,
+    navigateToChat: (location: String) -> Unit,
+    navigateToDebug: () -> Unit
+) {
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val list = remember { homeViewmodel.channelList }
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(title = { Text("RevoltMini") }, actions = {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(Icons.Default.Settings, contentDescription = null)
-                }
-            })
+            MediumTopAppBar(
+                title = {
+                    Text(
+                        "Direct Messages",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                actions = {
+                    IconButton(onClick = { navigateToDebug() }) {
+                        Icon(Icons.Default.Build, contentDescription = "Open Debug login screen")
+                    }
+                    IconButton(onClick = { /* TODO */ }) {
+                        Icon(Icons.Default.Settings, contentDescription = null)
+                    }
+                },
+                scrollBehavior = scrollBehavior
+            )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { /*TODO*/ }) {
@@ -37,22 +64,32 @@ fun HomePage() {
             }
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
         ) {
-            for (i in 1..100) {
-                PeopleListItem()
+            items(list) { channel ->
+                when (channel) {
+                    is Channel.DirectMessage -> {
+                        val author = homeViewmodel.cache.find {
+                            it.username != "amycatgirl" && channel.recipients.contains(it.id)
+                        }
+                        println("Found author: $author")
+                        if (author != null && channel.active) {
+                            PeopleListItem(
+                                user = author,
+                                status = author.status,
+                                callback = { navigateToChat(author.id) })
+                        }
+                    }
+
+                    is Channel.Group -> {
+                        PeopleListItem(channel = channel, callback = { navigateToChat(channel.id) })
+                    }
+
+                    else -> {}
+                }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun HomePagePreview() {
-    RevoltTheme {
-        HomePage()
     }
 }
