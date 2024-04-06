@@ -12,7 +12,7 @@ import org.nekoweb.amycatgirl.revolt.models.websocket.ReadyEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
 class MainViewmodel : ViewModel() {
-    val client = ApiClient()
+    val client = ApiClient
     private val listener = GlobalEventListener()
     var userList = mutableStateListOf<User>()
     var messageList = mutableStateListOf<BaseEvent>()
