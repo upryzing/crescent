@@ -18,6 +18,7 @@ hiltNavigationCompose = "1.2.0"
 ulidj = "1.0.4"
 coil = "2.6.0"
 coilCompose = "2.6.0"
+materialIconsExtended = "1.6.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +52,7 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 ulidj = { group = "io.azam.ulidj", name = "ulidj", version.ref = "ulidj" }
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
