@@ -8,10 +8,9 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -21,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import org.nekoweb.amycatgirl.revolt.models.app.HomeViewmodel
 import org.nekoweb.amycatgirl.revolt.models.app.MainViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.navigation.ChatPage
+import org.nekoweb.amycatgirl.revolt.ui.navigation.DebugScreen
 import org.nekoweb.amycatgirl.revolt.ui.navigation.HomePage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.SettingsPage
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
@@ -32,78 +32,78 @@ fun App(
     val navigator = rememberNavController()
     val scroll = rememberScrollState()
     RevoltTheme {
-        NavHost(navController = navigator, startDestination = "home") {
-            composable("debug") {
-                Column(modifier = Modifier.verticalScroll(scroll)) {
-                    for (message in mainViewmodel.messageList) {
-                        Text("$message")
+        Surface(modifier = Modifier.fillMaxSize()) {
+            NavHost(navController = navigator, startDestination = "home") {
+                composable("debug") {
+                    DebugScreen(mainViewmodel.messageList) {
+                        navigator.popBackStack()
                     }
                 }
-            }
 
-            composable(
-                "home",
-                enterTransition = {
-                    fadeIn(
-                        animationSpec = tween(
-                            250, easing = CubicBezierEasing(0.5f, 0.7f, 0.1f, 1.1f)
+                composable(
+                    "home",
+                    enterTransition = {
+                        fadeIn(
+                            animationSpec = tween(
+                                250, easing = CubicBezierEasing(0.5f, 0.7f, 0.1f, 1.1f)
+                            )
+                        ) + slideIntoContainer(
+                            animationSpec = tween(100, easing = EaseIn),
+                            towards = AnimatedContentTransitionScope.SlideDirection.End
                         )
-                    ) + slideIntoContainer(
-                        animationSpec = tween(100, easing = EaseIn),
-                        towards = AnimatedContentTransitionScope.SlideDirection.End
-                    )
-                },
-                exitTransition = {
-                    fadeOut(
-                        animationSpec = tween(
-                            100, easing = EaseIn
+                    },
+                    exitTransition = {
+                        fadeOut(
+                            animationSpec = tween(
+                                100, easing = EaseIn
+                            )
+                        ) + slideOutOfContainer(
+                            animationSpec = tween(100, easing = EaseOut),
+                            towards = AnimatedContentTransitionScope.SlideDirection.Start
                         )
-                    ) + slideOutOfContainer(
-                        animationSpec = tween(100, easing = EaseOut),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Start
-                    )
-                }
-            ) {
-                val homeViewmodel = viewModel {
-                    HomeViewmodel(mainViewmodel.client)
-                }
+                    }
+                ) {
+                    val homeViewmodel = viewModel {
+                        HomeViewmodel(mainViewmodel.client)
+                    }
 
-                HomePage(
-                    homeViewmodel,
-                    navigateToChat = { navigator.navigate("messages/${it}") },
-                    navigateToDebug = { navigator.navigate("debug") },
-                    navigateToSettings = { navigator.navigate("settings") }
-                )
-            }
-
-            composable(
-                "messages/{id}",
-                enterTransition = {
-                    fadeIn(
-                        animationSpec = tween(
-                            300, easing = LinearEasing
-                        )
-                    ) + slideIntoContainer(
-                        animationSpec = tween(300, easing = EaseIn),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Start
-                    )
-                },
-                exitTransition = {
-                    fadeOut(
-                        animationSpec = tween(
-                            300, easing = LinearEasing
-                        )
-                    ) + slideOutOfContainer(
-                        animationSpec = tween(300, easing = EaseOut),
-                        towards = AnimatedContentTransitionScope.SlideDirection.End
+                    HomePage(
+                        homeViewmodel,
+                        navigateToChat = { navigator.navigate("messages/${it}") },
+                        navigateToDebug = { navigator.navigate("debug") },
+                        navigateToSettings = { navigator.navigate("settings") }
                     )
                 }
-            ) {
-                ChatPage { navigator.popBackStack() }
-            }
 
-            composable("settings") {
-                SettingsPage(goBack = { navigator.popBackStack() })
+                composable(
+                    "messages/{id}",
+                    enterTransition = {
+                        fadeIn(
+                            animationSpec = tween(
+                                300, easing = LinearEasing
+                            )
+                        ) + slideIntoContainer(
+                            animationSpec = tween(300, easing = EaseIn),
+                            towards = AnimatedContentTransitionScope.SlideDirection.Start
+                        )
+                    },
+                    exitTransition = {
+                        fadeOut(
+                            animationSpec = tween(
+                                300, easing = LinearEasing
+                            )
+                        ) + slideOutOfContainer(
+                            animationSpec = tween(300, easing = EaseOut),
+                            towards = AnimatedContentTransitionScope.SlideDirection.End
+                        )
+                    }
+                ) {
+                    ChatPage { navigator.popBackStack() }
+                }
+
+                composable("settings") {
+                    SettingsPage(goBack = { navigator.popBackStack() })
+                }
             }
         }
     }
