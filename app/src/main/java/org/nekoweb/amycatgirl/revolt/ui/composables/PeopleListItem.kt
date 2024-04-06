@@ -4,8 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Badge
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -82,7 +82,7 @@ fun PeopleListItem(
                     }
                 }
             )
-            Divider(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+            HorizontalDivider(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
         }
     }
 }
