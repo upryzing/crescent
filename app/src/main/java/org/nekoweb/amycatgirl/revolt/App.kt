@@ -1,6 +1,7 @@
 package org.nekoweb.amycatgirl.revolt
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.LinearEasing
@@ -45,7 +46,7 @@ fun App(
                 enterTransition = {
                     fadeIn(
                         animationSpec = tween(
-                            100, easing = EaseOut
+                            250, easing = CubicBezierEasing(0.5f, 0.7f, 0.1f, 1.1f)
                         )
                     ) + slideIntoContainer(
                         animationSpec = tween(100, easing = EaseIn),
@@ -98,7 +99,7 @@ fun App(
                     )
                 }
             ) {
-                ChatPage()
+                ChatPage { navigator.popBackStack() }
             }
 
             composable("settings") {

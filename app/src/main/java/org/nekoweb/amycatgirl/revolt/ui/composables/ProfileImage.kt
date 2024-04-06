@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
@@ -18,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
@@ -32,7 +32,12 @@ import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 import org.nekoweb.amycatgirl.revolt.ui.theme.Yellow700
 
 @Composable
-fun ProfileImage(fallback: String, url: String? = null, presence: Presence? = null) {
+fun ProfileImage(
+    fallback: String,
+    url: String? = null,
+    presence: Presence? = null,
+    size: Dp = 32.dp
+) {
     // TODO: Add image implementation
     Box(modifier = Modifier.wrapContentSize()) {
         SubcomposeAsyncImage(model = url, contentDescription = "None... yet.") {
@@ -46,10 +51,9 @@ fun ProfileImage(fallback: String, url: String? = null, presence: Presence? = nu
                 is AsyncImagePainter.State.Empty -> {
                     Box(
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(size)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.primaryContainer)
-                            .padding(2.dp)
                     ) {
                         Text(
                             fallback.substring(0, 1),
@@ -63,7 +67,7 @@ fun ProfileImage(fallback: String, url: String? = null, presence: Presence? = nu
                 is AsyncImagePainter.State.Success -> {
                     SubcomposeAsyncImageContent(
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(size)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.primaryContainer),
                         contentScale = ContentScale.FillBounds

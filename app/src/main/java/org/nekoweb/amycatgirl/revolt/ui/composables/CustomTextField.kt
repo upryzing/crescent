@@ -1,5 +1,6 @@
 package org.nekoweb.amycatgirl.revolt.ui.composables
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,25 +27,25 @@ fun CustomTextField(
 ) {
     TextField(
         value = value,
-        onValueChange = {
-            if (it.isNotEmpty()) {
-                onValueChange(it)
-            }
-        },
+        onValueChange = onValueChange,
         shape = RoundedCornerShape(10.dp),
         colors = TextFieldDefaults.colors(
-            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(.5f),
-            cursorColor = MaterialTheme.colorScheme.primary,
+            focusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            cursorColor = MaterialTheme.colorScheme.secondary,
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
             focusedIndicatorColor = Color.Transparent,
-            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(.7f),
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
             errorIndicatorColor = Color.Transparent,
-            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(.5f),
-            focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(.5f),
+            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.5f),
+            focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.5f),
         ),
-        placeholder = placeholder,
+        placeholder = {
+            AnimatedVisibility(visible = value.isEmpty()) {
+                placeholder()
+            }
+        },
         modifier = modifier,
         singleLine = singleLine
     )

@@ -27,22 +27,22 @@ fun ChatBubble(author: String? = null, message: String? = null) {
     ) {
 
         if (author != null) {
-            Text(author, color = MaterialTheme.colorScheme.onSecondaryContainer)
+            Text(author, color = MaterialTheme.colorScheme.onBackground)
         }
         Spacer(modifier = Modifier.height(10.dp))
         Box(
             modifier = Modifier
                 .clip(
                     // Isn't supposed to allow different cornering shape?
-                    RoundedCornerShape(10.dp)
+                    RoundedCornerShape(12.dp)
                 )
-                .background(MaterialTheme.colorScheme.tertiaryContainer)
+                .background(MaterialTheme.colorScheme.secondary)
                 .padding(10.dp)
         ) {
             if (message != null) {
                 Text(
                     message,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 16.sp
                 )
             }
