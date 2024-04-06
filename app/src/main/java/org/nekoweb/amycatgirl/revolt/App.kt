@@ -1,8 +1,18 @@
 package org.nekoweb.amycatgirl.revolt
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,17 +28,40 @@ fun App(
     mainViewmodel: MainViewmodel = viewModel()
 ) {
     val navigator = rememberNavController()
+    val scroll = rememberScrollState()
     RevoltTheme {
         NavHost(navController = navigator, startDestination = "home") {
-            composable("login") {
-                Column {
+            composable("debug") {
+                Column(modifier = Modifier.verticalScroll(scroll)) {
                     for (message in mainViewmodel.messageList) {
-                        Text("Message: ${message.authorId}/${message.content}")
+                        Text("$message")
                     }
                 }
             }
 
-            composable("home") {
+            composable(
+                "home",
+                enterTransition = {
+                    fadeIn(
+                        animationSpec = tween(
+                            300, easing = LinearEasing
+                        )
+                    ) + slideIntoContainer(
+                        animationSpec = tween(300, easing = EaseIn),
+                        towards = AnimatedContentTransitionScope.SlideDirection.End
+                    )
+                },
+                exitTransition = {
+                    fadeOut(
+                        animationSpec = tween(
+                            300, easing = LinearEasing
+                        )
+                    ) + slideOutOfContainer(
+                        animationSpec = tween(300, easing = EaseOut),
+                        towards = AnimatedContentTransitionScope.SlideDirection.Start
+                    )
+                }
+            ) {
                 val homeViewmodel = viewModel {
                     HomeViewmodel(mainViewmodel.client)
                 }
@@ -36,11 +69,33 @@ fun App(
                 HomePage(
                     homeViewmodel,
                     navigateToChat = { navigator.navigate("messages/${it}") },
-                    navigateToDebug = { navigator.navigate("login") }
+                    navigateToDebug = { navigator.navigate("debug") }
                 )
             }
 
-            composable("messages/{id}") {
+            composable(
+                "messages/{id}",
+                enterTransition = {
+                    fadeIn(
+                        animationSpec = tween(
+                            300, easing = LinearEasing
+                        )
+                    ) + slideIntoContainer(
+                        animationSpec = tween(300, easing = EaseIn),
+                        towards = AnimatedContentTransitionScope.SlideDirection.Start
+                    )
+                },
+                exitTransition = {
+                    fadeOut(
+                        animationSpec = tween(
+                            300, easing = LinearEasing
+                        )
+                    ) + slideOutOfContainer(
+                        animationSpec = tween(300, easing = EaseOut),
+                        towards = AnimatedContentTransitionScope.SlideDirection.End
+                    )
+                }
+            ) {
                 ChatPage()
             }
         }

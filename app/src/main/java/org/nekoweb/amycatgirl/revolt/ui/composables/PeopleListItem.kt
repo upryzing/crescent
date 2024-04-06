@@ -39,11 +39,16 @@ fun PeopleListItem(
                 "${ApiClient.S3_ROOT_URL}icons/${channel.icon.id}"
             } else null
 
+            val presence = if (user != null) {
+                user.status?.presence
+            } else null
+
             ListItem(
                 leadingContent = {
                     ProfileImage(
                         name,
-                        avatar
+                        avatar,
+                        presence
                     )
                 },
                 headlineContent = {

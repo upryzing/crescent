@@ -9,27 +9,25 @@ import kotlinx.serialization.json.JsonClassDiscriminator
 @Serializable
 @JsonClassDiscriminator("result")
 sealed class SessionResponse {
-    abstract val result: String
-
+    @Serializable
     @SerialName("Success")
-    data class Success(
-        override val result: String,
+    class Success(
         @SerialName("_id") val id: String,
         @SerialName("user_id") val userId: String,
         @SerialName("token") val userToken: String,
         @SerialName("name") val sessionName: String
     ) : SessionResponse()
 
+    @Serializable
     @SerialName("MFA")
-    data class NeedsMultiFactorAuth(
-        override val result: String,
+    class NeedsMultiFactorAuth(
         val ticket: String,
         @SerialName("allowed_methods") val methods: List<String>
     ) : SessionResponse()
 
+    @Serializable
     @SerialName("Disabled")
-    data class AccountDisabled(
-        override val result: String,
+    class AccountDisabled(
         @SerialName("user_id") val disabledUserId: String
     ) : SessionResponse()
 }

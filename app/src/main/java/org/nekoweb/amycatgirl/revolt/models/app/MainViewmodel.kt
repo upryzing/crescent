@@ -6,20 +6,23 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.models.api.User
-import org.nekoweb.amycatgirl.revolt.models.websocket.PartialMessageEvent
+import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionResponse
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
 class MainViewmodel : ViewModel() {
     val client = ApiClient()
     private val listener = GlobalEventListener()
     var userList = mutableStateListOf<User>()
-    var messageList = mutableStateListOf<PartialMessageEvent>()
+    var messageList = mutableStateListOf<Any>()
         private set
 
     init {
         viewModelScope.launch {
+            val session: SessionResponse =
+                client.loginWithPassword("raulytstation@protonmail.com", "Amyis_verycute")
+            println(session)
             client.connectToWebsocket(listener)
-            EventBus.subscribe<PartialMessageEvent> { ev ->
+            EventBus.subscribe<Any> { ev ->
                 println("Got Message Event! $ev")
                 messageList.add(ev)
             }

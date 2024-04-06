@@ -75,7 +75,7 @@ fun HomePage(
                             it.username != "amycatgirl" && channel.recipients.contains(it.id)
                         }
                         println("Found author: $author")
-                        if (author != null && channel.active) {
+                        if (author != null && channel.active && author.flags != 2) {
                             PeopleListItem(
                                 user = author,
                                 status = author.status,

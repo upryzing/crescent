@@ -25,8 +25,8 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.nekoweb.amycatgirl.revolt.models.api.PartialMessage
 import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionRequestWithFriendlyName
+import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionResponse
 import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
-import org.nekoweb.amycatgirl.revolt.models.session.ClientSession
 import org.nekoweb.amycatgirl.revolt.models.websocket.BaseEvent
 import org.nekoweb.amycatgirl.revolt.models.websocket.SocketListener
 import org.nekoweb.amycatgirl.revolt.models.websocket.UnimplementedEvent
@@ -41,6 +41,7 @@ class ApiClient {
         const val SOCKET_ROOT_URL: String =
             "wss://ws.revolt.chat?format=json&version=1&token=$DEBUG_TOKEN"
     }
+
     private val jsonDeserializer = Json {
         ignoreUnknownKeys = true
         isLenient = true
@@ -51,7 +52,6 @@ class ApiClient {
         }
     }
 
-    lateinit var session: ClientSession
     private val client = HttpClient(OkHttp) {
         install(ContentNegotiation) {
             json(jsonDeserializer)
@@ -68,7 +68,8 @@ class ApiClient {
                 try {
                     for (frame in incoming) {
                         if (frame is Frame.Text) {
-                            val event: BaseEvent = jsonDeserializer.decodeFromString(frame.readText())
+                            val event: BaseEvent =
+                                jsonDeserializer.decodeFromString(frame.readText())
                             println("Deserialized frame (${frame.readText()}) as $event")
                             EventBus.publish(event)
                         }
@@ -125,17 +126,13 @@ class ApiClient {
         res.body<List<PartialMessage>>()
     }
 
-    suspend fun loginWithPassword(email: String, password: String) {
-        try {
-            val loginRes = client.post("$API_ROOT_URL/auth/session/login") {
-                accept(ContentType.Application.Json)
-                contentType(ContentType.Application.Json)
+    suspend fun loginWithPassword(email: String, password: String): SessionResponse {
+        return client.post("$API_ROOT_URL/auth/session/login") {
+            accept(ContentType.Application.Json)
+            contentType(ContentType.Application.Json)
 
-                setBody(SessionRequestWithFriendlyName)
-            }
-        } catch (err: Exception) {
-            println("do nothing $err")
-        }
+            setBody(SessionRequestWithFriendlyName(email, password))
+        }.body()
     }
 
     fun disconnectFromSocket() {
