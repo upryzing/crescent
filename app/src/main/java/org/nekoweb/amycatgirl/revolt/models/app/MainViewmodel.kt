@@ -8,6 +8,7 @@ import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.models.api.User
 import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionResponse
 import org.nekoweb.amycatgirl.revolt.models.websocket.BaseEvent
+import org.nekoweb.amycatgirl.revolt.models.websocket.ReadyEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
 class MainViewmodel : ViewModel() {
@@ -26,6 +27,12 @@ class MainViewmodel : ViewModel() {
             EventBus.subscribe<BaseEvent> { ev ->
                 println("Got Message Event! $ev")
                 messageList.add(ev)
+            }
+        }
+
+        viewModelScope.launch {
+            EventBus.subscribe<ReadyEvent> { ev ->
+                userList.addAll(ev.users)
             }
         }
     }

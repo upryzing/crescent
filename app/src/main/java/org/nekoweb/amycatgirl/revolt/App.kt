@@ -1,22 +1,21 @@
 package org.nekoweb.amycatgirl.revolt
 
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import org.nekoweb.amycatgirl.revolt.models.app.HomeViewmodel
 import org.nekoweb.amycatgirl.revolt.models.app.MainViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.navigation.ChatPage
@@ -30,11 +29,40 @@ fun App(
     mainViewmodel: MainViewmodel = viewModel()
 ) {
     val navigator = rememberNavController()
-    val scroll = rememberScrollState()
     RevoltTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             NavHost(navController = navigator, startDestination = "home") {
-                composable("debug") {
+                composable("debug",
+                    enterTransition = {
+                        fadeIn(
+                            animationSpec = tween(
+                                200,
+                                easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
+                            ),
+                        ) + slideInHorizontally(
+                            tween(
+                                200,
+                                easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
+                            )
+                        ) {
+                            1500
+                        }
+                    },
+                    exitTransition = {
+                        fadeOut(
+                            animationSpec = tween(
+                                200,
+                                easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+                            ),
+                        ) + slideOutHorizontally(
+                            tween(
+                                200,
+                                easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+                            )
+                        ) {
+                            1500
+                        }
+                    }) {
                     DebugScreen(mainViewmodel.messageList) {
                         navigator.popBackStack()
                     }
@@ -45,22 +73,32 @@ fun App(
                     enterTransition = {
                         fadeIn(
                             animationSpec = tween(
-                                250, easing = CubicBezierEasing(0.5f, 0.7f, 0.1f, 1.1f)
+                                200,
+                                easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
+                            ),
+                        ) + slideInHorizontally(
+                            tween(
+                                200,
+                                easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
                             )
-                        ) + slideIntoContainer(
-                            animationSpec = tween(100, easing = EaseIn),
-                            towards = AnimatedContentTransitionScope.SlideDirection.End
-                        )
+                        ) {
+                            1500
+                        }
                     },
                     exitTransition = {
                         fadeOut(
                             animationSpec = tween(
-                                100, easing = EaseIn
+                                200,
+                                easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+                            ),
+                        ) + slideOutHorizontally(
+                            tween(
+                                200,
+                                easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
                             )
-                        ) + slideOutOfContainer(
-                            animationSpec = tween(100, easing = EaseOut),
-                            towards = AnimatedContentTransitionScope.SlideDirection.Start
-                        )
+                        ) {
+                            1500
+                        }
                     }
                 ) {
                     val homeViewmodel = viewModel {
@@ -69,7 +107,10 @@ fun App(
 
                     HomePage(
                         homeViewmodel,
-                        navigateToChat = { navigator.navigate("messages/${it}") },
+                        navigateToChat = {
+                            println("navigating to chat, id: ${it}")
+                            navigator.navigate("messages/${it}")
+                        },
                         navigateToDebug = { navigator.navigate("debug") },
                         navigateToSettings = { navigator.navigate("settings") }
                     )
@@ -80,28 +121,75 @@ fun App(
                     enterTransition = {
                         fadeIn(
                             animationSpec = tween(
-                                300, easing = LinearEasing
+                                200,
+                                easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
+                            ),
+                        ) + slideInHorizontally(
+                            tween(
+                                200,
+                                easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
                             )
-                        ) + slideIntoContainer(
-                            animationSpec = tween(300, easing = EaseIn),
-                            towards = AnimatedContentTransitionScope.SlideDirection.Start
-                        )
+                        ) {
+                            1500
+                        }
                     },
                     exitTransition = {
                         fadeOut(
                             animationSpec = tween(
-                                300, easing = LinearEasing
+                                200,
+                                easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+                            ),
+                        ) + slideOutHorizontally(
+                            tween(
+                                200,
+                                easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
                             )
-                        ) + slideOutOfContainer(
-                            animationSpec = tween(300, easing = EaseOut),
-                            towards = AnimatedContentTransitionScope.SlideDirection.End
-                        )
-                    }
-                ) {
-                    ChatPage { navigator.popBackStack() }
+                        ) {
+                            1500
+                        }
+                    },
+                    arguments = listOf(navArgument("id") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    println("navigating to chat, id: ${backStackEntry.arguments?.getString("id")}")
+                    ChatPage(
+                        mainViewmodel,
+                        backStackEntry.arguments?.getString("id")
+                    ) { navigator.popBackStack() }
                 }
 
-                composable("settings") {
+                composable(
+                    "settings",
+                    enterTransition = {
+                        fadeIn(
+                            animationSpec = tween(
+                                200,
+                                easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
+                            ),
+                        ) + slideInHorizontally(
+                            tween(
+                                200,
+                                easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
+                            )
+                        ) {
+                            1500
+                        }
+                    },
+                    exitTransition = {
+                        fadeOut(
+                            animationSpec = tween(
+                                200,
+                                easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+                            ),
+                        ) + slideOutHorizontally(
+                            tween(
+                                200,
+                                easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+                            )
+                        ) {
+                            1500
+                        }
+                    }
+                ) {
                     SettingsPage(goBack = { navigator.popBackStack() })
                 }
             }

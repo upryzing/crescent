@@ -33,6 +33,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import org.nekoweb.amycatgirl.revolt.models.app.MainViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.composables.ChatBubble
 import org.nekoweb.amycatgirl.revolt.ui.composables.CustomTextField
 import org.nekoweb.amycatgirl.revolt.ui.composables.ProfileImage
@@ -41,8 +43,11 @@ import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatPage(
+    mainViewmodel: MainViewmodel,
+    ulid: String? = "0000000000000000000000",
     goBack: () -> Unit
 ) {
+    val user = mainViewmodel.userList.find { it.id == ulid }
     var messageValue by remember { mutableStateOf("") }
     Scaffold(
         topBar = {
@@ -51,9 +56,9 @@ fun ChatPage(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        ProfileImage(fallback = "Username", size = 26.dp)
+                        ProfileImage(fallback = user?.username ?: "Unknown", size = 26.dp)
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text("Username#1234")
+                        Text("${user?.username}#${user?.discriminator}")
                     }
                 },
                 navigationIcon = {
@@ -127,6 +132,9 @@ fun ChatPage(
 @Composable
 fun ChatPagePreview() {
     RevoltTheme {
-        ChatPage {}
+        val viewmodel = viewModel {
+            MainViewmodel()
+        }
+        ChatPage(mainViewmodel = viewmodel, "0000000000000000000000") {}
     }
 }
