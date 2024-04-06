@@ -58,7 +58,7 @@ fun ChatPage(
                     ) {
                         ProfileImage(fallback = user?.username ?: "Unknown", size = 26.dp)
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text("${user?.username}#${user?.discriminator}")
+                        Text("${user?.username ?: "Unknown"}#${user?.discriminator ?: "0000"}")
                     }
                 },
                 navigationIcon = {
@@ -119,6 +119,7 @@ fun ChatPage(
                     .padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                // TODO: Add LazyColumn so we can fetch the group/person messages :3
                 ChatBubble("Amy", "Meow :3")
                 ChatBubble("Amy", "Meow :3")
                 ChatBubble("Amy", "Meow :3")
