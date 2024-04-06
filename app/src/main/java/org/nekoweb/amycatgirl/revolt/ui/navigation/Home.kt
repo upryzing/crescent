@@ -30,7 +30,8 @@ import org.nekoweb.amycatgirl.revolt.ui.composables.PeopleListItem
 fun HomePage(
     homeViewmodel: HomeViewmodel,
     navigateToChat: (location: String) -> Unit,
-    navigateToDebug: () -> Unit
+    navigateToDebug: () -> Unit,
+    navigateToSettings: () -> Unit
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -51,7 +52,7 @@ fun HomePage(
                     IconButton(onClick = { navigateToDebug() }) {
                         Icon(Icons.Default.Build, contentDescription = "Open Debug login screen")
                     }
-                    IconButton(onClick = { /* TODO */ }) {
+                    IconButton(onClick = { navigateToSettings() }) {
                         Icon(Icons.Default.Settings, contentDescription = null)
                     }
                 },

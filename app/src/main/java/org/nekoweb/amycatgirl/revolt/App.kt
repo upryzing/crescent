@@ -21,6 +21,7 @@ import org.nekoweb.amycatgirl.revolt.models.app.HomeViewmodel
 import org.nekoweb.amycatgirl.revolt.models.app.MainViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.navigation.ChatPage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.HomePage
+import org.nekoweb.amycatgirl.revolt.ui.navigation.SettingsPage
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @Composable
@@ -44,20 +45,20 @@ fun App(
                 enterTransition = {
                     fadeIn(
                         animationSpec = tween(
-                            300, easing = LinearEasing
+                            100, easing = EaseOut
                         )
                     ) + slideIntoContainer(
-                        animationSpec = tween(300, easing = EaseIn),
+                        animationSpec = tween(100, easing = EaseIn),
                         towards = AnimatedContentTransitionScope.SlideDirection.End
                     )
                 },
                 exitTransition = {
                     fadeOut(
                         animationSpec = tween(
-                            300, easing = LinearEasing
+                            100, easing = EaseIn
                         )
                     ) + slideOutOfContainer(
-                        animationSpec = tween(300, easing = EaseOut),
+                        animationSpec = tween(100, easing = EaseOut),
                         towards = AnimatedContentTransitionScope.SlideDirection.Start
                     )
                 }
@@ -69,7 +70,8 @@ fun App(
                 HomePage(
                     homeViewmodel,
                     navigateToChat = { navigator.navigate("messages/${it}") },
-                    navigateToDebug = { navigator.navigate("debug") }
+                    navigateToDebug = { navigator.navigate("debug") },
+                    navigateToSettings = { navigator.navigate("settings") }
                 )
             }
 
@@ -97,6 +99,10 @@ fun App(
                 }
             ) {
                 ChatPage()
+            }
+
+            composable("settings") {
+                SettingsPage(goBack = { navigator.popBackStack() })
             }
         }
     }

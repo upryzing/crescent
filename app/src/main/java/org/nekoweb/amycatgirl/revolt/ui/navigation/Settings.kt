@@ -29,7 +29,9 @@ import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsPage() {
+fun SettingsPage(
+    goBack: () -> Unit
+) {
     // TODO: Implement App configuration
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -40,7 +42,7 @@ fun SettingsPage() {
                 title = { Text("Settings") },
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO: Add navigation to return Home.kt*/ }) {
+                    IconButton(onClick = { goBack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "")
                     }
                 }
@@ -83,6 +85,6 @@ fun SettingsPage() {
 @Composable
 fun SettingsPagePreview() {
     RevoltTheme {
-        SettingsPage()
+        SettingsPage {}
     }
 }
