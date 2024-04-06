@@ -40,6 +40,8 @@ class ApiClient {
         const val S3_ROOT_URL: String = "https://autumn.revolt.chat/"
         const val SOCKET_ROOT_URL: String =
             "wss://ws.revolt.chat?format=json&version=1&token=$DEBUG_TOKEN"
+
+        var currentSession: SessionResponse? = null
     }
 
     private val jsonDeserializer = Json {
@@ -127,12 +129,16 @@ class ApiClient {
     }
 
     suspend fun loginWithPassword(email: String, password: String): SessionResponse {
-        return client.post("$API_ROOT_URL/auth/session/login") {
+        val response = client.post("$API_ROOT_URL/auth/session/login") {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
 
             setBody(SessionRequestWithFriendlyName(email, password))
-        }.body()
+        }.body<SessionResponse>()
+
+        currentSession = response
+
+        return response
     }
 
     fun disconnectFromSocket() {

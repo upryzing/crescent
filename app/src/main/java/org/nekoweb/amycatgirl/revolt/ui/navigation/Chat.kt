@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -81,7 +81,7 @@ fun ChatPage(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = { /*TODO*/ }) {
-                    Icon(Icons.Default.Add, "", tint = MaterialTheme.colorScheme.onSurface)
+                    Icon(Icons.Filled.AddBox, "", tint = MaterialTheme.colorScheme.onSurface)
                 }
                 CustomTextField(
                     value = messageValue,
