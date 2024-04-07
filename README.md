@@ -58,3 +58,7 @@ As @lo2dev pointed out in a reply to a development screenshot showcasing the log
    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amycatgirl/crescent&type=Timeline" />
  </picture>
 </a>
+
+## License
+
+This project is licensed under the GPLv3 License. See LICENCE.md for more information.
