@@ -32,8 +32,7 @@ import org.nekoweb.amycatgirl.revolt.models.websocket.SocketListener
 import org.nekoweb.amycatgirl.revolt.models.websocket.UnimplementedEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
-class ApiClient {
-    companion object {
+object ApiClient {
         private const val DEBUG_TOKEN =
             "cuB2i01f-IGdGb8amCHKZ1QuycKx1xPkPsoKdNjFhdgFeYOtQz5e0_331B1KyGIL"
         const val API_ROOT_URL: String = "https://api.revolt.chat/"
@@ -42,7 +41,6 @@ class ApiClient {
             "wss://ws.revolt.chat?format=json&version=1&token=$DEBUG_TOKEN"
 
         var currentSession: SessionResponse? = null
-    }
 
     private val jsonDeserializer = Json {
         ignoreUnknownKeys = true
