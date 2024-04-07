@@ -1,4 +1,4 @@
-<div align="center"><h1>Crescent</h1></DIV>
+<div align="center"><h1>Crescent</h1></div>
 <div align="center">
     <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/amycatgirl/crescent?style=flat-square&label=Stars">
     <img alt="GitHub forks" src="https://img.shields.io/github/forks/amycatgirl/crescent?style=flat-square&color=%23448c32&label=Forks">
