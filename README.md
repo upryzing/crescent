@@ -1,9 +1,9 @@
-<center><h1>Crescent</h1></center>
-<center>
+<div align="center"><h1>Crescent</h1></DIV>
+<div align="center">
     <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/amycatgirl/crescent?style=flat-square&label=Stars">
     <img alt="GitHub forks" src="https://img.shields.io/github/forks/amycatgirl/crescent?style=flat-square&color=%23448c32&label=Forks">
     <img alt="Made with Kotlin" src="https://img.shields.io/badge/Made_with_Kotlin-%237F52FF?style=flat-square&logo=kotlin&logoColor=white">
-</center>
+</div>
 
 ## What is Crescent?
 
