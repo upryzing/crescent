@@ -5,6 +5,10 @@ plugins {
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
 }
+val versionMajor = 1
+val versionMinor = 0
+val versionPatch = 0
+val versionBuild = 1
 
 android {
     namespace = "org.nekoweb.amycatgirl.revolt"
@@ -14,8 +18,8 @@ android {
         applicationId = "org.nekoweb.amycatgirl.revolt"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -38,6 +42,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"

@@ -6,8 +6,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Brush
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LockPerson
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import org.nekoweb.amycatgirl.revolt.BuildConfig
 import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
@@ -54,28 +56,39 @@ fun SettingsPage(
         Column(modifier = Modifier.padding(innerPadding)) {
             // TODO: Needed navigation for each categories
             ListItem(
-                leadingContent = { Icon(Icons.Default.Person, "") },
+                leadingContent = { Icon(Icons.Filled.LockPerson, "") },
                 headlineContent = { Text("Account") },
-                supportingContent = { Text("Change your account settings") }
             )
             ListItem(
-                leadingContent = { Icon(Icons.Filled.Brush, "") },
-                headlineContent = { Text("Appearance") },
-                supportingContent = { Text("Customize your app") }
+                leadingContent = { Icon(Icons.Filled.Person, "") },
+                headlineContent = { Text("Profile") },
             )
             ListItem(
                 leadingContent = { Icon(Icons.Default.Settings, "") },
-                headlineContent = { Text("General") },
-                supportingContent = { Text("Configure your app") }
+                headlineContent = { Text("Client Settings") },
             )
             ListItem(
                 leadingContent = { Icon(Icons.Default.Info, "") },
-                headlineContent = { Text("About RevoltMini") },
-                supportingContent = { Text("Information about this app") }
+                headlineContent = { Text("About ${stringResource(R.string.app_name)}") },
+            )
+            ListItem(
+                leadingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Logout,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                },
+                headlineContent = {
+                    Text(
+                        "Log Out",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                },
             )
             Spacer(modifier = Modifier.fillMaxHeight(0.9f))
             Text(
-                "${stringResource(R.string.app_name)} - Development Build",
+                "${stringResource(R.string.app_name)} - Build ${BuildConfig.VERSION_CODE}",
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )

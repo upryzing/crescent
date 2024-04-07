@@ -65,7 +65,7 @@ fun ChatPage(
                     IconButton(onClick = { goBack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            ""
+                            "Go Back"
                         )
                     }
                 }
@@ -85,7 +85,7 @@ fun ChatPage(
                 }
                 CustomTextField(
                     value = messageValue,
-                    placeholder = { Text("Write an message") },
+                    placeholder = { Text("Send message") },
                     onValueChange = { messageValue = it },
                     singleLine = false,
                     modifier = Modifier
