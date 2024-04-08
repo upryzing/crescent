@@ -1,6 +1,7 @@
 package org.nekoweb.amycatgirl.revolt.ui.navigation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -23,6 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -38,11 +43,14 @@ import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 fun SettingsPage(
     goBack: () -> Unit
 ) {
+    var shouldShowDialog by remember { mutableStateOf(false) }
     // TODO: Implement App configuration
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    AnimatedVisibility(visible = true) {
-        LogoutConfirmationDialog(logoutCallback = { /*TODO*/ }, dismissCallback = {/* TODO */})
+    AnimatedVisibility(visible = shouldShowDialog) {
+        LogoutConfirmationDialog(
+            logoutCallback = { /*TODO*/ },
+            dismissCallback = { shouldShowDialog = false })
     }
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -90,6 +98,7 @@ fun SettingsPage(
                         color = MaterialTheme.colorScheme.error
                     )
                 },
+                modifier = Modifier.clickable { shouldShowDialog = true }
             )
             Spacer(modifier = Modifier.fillMaxHeight(0.9f))
             Text(

@@ -22,7 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
 import org.nekoweb.amycatgirl.revolt.models.app.HomeViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.composables.PeopleListItem
@@ -48,7 +50,7 @@ fun HomePage(
             MediumTopAppBar(
                 title = {
                     Text(
-                        "Direct Messages",
+                        stringResource(R.string.app_directmessages_header),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

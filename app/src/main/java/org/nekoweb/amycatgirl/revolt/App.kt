@@ -21,6 +21,7 @@ import org.nekoweb.amycatgirl.revolt.models.app.MainViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.navigation.ChatPage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.DebugScreen
 import org.nekoweb.amycatgirl.revolt.ui.navigation.HomePage
+import org.nekoweb.amycatgirl.revolt.ui.navigation.LoginPage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.SettingsPage
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
@@ -63,9 +64,13 @@ fun App(
                             1500
                         }
                     }) {
-                    DebugScreen(mainViewmodel.messageList) {
+                    DebugScreen(mainViewmodel.messageList, goBack = {
                         navigator.popBackStack()
-                    }
+                    }, navigateToDebugLogin = { navigator.navigate("auth") })
+                }
+
+                composable("auth") {
+                    LoginPage()
                 }
 
                 composable(

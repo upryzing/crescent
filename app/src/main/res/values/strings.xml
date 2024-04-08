@@ -1,3 +1,24 @@
 <resources>
-    <string name="app_name">Crescent</string>
+    <string name="app_name" translatable="false">Crescent</string>
+    <string name="mfa_requires_authenticator_title">Two-factor Authentication</string>
+    <string name="mfa_required_authenticator_description">Enter the code provided by your authenticator app.</string>
+    <string name="mfa_required_textfield_placeholder">Code</string>
+    <string name="mfa_required_login">Login</string>
+    <string name="mfa_required_dismiss">Cancel</string>
+    <string name="settings_account">Account</string>
+    <string name="settings_profile">Profile</string>
+    <string name="settings_client">Client Settings</string>
+    <string name="settings_destroysession">Log Out</string>
+    <string name="settings_versioncode">Build</string>
+    <string name="logout_title">Log Out</string>
+    <string name="logout_description">Are you really sure you want to log out?</string>
+    <string name="logout_accept">Go Ahead</string>
+    <string name="logout_dismiss">Cancel</string>
+    <string name="app_directmessages_header">Direct Messages</string>
+    <string name="debug_appbar_header">Debug</string>
+    <string name="chat_sendmessage">Send message</string>
+    <string name="mfa_multiple_methods_title">Two-Factor Authentication</string>
+    <string name="mfa_multiple_methods_description">Your account has Multi-Factor Authentication enabled. Please select your prefered authentication method.</string>
+    <string name="mfa_multiple_methods_2fa">Verification Code</string>
+    <string name="mfa_multiple_methods_recovery">Recovery Code</string>
 </resources>

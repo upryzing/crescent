@@ -12,9 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @Composable
@@ -27,23 +29,26 @@ fun LogoutConfirmationDialog(logoutCallback: () -> Unit, dismissCallback: () -> 
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    "Log Out",
+                    stringResource(R.string.logout_title),
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
-                    "Are you really sure you want to log out?",
+                    stringResource(R.string.logout_description),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     Button(
-                        onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(
+                        onClick = logoutCallback, colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.error
                         )
                     ) {
-                        Text("Go ahead", color = MaterialTheme.colorScheme.onError)
+                        Text(
+                            stringResource(R.string.logout_accept),
+                            color = MaterialTheme.colorScheme.onError
+                        )
                     }
-                    TextButton(onClick = { /*TODO*/ }) {
-                        Text("Cancel")
+                    TextButton(onClick = dismissCallback) {
+                        Text(stringResource(R.string.logout_dismiss))
                     }
                 }
             }

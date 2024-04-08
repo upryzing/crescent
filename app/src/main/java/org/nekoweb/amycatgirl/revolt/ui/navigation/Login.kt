@@ -34,8 +34,10 @@ fun LoginPage() {
     var emailValue by rememberSaveable { mutableStateOf("") }
     var passwordValue by rememberSaveable { mutableStateOf("") }
     // TODO: Please implement when the login gets an error or it's requires MFA code. And plus, implement login functionality too.
+    // TODO: fuck off :trl:
+    // TODO: Switch to resource strings instead of hardcoded ones. It will make life easier
     AnimatedVisibility(visible = false) {
-        MFADialog()
+        MFADialog() {}
     }
     AnimatedVisibility(visible = false) {
         AccountDisabledDialog()

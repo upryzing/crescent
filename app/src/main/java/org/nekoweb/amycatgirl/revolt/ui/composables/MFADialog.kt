@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Input
-import androidx.compose.material.icons.filled.LockPerson
 import androidx.compose.material.icons.filled.PhonelinkLock
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -30,18 +28,22 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @Composable
-fun MFADialog() {
+fun MFADialog(
+    dismissCallback: () -> Unit
+) {
     var mfaValue by rememberSaveable { mutableStateOf("") }
 
     Dialog(
-        onDismissRequest = { /*TODO*/ },
+        onDismissRequest = dismissCallback,
     )
     {
         Card(
@@ -66,23 +68,23 @@ fun MFADialog() {
                     tint = MaterialTheme.colorScheme.secondary,
                 )
                 Text(
-                    "MFA Required",
+                    stringResource(R.string.mfa_requires_authenticator_title),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp)
                         .wrapContentSize(Alignment.Center),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.headlineSmall
                 )
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    "Please enter your MFA code provided by your authenticator app",
+                    stringResource(R.string.mfa_required_authenticator_description),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = mfaValue,
                     onValueChange = { mfaValue = it },
-                    label = { Text("MFA Code") }
+                    label = { Text(stringResource(R.string.mfa_required_textfield_placeholder)) }
                 )
             }
             Row(
@@ -94,10 +96,10 @@ fun MFADialog() {
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Button(onClick = { /*TODO*/ }) {
-                    Text("Login")
+                    Text(stringResource(R.string.mfa_required_login))
                 }
-                TextButton(onClick = { /*TODO*/ }) {
-                    Text("Cancel")
+                TextButton(onClick = dismissCallback) {
+                    Text(stringResource(R.string.mfa_required_dismiss))
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -109,6 +111,6 @@ fun MFADialog() {
 @Composable
 fun MFADialogPreview() {
     RevoltTheme {
-        MFADialog()
+        MFADialog {}
     }
 }
