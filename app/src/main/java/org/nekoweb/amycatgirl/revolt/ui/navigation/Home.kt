@@ -1,8 +1,8 @@
 package org.nekoweb.amycatgirl.revolt.ui.navigation
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -44,7 +44,6 @@ fun HomePage(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .safeDrawingPadding()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(
@@ -63,7 +62,8 @@ fun HomePage(
                         Icon(Icons.Default.Settings, contentDescription = null)
                     }
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                windowInsets = WindowInsets(0, 0, 0, 0)
             )
         },
         floatingActionButton = {
@@ -73,14 +73,16 @@ fun HomePage(
         }
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier
-                .padding(innerPadding)
+            modifier = Modifier.consumeWindowInsets(innerPadding),
+            contentPadding = innerPadding
         ) {
             items(list) { channel ->
                 when (channel) {
                     is Channel.DirectMessage -> {
-                        val author = homeViewmodel.cache.find {
-                            it.username != "amycatgirl" && channel.recipients.contains(it.id)
+                        val author = remember {
+                            homeViewmodel.cache.find {
+                                it.username != "amycatgirl" && channel.recipients.contains(it.id)
+                            }
                         }
                         println("Found author: $author")
                         if (author != null && channel.active && author.flags != 2) {

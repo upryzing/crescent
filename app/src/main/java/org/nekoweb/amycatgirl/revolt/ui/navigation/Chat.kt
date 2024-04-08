@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,7 +37,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.nekoweb.amycatgirl.revolt.R
-import org.nekoweb.amycatgirl.revolt.models.app.MainViewmodel
+import org.nekoweb.amycatgirl.revolt.models.api.PartialMessage
+import org.nekoweb.amycatgirl.revolt.models.api.User
+import org.nekoweb.amycatgirl.revolt.models.app.ChatViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.composables.ChatBubble
 import org.nekoweb.amycatgirl.revolt.ui.composables.CustomTextField
 import org.nekoweb.amycatgirl.revolt.ui.composables.ProfileImage
@@ -45,12 +48,14 @@ import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatPage(
-    mainViewmodel: MainViewmodel,
-    ulid: String? = "0000000000000000000000",
+    cache: List<User>,
+    viewmodel: ChatViewmodel,
+    ulid: String = "0000000000000000000000",
     goBack: () -> Unit
 ) {
-    val user = mainViewmodel.userList.find { it.id == ulid }
+    val user = cache.find { it.id == ulid }
     var messageValue by remember { mutableStateOf("") }
+    val messages = remember { mutableStateOf<List<PartialMessage>>(listOf()) }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -121,10 +126,18 @@ fun ChatPage(
                     .padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // TODO: Add LazyColumn so we can fetch the group/person messages :3
-                ChatBubble("Amy", "Meow :3")
-                ChatBubble("Amy", "Meow :3")
-                ChatBubble("Amy", "Meow :3")
+                LaunchedEffect(ulid) {
+                    viewmodel.getMessages(ulid).let {
+                        messages.value = it
+                    }
+                }
+                for (message in messages.value) {
+                    ChatBubble(
+                        author = message.authorId,
+                        message = message.content
+                    )
+                }
+
             }
         }
 
@@ -136,8 +149,11 @@ fun ChatPage(
 fun ChatPagePreview() {
     RevoltTheme {
         val viewmodel = viewModel {
-            MainViewmodel()
+            ChatViewmodel()
         }
-        ChatPage(mainViewmodel = viewmodel, "0000000000000000000000") {}
+        val exampleList = List(
+            1,
+            init = { i -> User(id = i.toString(), username = "meow", discriminator = "000") })
+        ChatPage(exampleList, viewmodel, "1") {}
     }
 }

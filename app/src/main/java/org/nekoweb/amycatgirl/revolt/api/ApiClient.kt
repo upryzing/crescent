@@ -11,7 +11,6 @@ import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
@@ -33,15 +32,14 @@ import org.nekoweb.amycatgirl.revolt.models.websocket.UnimplementedEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
 object ApiClient {
-        private const val DEBUG_TOKEN =
-            "cuB2i01f-IGdGb8amCHKZ1QuycKx1xPkPsoKdNjFhdgFeYOtQz5e0_331B1KyGIL"
-        const val API_ROOT_URL: String = "https://api.revolt.chat/"
-        const val S3_ROOT_URL: String = "https://autumn.revolt.chat/"
-        const val SOCKET_ROOT_URL: String =
-            "wss://ws.revolt.chat?format=json&version=1&token=$DEBUG_TOKEN"
+    private const val DEBUG_TOKEN =
+        "cuB2i01f-IGdGb8amCHKZ1QuycKx1xPkPsoKdNjFhdgFeYOtQz5e0_331B1KyGIL"
+    const val API_ROOT_URL: String = "https://api.revolt.chat/"
+    const val S3_ROOT_URL: String = "https://autumn.revolt.chat/"
+    const val SOCKET_ROOT_URL: String =
+        "wss://ws.revolt.chat?format=json&version=1&token=$DEBUG_TOKEN"
 
-        var currentSession: SessionResponse? = null
-
+    var currentSession: SessionResponse? = null
     private val jsonDeserializer = Json {
         ignoreUnknownKeys = true
         isLenient = true
@@ -51,6 +49,8 @@ object ApiClient {
             }
         }
     }
+
+    var cache = mutableListOf<Any>()
 
     private val client = HttpClient(OkHttp) {
         install(ContentNegotiation) {
@@ -70,7 +70,6 @@ object ApiClient {
                         if (frame is Frame.Text) {
                             val event: BaseEvent =
                                 jsonDeserializer.decodeFromString(frame.readText())
-                            println("Deserialized frame (${frame.readText()}) as $event")
                             EventBus.publish(event)
                         }
                     }
@@ -82,13 +81,19 @@ object ApiClient {
     }
 
     suspend fun getDirectMessages(): List<Channel> {
-        return client.get("$API_ROOT_URL/users/dms") {
+        println("Getting Direct Messages...")
+        val res = client.get("$API_ROOT_URL/users/dms") {
             headers {
                 append("X-Session-Token", DEBUG_TOKEN)
             }
 
             accept(ContentType.Application.Json)
         }.body<List<Channel>>()
+
+        cache.addAll(res)
+        println("Result: $res")
+        println("Cache size: ${cache.size}")
+        return res
     }
 
     suspend fun getSpecificMessageFromChannel(
@@ -103,27 +108,35 @@ object ApiClient {
                 }
 
                 accept(ContentType.Application.Json)
-            }
+            }.body<PartialMessage>()
 
-            println("Got result: ${res.bodyAsText()}")
-            res.body<PartialMessage>()
+            cache.add(res)
+            println("Cache size: ${cache.size}")
+            return res
         } catch (e: Exception) {
             println("Fuck, $e")
             null
         }
     }
 
-    suspend fun getChannelMessages(channel: Channel) {
-        val res = client.get("$API_ROOT_URL/channel/${channel.id}/messages?limit=30") {
+    suspend fun getChannelMessages(user: String): List<PartialMessage> {
+        val channel =
+            cache.filterIsInstance<Channel.DirectMessage>().find { it.recipients.contains(user) }
+        println("Found Channel: $channel")
+        val url = "${API_ROOT_URL}channels/${channel?.id}/messages?limit=30"
+        println("requesting messages from ")
+        val res = client.get(url) {
             headers {
                 append("X-Session-Token", DEBUG_TOKEN)
             }
 
             accept(ContentType.Application.Json)
-        }
+        }.body<List<PartialMessage>>()
 
-        println("Got result: ${res.bodyAsText()}")
-        res.body<List<PartialMessage>>()
+        cache.addAll(res)
+        println("Cache size: ${cache.size}")
+
+        return res
     }
 
     suspend fun loginWithPassword(email: String, password: String): SessionResponse {

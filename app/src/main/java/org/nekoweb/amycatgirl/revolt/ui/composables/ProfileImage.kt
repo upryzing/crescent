@@ -53,7 +53,7 @@ fun ProfileImage(
                         modifier = Modifier
                             .size(size)
                             .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .background(MaterialTheme.colorScheme.primary)
                     ) {
                         Text(
                             fallback.substring(0, 1),

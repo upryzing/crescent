@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import org.nekoweb.amycatgirl.revolt.models.app.ChatViewmodel
 import org.nekoweb.amycatgirl.revolt.models.app.HomeViewmodel
 import org.nekoweb.amycatgirl.revolt.models.app.MainViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.navigation.ChatPage
@@ -23,15 +25,13 @@ import org.nekoweb.amycatgirl.revolt.ui.navigation.DebugScreen
 import org.nekoweb.amycatgirl.revolt.ui.navigation.HomePage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.LoginPage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.SettingsPage
-import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @Composable
 fun App(
     mainViewmodel: MainViewmodel = viewModel()
 ) {
     val navigator = rememberNavController()
-    RevoltTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             NavHost(navController = navigator, startDestination = "home") {
                 composable("debug",
                     enterTransition = {
@@ -156,9 +156,13 @@ fun App(
                     arguments = listOf(navArgument("id") { type = NavType.StringType })
                 ) { backStackEntry ->
                     println("navigating to chat, id: ${backStackEntry.arguments?.getString("id")}")
+                    val viewmodel: ChatViewmodel = viewModel {
+                        ChatViewmodel()
+                    }
                     ChatPage(
-                        mainViewmodel,
-                        backStackEntry.arguments?.getString("id")
+                        mainViewmodel.userList,
+                        viewmodel,
+                        backStackEntry.arguments?.getString("id")!!
                     ) { navigator.popBackStack() }
                 }
 
@@ -199,5 +203,4 @@ fun App(
                 }
             }
         }
-    }
 }
