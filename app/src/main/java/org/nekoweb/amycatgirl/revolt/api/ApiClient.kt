@@ -122,6 +122,7 @@ object ApiClient {
     suspend fun getChannelMessages(user: String): List<PartialMessage> {
         val channel =
             cache.filterIsInstance<Channel.DirectMessage>().find { it.recipients.contains(user) }
+                ?: cache.filterIsInstance<Channel.Group>().find { it.id == user }
         println("Found Channel: $channel")
         val url = "${API_ROOT_URL}channels/${channel?.id}/messages?limit=30"
         println("requesting messages from ")

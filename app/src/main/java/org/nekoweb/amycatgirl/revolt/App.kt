@@ -113,7 +113,7 @@ fun App(
                     HomePage(
                         homeViewmodel,
                         navigateToChat = {
-                            println("navigating to chat, id: ${it}")
+                            println("navigating to chat, id: $it")
                             navigator.navigate("messages/${it}")
                         },
                         navigateToDebug = { navigator.navigate("debug") },

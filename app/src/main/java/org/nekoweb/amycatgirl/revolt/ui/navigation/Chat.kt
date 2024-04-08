@@ -2,17 +2,17 @@ package org.nekoweb.amycatgirl.revolt.ui.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.nekoweb.amycatgirl.revolt.R
+import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.models.api.PartialMessage
 import org.nekoweb.amycatgirl.revolt.models.api.User
 import org.nekoweb.amycatgirl.revolt.models.app.ChatViewmodel
@@ -56,6 +57,11 @@ fun ChatPage(
     val user = cache.find { it.id == ulid }
     var messageValue by remember { mutableStateOf("") }
     val messages = remember { mutableStateOf<List<PartialMessage>>(listOf()) }
+    LaunchedEffect(ulid) {
+        viewmodel.getMessages(ulid).let {
+            messages.value = it
+        }
+    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -113,32 +119,24 @@ fun ChatPage(
         }
 
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
-                .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background)
-                .fillMaxSize(),
-
-            ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                LaunchedEffect(ulid) {
-                    viewmodel.getMessages(ulid).let {
-                        messages.value = it
-                    }
+                .fillMaxSize()
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = innerPadding
+        ) {
+            items(messages.value.reversed()) { message ->
+                val author = remember {
+                    ApiClient.cache.filterIsInstance<User>().find { it.id == message.authorId }
                 }
-                for (message in messages.value) {
-                    ChatBubble(
-                        author = message.authorId,
-                        message = message.content
-                    )
-                }
-
+                ChatBubble(
+                    author = if (author != null) author.displayName
+                        ?: author.username else "Unknown",
+                    message = message.content
+                )
             }
+
         }
 
     }

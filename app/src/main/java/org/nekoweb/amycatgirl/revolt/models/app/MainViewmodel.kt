@@ -33,6 +33,7 @@ class MainViewmodel : ViewModel() {
         viewModelScope.launch {
             EventBus.subscribe<ReadyEvent> { ev ->
                 userList.addAll(ev.users)
+                ApiClient.cache.addAll(ev.users)
             }
         }
     }
