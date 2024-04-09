@@ -6,9 +6,9 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 val versionMajor = 1
-val versionMinor = 0
+val versionMinor = 1
 val versionPatch = 0
-val versionBuild = 4
+val versionBuild = 0
 
 android {
     namespace = "org.nekoweb.amycatgirl.revolt"
