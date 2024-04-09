@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockReset
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import org.nekoweb.amycatgirl.revolt.R
+import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.models.websocket.AuthenticatedEvent
 import org.nekoweb.amycatgirl.revolt.models.websocket.BaseEvent
 import org.nekoweb.amycatgirl.revolt.models.websocket.PartialMessageEvent
@@ -74,6 +76,12 @@ fun DebugScreen(
                     }
                 },
                 actions = {
+                    IconButton(onClick = { ApiClient.useStaging = !ApiClient.useStaging }) {
+                        Icon(
+                            Icons.Default.BugReport,
+                            contentDescription = "Toggle staging API/Socket"
+                        )
+                    }
                     IconButton(onClick = { shouldShowDebugMfaDialog = true }) {
                         Icon(Icons.Default.LockReset, contentDescription = "Show MFA Dialog")
                     }

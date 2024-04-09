@@ -32,14 +32,32 @@ import org.nekoweb.amycatgirl.revolt.models.websocket.UnimplementedEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
 object ApiClient {
+    var useStaging = false
+        set(value) {
+            when (value) {
+                true -> {
+                    API_ROOT_URL = "https://revolt.chat/api/"
+                    SOCKET_ROOT_URL =
+                        "wss://revolt.chat/events/?format=json&version=1&token=$DEBUG_TOKEN"
+                }
+
+                false -> {
+                    API_ROOT_URL = "https://api.revolt.chat"
+                    SOCKET_ROOT_URL =
+                        "wss://ws.revolt.chat?format=json&version=1&token=$DEBUG_TOKEN"
+
+                }
+            }
+            field = value
+        }
     private const val DEBUG_TOKEN =
         "cuB2i01f-IGdGb8amCHKZ1QuycKx1xPkPsoKdNjFhdgFeYOtQz5e0_331B1KyGIL"
-    const val API_ROOT_URL: String = "https://api.revolt.chat/"
-    const val S3_ROOT_URL: String = "https://autumn.revolt.chat/"
-    const val SOCKET_ROOT_URL: String =
+    private var SOCKET_ROOT_URL: String =
         "wss://ws.revolt.chat?format=json&version=1&token=$DEBUG_TOKEN"
+    private var API_ROOT_URL: String = "https://api.revolt.chat/"
+    const val S3_ROOT_URL: String = "https://autumn.revolt.chat/"
 
-    var currentSession: SessionResponse? = null
+    private var currentSession: SessionResponse? = null
     private val jsonDeserializer = Json {
         ignoreUnknownKeys = true
         isLenient = true
