@@ -34,7 +34,7 @@ fun PeopleListItem(
                 user.displayName ?: "${user.username}#${user.discriminator}"
             } else channel?.name ?: "Unknown"
             val avatar = if (user?.avatar != null) {
-                "${ApiClient.S3_ROOT_URL}avatars/${user.avatar.id}"
+                "${ApiClient.S3_ROOT_URL}avatars/${user.avatar.id}?max_side=256"
             } else if (channel?.icon != null) {
                 "${ApiClient.S3_ROOT_URL}icons/${channel.icon.id}"
             } else null

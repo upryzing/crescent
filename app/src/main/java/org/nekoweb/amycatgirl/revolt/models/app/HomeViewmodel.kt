@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.models.api.User
 import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
-import org.nekoweb.amycatgirl.revolt.models.websocket.ReadyEvent
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.ReadyEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 import javax.inject.Inject
 

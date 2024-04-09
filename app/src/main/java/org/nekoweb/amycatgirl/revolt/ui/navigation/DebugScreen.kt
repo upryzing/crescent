@@ -32,11 +32,11 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
-import org.nekoweb.amycatgirl.revolt.models.websocket.AuthenticatedEvent
-import org.nekoweb.amycatgirl.revolt.models.websocket.BaseEvent
-import org.nekoweb.amycatgirl.revolt.models.websocket.PartialMessageEvent
-import org.nekoweb.amycatgirl.revolt.models.websocket.ReadyEvent
-import org.nekoweb.amycatgirl.revolt.models.websocket.UnimplementedEvent
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.AuthenticatedEvent
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.BaseEvent
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.PartialMessage
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.ReadyEvent
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.UnimplementedEvent
 import org.nekoweb.amycatgirl.revolt.ui.composables.MFADialog
 import org.nekoweb.amycatgirl.revolt.ui.theme.Green500
 
@@ -118,7 +118,7 @@ fun DebugScreen(
                         }
                     }
 
-                    is PartialMessageEvent -> {
+                    is PartialMessage -> {
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
                             color = MaterialTheme.colorScheme.secondaryContainer,

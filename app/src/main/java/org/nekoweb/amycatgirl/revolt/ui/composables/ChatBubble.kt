@@ -11,23 +11,32 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.nekoweb.amycatgirl.revolt.api.ApiClient
+import org.nekoweb.amycatgirl.revolt.models.api.User
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.PartialMessage
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @Composable
-fun ChatBubble(author: String? = null, message: String? = null) {
+fun ChatBubble(message: PartialMessage) {
+    val author = remember(message.authorId) {
+        ApiClient.cache.filterIsInstance<User>().find { it.id == message.authorId }
+    }
     // TODO: Needed a check whenever the authorID needed to be same as the authorID of the message.
     Column(
-        modifier = Modifier
-            .height(IntrinsicSize.Min)
+        modifier = Modifier.height(IntrinsicSize.Min)
     ) {
 
         if (author != null) {
-            Text(author, color = MaterialTheme.colorScheme.onBackground)
+            Text(
+                author.displayName ?: author.username,
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
         Spacer(modifier = Modifier.height(10.dp))
         Box(
@@ -39,13 +48,11 @@ fun ChatBubble(author: String? = null, message: String? = null) {
                 .background(MaterialTheme.colorScheme.secondary)
                 .padding(10.dp)
         ) {
-            if (message != null) {
-                Text(
-                    message,
-                    color = MaterialTheme.colorScheme.onSecondary,
-                    fontSize = 16.sp
-                )
-            }
+            Text(
+                text = if (!message.content.isNullOrBlank()) message.content else if (message.attachments != null) "Message has no content, but it has attachments, and we can't render them yet." else "Unhandled",
+                color = MaterialTheme.colorScheme.onSecondary,
+                fontSize = 16.sp
+            )
         }
     }
 }
@@ -55,8 +62,8 @@ fun ChatBubble(author: String? = null, message: String? = null) {
 fun ChatBubblePreview() {
     RevoltTheme {
         Column {
-            ChatBubble("Amy", "Meow :3")
-            ChatBubble("Amy", "Meow :3")
+            ChatBubble(PartialMessage())
+            ChatBubble(PartialMessage())
         }
     }
 }

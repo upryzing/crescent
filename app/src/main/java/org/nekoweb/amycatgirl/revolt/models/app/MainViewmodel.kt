@@ -7,8 +7,8 @@ import kotlinx.coroutines.launch
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.models.api.User
 import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionResponse
-import org.nekoweb.amycatgirl.revolt.models.websocket.BaseEvent
-import org.nekoweb.amycatgirl.revolt.models.websocket.ReadyEvent
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.BaseEvent
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.ReadyEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
 class MainViewmodel : ViewModel() {

@@ -5,10 +5,6 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -22,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import org.nekoweb.amycatgirl.revolt.R
@@ -56,10 +53,16 @@ fun HomePage(
                 },
                 actions = {
                     IconButton(onClick = { navigateToDebug() }) {
-                        Icon(Icons.Default.Build, contentDescription = "Open Debug login screen")
+                        Icon(
+                            painterResource(R.drawable.material_symbols_adb),
+                            contentDescription = "Open Debug login screen"
+                        )
                     }
                     IconButton(onClick = { navigateToSettings() }) {
-                        Icon(Icons.Default.Settings, contentDescription = null)
+                        Icon(
+                            painterResource(R.drawable.material_symbols_settings),
+                            contentDescription = null
+                        )
                     }
                 },
                 scrollBehavior = scrollBehavior,
@@ -68,7 +71,10 @@ fun HomePage(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.Add, contentDescription = "More options")
+                Icon(
+                    painterResource(R.drawable.material_symbols_add),
+                    contentDescription = "More options"
+                )
             }
         }
     ) { innerPadding ->

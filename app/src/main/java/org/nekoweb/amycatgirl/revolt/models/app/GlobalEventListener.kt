@@ -3,9 +3,9 @@ package org.nekoweb.amycatgirl.revolt.models.app
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
-import org.nekoweb.amycatgirl.revolt.models.websocket.BaseEvent
-import org.nekoweb.amycatgirl.revolt.models.websocket.SocketListener
-import org.nekoweb.amycatgirl.revolt.models.websocket.UnimplementedEvent
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.BaseEvent
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.SocketListener
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.UnimplementedEvent
 
 class GlobalEventListener : SocketListener {
 

@@ -22,13 +22,13 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
-import org.nekoweb.amycatgirl.revolt.models.api.PartialMessage
 import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionRequestWithFriendlyName
 import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionResponse
 import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
-import org.nekoweb.amycatgirl.revolt.models.websocket.BaseEvent
-import org.nekoweb.amycatgirl.revolt.models.websocket.SocketListener
-import org.nekoweb.amycatgirl.revolt.models.websocket.UnimplementedEvent
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.BaseEvent
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.PartialMessage
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.SocketListener
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.UnimplementedEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
 object ApiClient {
@@ -156,6 +156,23 @@ object ApiClient {
         println("Cache size: ${cache.size}")
 
         return res
+    }
+
+    suspend fun sendMessage(location: String, message: String) {
+        val channel =
+            cache.filterIsInstance<Channel.DirectMessage>()
+                .find { it.recipients.contains(location) }
+                ?: cache.filterIsInstance<Channel.Group>().find { it.id == location }
+        val url = "${API_ROOT_URL}channels/${channel?.id}/messages"
+        println("requesting messages from ")
+        client.post(url) {
+            headers {
+                append("X-Session-Token", DEBUG_TOKEN)
+            }
+
+            contentType(ContentType.Application.Json)
+            setBody(PartialMessage(content = message))
+        }
     }
 
     suspend fun loginWithPassword(email: String, password: String): SessionResponse {

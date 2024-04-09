@@ -1,4 +1,4 @@
-package org.nekoweb.amycatgirl.revolt.models.websocket
+package org.nekoweb.amycatgirl.revolt.models.api.websocket
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -2,6 +2,7 @@ package org.nekoweb.amycatgirl.revolt.ui.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,8 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,26 +26,33 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
-import org.nekoweb.amycatgirl.revolt.models.api.PartialMessage
 import org.nekoweb.amycatgirl.revolt.models.api.User
+import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.PartialMessage
 import org.nekoweb.amycatgirl.revolt.models.app.ChatViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.composables.ChatBubble
 import org.nekoweb.amycatgirl.revolt.ui.composables.CustomTextField
 import org.nekoweb.amycatgirl.revolt.ui.composables.ProfileImage
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
+import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ChatPage(
     cache: List<User>,
@@ -54,12 +60,24 @@ fun ChatPage(
     ulid: String = "0000000000000000000000",
     goBack: () -> Unit
 ) {
-    val user = cache.find { it.id == ulid }
+    val user = ApiClient.cache.filterIsInstance<User>().find { it.id == ulid }
     var messageValue by remember { mutableStateOf("") }
-    val messages = remember { mutableStateOf<List<PartialMessage>>(listOf()) }
+    val messages = remember { mutableStateListOf<PartialMessage>() }
+    val scope = rememberCoroutineScope()
+    val currentChannel = ApiClient.cache.filterIsInstance<Channel>()
+        .find { it.id == ulid || (it is Channel.DirectMessage && it.recipients.contains(ulid)) }
+
     LaunchedEffect(ulid) {
         viewmodel.getMessages(ulid).let {
-            messages.value = it
+            messages.addAll(it)
+        }
+    }
+
+    LaunchedEffect(ulid) {
+        EventBus.subscribe<PartialMessage> {
+            if (it.channelId == currentChannel?.id) {
+                messages.add(0, it)
+            }
         }
     }
     Scaffold(
@@ -69,9 +87,18 @@ fun ChatPage(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        ProfileImage(fallback = user?.username ?: "Unknown", size = 26.dp)
+                        ProfileImage(
+                            fallback = user?.username ?: "Unknown",
+                            url = "${ApiClient.S3_ROOT_URL}avatars/${user?.avatar?.id}?max_side=256",
+                            size = 26.dp
+                        )
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text("${user?.username ?: "Unknown"}#${user?.discriminator ?: "0000"}")
+                        Text(
+                            text = user?.displayName
+                                ?: "${user?.username ?: "Unknown"}#${user?.discriminator ?: "0000"}",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 },
                 navigationIcon = {
@@ -94,7 +121,11 @@ fun ChatPage(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = { /*TODO*/ }) {
-                    Icon(Icons.Filled.AddBox, "", tint = MaterialTheme.colorScheme.onSurface)
+                    Icon(
+                        painterResource(R.drawable.material_symbols_library_add),
+                        "",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                 }
                 CustomTextField(
                     value = messageValue,
@@ -107,12 +138,17 @@ fun ChatPage(
                         .heightIn(0.dp, 100.dp)
                 )
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        scope.launch {
+                            ApiClient.sendMessage(ulid, messageValue)
+                            messageValue = ""
+                        }
+                    },
                 ) {
                     Icon(
-                        Icons.AutoMirrored.Filled.Send,
+                        painterResource(R.drawable.material_symbols_send),
                         "",
-                        tint = MaterialTheme.colorScheme.onSurface
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }
@@ -124,16 +160,12 @@ fun ChatPage(
                 .fillMaxSize()
                 .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = innerPadding
+            contentPadding = innerPadding,
+            reverseLayout = true
         ) {
-            items(messages.value.reversed()) { message ->
-                val author = remember {
-                    ApiClient.cache.filterIsInstance<User>().find { it.id == message.authorId }
-                }
+            items(messages) { message ->
                 ChatBubble(
-                    author = if (author != null) author.displayName
-                        ?: author.username else "Unknown",
-                    message = message.content
+                    message
                 )
             }
 
