@@ -96,7 +96,7 @@ fun DebugScreen(
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-            items(list) { it ->
+            items(list) {
                 when (it) {
                     is AuthenticatedEvent -> {
                         Surface(

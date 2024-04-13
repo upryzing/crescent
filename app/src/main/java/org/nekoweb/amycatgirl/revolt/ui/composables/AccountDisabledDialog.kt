@@ -33,7 +33,9 @@ import androidx.compose.ui.window.Dialog
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @Composable
-fun AccountDisabledDialog() {
+fun AccountDisabledDialog(
+    dismissCallback: () -> Unit
+) {
     var mfaValue by rememberSaveable { mutableStateOf("") }
 
     Dialog(
@@ -83,7 +85,7 @@ fun AccountDisabledDialog() {
                     .wrapContentSize(Alignment.CenterEnd),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                TextButton(onClick = { /*TODO*/ }) {
+                TextButton(onClick = dismissCallback) {
                     Text("Ok")
                 }
             }
@@ -96,6 +98,6 @@ fun AccountDisabledDialog() {
 @Composable
 fun AccountDisabledDialogPreview() {
     RevoltTheme {
-        AccountDisabledDialog()
+        AccountDisabledDialog {}
     }
 }

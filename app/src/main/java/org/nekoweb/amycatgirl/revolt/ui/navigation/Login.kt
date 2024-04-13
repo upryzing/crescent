@@ -40,7 +40,7 @@ fun LoginPage() {
         MFADialog() {}
     }
     AnimatedVisibility(visible = false) {
-        AccountDisabledDialog()
+        AccountDisabledDialog {}
     }
     Scaffold { innerPadding ->
         Column(

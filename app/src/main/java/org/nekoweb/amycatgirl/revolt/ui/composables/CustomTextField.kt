@@ -1,6 +1,7 @@
 package org.nekoweb.amycatgirl.revolt.ui.composables
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -27,17 +28,16 @@ fun CustomTextField(
         value = value,
         onValueChange = onValueChange,
         colors = TextFieldDefaults.colors(
-            focusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            cursorColor = MaterialTheme.colorScheme.secondary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
             focusedIndicatorColor = Color.Transparent,
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            errorIndicatorColor = Color.Transparent,
-            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.5f),
-            focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.5f),
+            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
+            focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f)
         ),
+        shape = CircleShape,
         placeholder = {
             AnimatedVisibility(visible = value.isEmpty()) {
                 placeholder()
