@@ -32,7 +32,7 @@ fun App(
 ) {
     val navigator = rememberNavController()
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            NavHost(navController = navigator, startDestination = "home") {
+        NavHost(navController = navigator, startDestination = "login") {
                 composable("debug",
                     enterTransition = {
                         fadeIn(
@@ -160,7 +160,6 @@ fun App(
                         ChatViewmodel()
                     }
                     ChatPage(
-                        mainViewmodel.userList,
                         viewmodel,
                         backStackEntry.arguments?.getString("id")!!
                     ) { navigator.popBackStack() }
