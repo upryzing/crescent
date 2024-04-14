@@ -1,43 +1,61 @@
 package org.nekoweb.amycatgirl.revolt.ui.navigation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.nekoweb.amycatgirl.revolt.R
+import org.nekoweb.amycatgirl.revolt.models.app.LoginViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.composables.AccountDisabledDialog
 import org.nekoweb.amycatgirl.revolt.ui.composables.MFADialog
-import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @Composable
-fun LoginPage() {
-    var emailValue by rememberSaveable { mutableStateOf("") }
-    var passwordValue by rememberSaveable { mutableStateOf("") }
+fun LoginPage(
+    viewmodel: LoginViewmodel
+) {
+    var emailValue by remember { mutableStateOf("") }
+    var passwordValue by remember { mutableStateOf("") }
     // TODO: Please implement when the login gets an error or it's requires MFA code. And plus, implement login functionality too.
     // TODO: fuck off :trl:
     // TODO: Switch to resource strings instead of hardcoded ones. It will make life easier
     AnimatedVisibility(visible = false) {
-        MFADialog() {}
+        MFADialog {}
     }
     AnimatedVisibility(visible = false) {
         AccountDisabledDialog {}
@@ -47,33 +65,69 @@ fun LoginPage() {
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+            verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineLarge)
-            OutlinedTextField(
-                value = emailValue,
-                onValueChange = { emailValue = it },
-                leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-                label = { Text("Username") }
-            )
-            OutlinedTextField(
-                value = passwordValue,
-                onValueChange = { passwordValue = it },
-                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                label = { Text("Password") }
-            )
-            FilledTonalButton(onClick = { /*TODO*/ }) {
-                Text("Login")
+            Spacer(modifier = Modifier.weight(1f))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(46.dp)
+                        .clip(CircleShape)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_background),
+                        contentDescription = "",
+                    )
+                    Image(
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = ""
+                    )
+                }
+                Text(
+                    stringResource(R.string.app_name),
+                    fontSize = 50.sp,
+                    fontStyle = FontStyle.Italic,
+                    fontWeight = FontWeight.Medium
+                )
             }
+            Spacer(modifier = Modifier.height(30.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)) {
+                OutlinedTextField(
+                    value = emailValue,
+                    onValueChange = { emailValue = it },
+                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
+                    label = { Text("Email") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                )
+                OutlinedTextField(
+                    value = passwordValue,
+                    onValueChange = { passwordValue = it },
+                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                    label = {
+                        Text("Password")
+                    },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                )
+                Button(modifier = Modifier.fillMaxWidth(.7f), onClick = {
+                    viewmodel.login(emailValue, passwordValue)
+                }) {
+                    Text("Login")
+                }
+            }
+            TextButton(onClick = { /*TODO*/ }) {
+                Text("I forgot my password...")
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            OutlinedButton(onClick = { /*TODO*/ }) {
+                Text("Create an account")
+            }
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
 
-@Preview
-@Composable
-fun LoginPagePreview() {
-    RevoltTheme {
-        LoginPage()
-    }
-}

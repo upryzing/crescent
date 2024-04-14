@@ -34,6 +34,7 @@ fun HomePage(
     navigateToDebug: () -> Unit,
     navigateToSettings: () -> Unit
 ) {
+
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val list = remember { homeViewmodel.channelList }

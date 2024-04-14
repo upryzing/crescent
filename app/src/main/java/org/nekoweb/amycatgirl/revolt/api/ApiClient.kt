@@ -1,10 +1,12 @@
 package org.nekoweb.amycatgirl.revolt.api
 
+import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.receiveDeserialized
 import io.ktor.client.plugins.websocket.wss
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
@@ -13,21 +15,24 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.websocket.DefaultWebSocketSession
 import io.ktor.websocket.Frame
-import io.ktor.websocket.readText
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import io.ktor.websocket.send
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionRequestWithFriendlyName
 import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionResponse
 import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.AuthenticateEvent
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.BaseEvent
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.PartialMessage
-import org.nekoweb.amycatgirl.revolt.models.api.websocket.SocketListener
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.UnimplementedEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
@@ -37,27 +42,23 @@ object ApiClient {
             when (value) {
                 true -> {
                     API_ROOT_URL = "https://revolt.chat/api/"
-                    SOCKET_ROOT_URL =
-                        "wss://revolt.chat/events/?format=json&version=1&token=$DEBUG_TOKEN"
+                    SOCKET_ROOT_URL = "wss://revolt.chat/events/?format=json&version=1"
                 }
 
                 false -> {
                     API_ROOT_URL = "https://api.revolt.chat"
-                    SOCKET_ROOT_URL =
-                        "wss://ws.revolt.chat?format=json&version=1&token=$DEBUG_TOKEN"
+                    SOCKET_ROOT_URL = "wss://ws.revolt.chat?format=json&version=1"
 
                 }
             }
             field = value
         }
-    private const val DEBUG_TOKEN =
-        "cuB2i01f-IGdGb8amCHKZ1QuycKx1xPkPsoKdNjFhdgFeYOtQz5e0_331B1KyGIL"
-    private var SOCKET_ROOT_URL: String =
-        "wss://ws.revolt.chat?format=json&version=1&token=$DEBUG_TOKEN"
+    private var SOCKET_ROOT_URL: String = "wss://ws.revolt.chat?format=json&version=1"
     private var API_ROOT_URL: String = "https://api.revolt.chat/"
     const val S3_ROOT_URL: String = "https://autumn.revolt.chat/"
 
-    private var currentSession: SessionResponse? = null
+    private var currentSession: SessionResponse.Success? = null
+    private var websocket: DefaultWebSocketSession? = null
     private val jsonDeserializer = Json {
         ignoreUnknownKeys = true
         isLenient = true
@@ -74,25 +75,26 @@ object ApiClient {
         install(ContentNegotiation) {
             json(jsonDeserializer)
         }
-        install(WebSockets)
+        install(WebSockets) {
+            contentConverter = KotlinxWebsocketSerializationConverter(jsonDeserializer)
+        }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    fun connectToWebsocket(listener: SocketListener) {
-        GlobalScope.launch {
+    fun connectToWebsocket() {
+        CoroutineScope(Dispatchers.IO).launch {
             client.wss(SOCKET_ROOT_URL) {
-                listener.onConnect()
+                websocket = this@wss
 
                 try {
                     for (frame in incoming) {
                         if (frame is Frame.Text) {
-                            val event: BaseEvent =
-                                jsonDeserializer.decodeFromString(frame.readText())
+                            val event: BaseEvent = receiveDeserialized()
+                            Log.d("Socket", "Got Event: $event")
                             EventBus.publish(event)
                         }
                     }
                 } catch (exception: Exception) {
-                    listener.onDisconnect(exception)
+                    Log.e("Socket", "$exception")
                 }
             }
         }
@@ -102,7 +104,7 @@ object ApiClient {
         println("Getting Direct Messages...")
         val res = client.get("$API_ROOT_URL/users/dms") {
             headers {
-                append("X-Session-Token", DEBUG_TOKEN)
+                append("X-Session-Token", currentSession?.userToken ?: "")
             }
 
             accept(ContentType.Application.Json)
@@ -115,14 +117,13 @@ object ApiClient {
     }
 
     suspend fun getSpecificMessageFromChannel(
-        channel: Channel,
-        messageId: String
+        channel: Channel, messageId: String
     ): PartialMessage? {
         return try {
             println("Requesting $messageId from ${channel.id}")
             val res = client.get("$API_ROOT_URL/channel/${channel.id}/messages/${messageId}") {
                 headers {
-                    append("X-Session-Token", DEBUG_TOKEN)
+                    append("X-Session-Token", currentSession?.userToken ?: "")
                 }
 
                 accept(ContentType.Application.Json)
@@ -146,7 +147,7 @@ object ApiClient {
         println("requesting messages from ")
         val res = client.get(url) {
             headers {
-                append("X-Session-Token", DEBUG_TOKEN)
+                append("X-Session-Token", currentSession?.userToken ?: "")
             }
 
             accept(ContentType.Application.Json)
@@ -159,15 +160,13 @@ object ApiClient {
     }
 
     suspend fun sendMessage(location: String, message: String) {
-        val channel =
-            cache.filterIsInstance<Channel.DirectMessage>()
-                .find { it.recipients.contains(location) }
-                ?: cache.filterIsInstance<Channel.Group>().find { it.id == location }
+        val channel = cache.filterIsInstance<Channel.DirectMessage>()
+            .find { it.recipients.contains(location) } ?: cache.filterIsInstance<Channel.Group>()
+            .find { it.id == location }
         val url = "${API_ROOT_URL}channels/${channel?.id}/messages"
-        println("requesting messages from ")
         client.post(url) {
             headers {
-                append("X-Session-Token", DEBUG_TOKEN)
+                append("X-Session-Token", currentSession?.userToken ?: "")
             }
 
             contentType(ContentType.Application.Json)
@@ -183,12 +182,22 @@ object ApiClient {
             setBody(SessionRequestWithFriendlyName(email, password))
         }.body<SessionResponse>()
 
-        currentSession = response
+        if (response is SessionResponse.Success) {
+            currentSession = response
+            websocket?.send(
+                jsonDeserializer.encodeToString(
+                    AuthenticateEvent(
+                        "Authenticate",
+                        response.userToken
+                    )
+                )
+            )
+        }
 
         return response
     }
 
-    fun disconnectFromSocket() {
+    fun closeSession() {
         client.close()
     }
 }

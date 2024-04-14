@@ -13,12 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Revolt"
         android:enableOnBackInvokedCallback="true"
-        android:windowSoftInputMode="adjustResize"
         tools:targetApi="tiramisu">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.Revolt">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

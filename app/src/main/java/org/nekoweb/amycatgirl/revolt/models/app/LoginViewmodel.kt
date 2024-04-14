@@ -7,7 +7,8 @@ import kotlinx.coroutines.launch
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionResponse
 
-class LoginViewmodel(val client: ApiClient, val navigation: NavController) : ViewModel() {
+class LoginViewmodel(private val client: ApiClient, private val navigation: NavController) :
+    ViewModel() {
     fun login(email: String, password: String) {
         viewModelScope.launch {
             when (val response = client.loginWithPassword(email, password)) {
@@ -17,7 +18,10 @@ class LoginViewmodel(val client: ApiClient, val navigation: NavController) : Vie
                     )
 
                 is SessionResponse.AccountDisabled -> println("Account has been disabled")
-                is SessionResponse.Success -> navigation.navigate("home")
+                is SessionResponse.Success ->
+                    navigation.navigate("home") {
+                        popUpTo("auth") { inclusive = true }
+                    }
             }
         }
     }

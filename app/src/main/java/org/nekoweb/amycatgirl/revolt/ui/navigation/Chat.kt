@@ -1,5 +1,6 @@
 package org.nekoweb.amycatgirl.revolt.ui.navigation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -14,7 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -139,9 +140,10 @@ fun ChatPage(
                 }
                 Row(
                     modifier = Modifier
-                        .clip(CircleShape)
+                        .clip(RoundedCornerShape(30.dp))
                         .background(MaterialTheme.colorScheme.primaryContainer)
-                        .padding(end = 12.dp),
+                        .padding(end = 12.dp)
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -155,24 +157,26 @@ fun ChatPage(
                             .fillMaxWidth(.8f)
                             .heightIn(0.dp, 100.dp)
                     )
-                    IconButton(
-                        onClick = {
-                            scope.launch {
-                                ApiClient.sendMessage(ulid, messageValue)
-                                messageValue = ""
-                            }
-                        },
-                        modifier = Modifier
-                            .size(42.dp),
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        Icon(
-                            painterResource(R.drawable.material_symbols_send),
-                            "",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
+                    AnimatedVisibility(visible = messageValue.isNotBlank()) {
+                        IconButton(
+                            onClick = {
+                                scope.launch {
+                                    ApiClient.sendMessage(ulid, messageValue)
+                                    messageValue = ""
+                                }
+                            },
+                            modifier = Modifier
+                                .size(42.dp),
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.material_symbols_send),
+                                "",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
                     }
                 }
             }
