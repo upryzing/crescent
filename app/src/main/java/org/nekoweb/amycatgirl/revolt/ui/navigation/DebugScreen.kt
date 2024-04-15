@@ -33,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.AuthenticatedEvent
-import org.nekoweb.amycatgirl.revolt.models.api.websocket.BaseEvent
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.PartialMessage
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.ReadyEvent
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.UnimplementedEvent
@@ -43,7 +42,7 @@ import org.nekoweb.amycatgirl.revolt.ui.theme.Green500
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DebugScreen(
-    items: List<BaseEvent>,
+    items: List<Any>,
     goBack: () -> Unit,
     navigateToDebugLogin: () -> Unit
 ) {

@@ -61,8 +61,8 @@ fun LogoutConfirmationDialog(logoutCallback: () -> Unit, dismissCallback: () -> 
 fun LogoutConfirmationDialogPreviewLight() {
     RevoltTheme {
         LogoutConfirmationDialog(
-            logoutCallback = { println("logout") },
-            dismissCallback = { println("Dismiss") }
+            logoutCallback = { },
+            dismissCallback = { }
         )
     }
 }
@@ -72,8 +72,8 @@ fun LogoutConfirmationDialogPreviewLight() {
 fun LogoutConfirmationDialogPreviewDark() {
     RevoltTheme(darkTheme = true) {
         LogoutConfirmationDialog(
-            logoutCallback = { println("logout") },
-            dismissCallback = { println("Dismiss") }
+            logoutCallback = { },
+            dismissCallback = { }
         )
     }
 }

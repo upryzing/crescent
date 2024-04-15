@@ -124,10 +124,7 @@ fun App(
 
                 HomePage(
                     homeViewmodel,
-                    navigateToChat = {
-                        println("navigating to chat, id: $it")
-                        navigator.navigate("messages/${it}")
-                    },
+                    navigateToChat = { navigator.navigate("messages/${it}") },
                     navigateToDebug = { navigator.navigate("debug") },
                     navigateToSettings = { navigator.navigate("settings") }
                 )
@@ -167,7 +164,10 @@ fun App(
                 },
                 arguments = listOf(navArgument("id") { type = NavType.StringType })
             ) { backStackEntry ->
-                println("navigating to chat, id: ${backStackEntry.arguments?.getString("id")}")
+                Log.d(
+                    "Navigator",
+                    "navigating to chat, id: ${backStackEntry.arguments?.getString("id")}"
+                )
                 val viewmodel: ChatViewmodel = viewModel {
                     ChatViewmodel()
                 }
@@ -210,7 +210,14 @@ fun App(
                     }
                 }
             ) {
-                SettingsPage(goBack = { navigator.popBackStack() })
+                SettingsPage(
+                    goBack = { navigator.popBackStack() },
+                    onSessionDropped = {
+                        navigator.navigate("auth") {
+                            popUpTo("settings") { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }

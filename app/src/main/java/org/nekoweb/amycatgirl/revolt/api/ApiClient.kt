@@ -9,6 +9,7 @@ import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.receiveDeserialized
 import io.ktor.client.plugins.websocket.wss
 import io.ktor.client.request.accept
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
@@ -57,7 +58,7 @@ object ApiClient {
     private var API_ROOT_URL: String = "https://api.revolt.chat/"
     const val S3_ROOT_URL: String = "https://autumn.revolt.chat/"
 
-    private var currentSession: SessionResponse.Success? = null
+    var currentSession: SessionResponse.Success? = null
     private var websocket: DefaultWebSocketSession? = null
     private val jsonDeserializer = Json {
         ignoreUnknownKeys = true
@@ -101,7 +102,6 @@ object ApiClient {
     }
 
     suspend fun getDirectMessages(): List<Channel> {
-        println("Getting Direct Messages...")
         val res = client.get("$API_ROOT_URL/users/dms") {
             headers {
                 append("X-Session-Token", currentSession?.userToken ?: "")
@@ -110,9 +110,10 @@ object ApiClient {
             accept(ContentType.Application.Json)
         }.body<List<Channel>>()
 
+        cache.removeIf { res.contains(it) }
         cache.addAll(res)
-        println("Result: $res")
-        println("Cache size: ${cache.size}")
+        Log.d("Client", "Direct Messages: $res")
+        Log.d("Cache", "Cache size: ${cache.size}")
         return res
     }
 
@@ -120,7 +121,6 @@ object ApiClient {
         channel: Channel, messageId: String
     ): PartialMessage? {
         return try {
-            println("Requesting $messageId from ${channel.id}")
             val res = client.get("$API_ROOT_URL/channel/${channel.id}/messages/${messageId}") {
                 headers {
                     append("X-Session-Token", currentSession?.userToken ?: "")
@@ -129,11 +129,12 @@ object ApiClient {
                 accept(ContentType.Application.Json)
             }.body<PartialMessage>()
 
+            cache.removeIf { it == res }
             cache.add(res)
-            println("Cache size: ${cache.size}")
+            Log.d("Cache", "Cache size: ${cache.size}")
             return res
         } catch (e: Exception) {
-            println("Fuck, $e")
+            Log.e("Client", "Fuck, $e")
             null
         }
     }
@@ -142,9 +143,8 @@ object ApiClient {
         val channel =
             cache.filterIsInstance<Channel.DirectMessage>().find { it.recipients.contains(user) }
                 ?: cache.filterIsInstance<Channel.Group>().find { it.id == user }
-        println("Found Channel: $channel")
+        Log.d("Cache", "Found Channel: $channel")
         val url = "${API_ROOT_URL}channels/${channel?.id}/messages?limit=30"
-        println("requesting messages from ")
         val res = client.get(url) {
             headers {
                 append("X-Session-Token", currentSession?.userToken ?: "")
@@ -153,8 +153,9 @@ object ApiClient {
             accept(ContentType.Application.Json)
         }.body<List<PartialMessage>>()
 
+        cache.removeIf { res.contains(it) }
         cache.addAll(res)
-        println("Cache size: ${cache.size}")
+        Log.d("Cache", "Cache size: ${cache.size}")
 
         return res
     }
@@ -183,6 +184,7 @@ object ApiClient {
         }.body<SessionResponse>()
 
         if (response is SessionResponse.Success) {
+            Log.d("Client", "Got response from API: $response")
             currentSession = response
             websocket?.send(
                 jsonDeserializer.encodeToString(
@@ -192,12 +194,30 @@ object ApiClient {
                     )
                 )
             )
+        } else {
+            Log.d("Client", "TODO: Implement 2FA")
         }
 
         return response
     }
 
-    fun closeSession() {
-        client.close()
+    private suspend fun removeExistingSession(sessionResponse: SessionResponse.Success) {
+        client.delete("${API_ROOT_URL}auth/session/${sessionResponse.id}") {
+            headers { append("X-Session-Token", currentSession?.userToken ?: "") }
+            contentType(ContentType.Application.Json)
+        }
+    }
+
+    suspend fun dropSession(): Boolean {
+        return try {
+            removeExistingSession(currentSession!!)
+            currentSession = null
+
+            true
+        } catch (error: Exception) {
+            Log.e("Client", "Error whilst dropping session: $error")
+
+            false
+        }
     }
 }

@@ -1,5 +1,6 @@
 package org.nekoweb.amycatgirl.revolt.ui.navigation
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -27,29 +28,42 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import kotlinx.coroutines.launch
 import org.nekoweb.amycatgirl.revolt.BuildConfig
 import org.nekoweb.amycatgirl.revolt.R
+import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.ui.composables.LogoutConfirmationDialog
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsPage(
-    goBack: () -> Unit
+    goBack: () -> Unit,
+    onSessionDropped: () -> Unit
 ) {
     var shouldShowDialog by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
     // TODO: Implement App configuration
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     AnimatedVisibility(visible = shouldShowDialog) {
         LogoutConfirmationDialog(
-            logoutCallback = { /*TODO*/ },
+            logoutCallback = {
+                scope.launch {
+                    val result = ApiClient.dropSession()
+                    when (result) {
+                        true -> onSessionDropped()
+                        false -> Log.e("App", "Logout failed, do something here")
+                    }
+                }
+            },
             dismissCallback = { shouldShowDialog = false })
     }
     Scaffold(
@@ -114,6 +128,6 @@ fun SettingsPage(
 @Composable
 fun SettingsPagePreview() {
     RevoltTheme {
-        SettingsPage {}
+        SettingsPage({}, {})
     }
 }
