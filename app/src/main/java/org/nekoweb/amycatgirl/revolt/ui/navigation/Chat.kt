@@ -3,6 +3,7 @@ package org.nekoweb.amycatgirl.revolt.ui.navigation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -63,8 +63,10 @@ fun ChatPage(
 ) {
     val user = ApiClient.cache[ulid]
 
+    println("User: $user")
+
     var messageValue by remember { mutableStateOf("") }
-    val messages = remember { mutableStateListOf<PartialMessage>() }
+    val messages = remember { viewmodel.messages }
 
     val avatar = when (user) {
         is Channel.Group -> "${ApiClient.S3_ROOT_URL}icons/${user.icon?.id}?max_side=256"
@@ -74,12 +76,6 @@ fun ChatPage(
 
 
     val scope = rememberCoroutineScope()
-
-    LaunchedEffect(ulid) {
-        viewmodel.getMessages(ulid).let {
-            messages.addAll(it)
-        }
-    }
 
     LaunchedEffect(ulid) {
         EventBus.subscribe<PartialMessage> {
@@ -195,9 +191,19 @@ fun ChatPage(
             reverseLayout = true
         ) {
             items(messages) { message ->
-                ChatBubble(
-                    message
-                )
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    ChatBubble(
+                        message,
+                        modifier = Modifier
+                            .height(IntrinsicSize.Min)
+                            .align(
+                                if (message.authorId == ApiClient.currentSession?.id)
+                                    Alignment.CenterEnd
+                                else
+                                    Alignment.CenterStart
+                            )
+                    )
+                }
             }
 
         }

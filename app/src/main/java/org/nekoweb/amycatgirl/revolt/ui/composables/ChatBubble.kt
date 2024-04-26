@@ -3,7 +3,6 @@ package org.nekoweb.amycatgirl.revolt.ui.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,21 +22,23 @@ import org.nekoweb.amycatgirl.revolt.models.api.websocket.PartialMessage
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @Composable
-fun ChatBubble(message: PartialMessage) {
+fun ChatBubble(message: PartialMessage, modifier: Modifier = Modifier) {
     val author = remember(message.authorId) {
-        ApiClient.cache[message.authorId] as User
+        ApiClient.cache[message.authorId] as User?
     }
+
+    println("User: $author")
     // TODO: Needed a check whenever the authorID needed to be same as the authorID of the message.
     Column(
-        modifier = Modifier.height(IntrinsicSize.Min)
+        modifier = modifier
     ) {
-
         if (author != null) {
             Text(
                 author.displayName ?: author.username,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
+
         Spacer(modifier = Modifier.height(10.dp))
         Box(
             modifier = Modifier

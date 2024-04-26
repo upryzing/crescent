@@ -13,6 +13,8 @@ class ChatViewmodel(
     val messages = mutableStateListOf<PartialMessage>()
 
     init {
+        messages.clear()
+
         viewModelScope.launch {
             messages.addAll(getMessages(id))
         }
