@@ -17,4 +17,5 @@ data class PartialMessage(
     val attachments: List<Attachment>? = null,
     val edited: String? = null,
     val replies: List<String>? = null,
+    val system: SystemMessage? = null,
 ) : BaseEvent()
