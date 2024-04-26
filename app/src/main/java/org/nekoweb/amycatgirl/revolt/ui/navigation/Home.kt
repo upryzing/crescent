@@ -83,18 +83,19 @@ fun HomePage(
                 when (channel) {
                     is Channel.DirectMessage -> {
                         val author = remember {
-                            ApiClient.cache.filterIsInstance<User>().find {
-                                ApiClient.currentSession?.userId != it.id && channel.recipients.contains(
-                                    it.id
-                                )
-                            }
+                            ApiClient.cache.asIterable().filterIsInstance<Map.Entry<String, User>>()
+                                .find { entry ->
+                                    ApiClient.currentSession?.userId != entry.value.id &&
+                                            channel.recipients.contains(entry.value.id)
+                                }!!.value
                         }
+
                         Log.d("Cache", "Found author: $author in ${ApiClient.cache}")
-                        if (author != null && channel.active && author.flags != 2) {
+                        if (channel.active && author.flags != 2) {
                             PeopleListItem(
                                 user = author,
                                 status = author.status,
-                                callback = { navigateToChat(author.id) })
+                                callback = { navigateToChat(channel.id) })
                         }
                     }
 

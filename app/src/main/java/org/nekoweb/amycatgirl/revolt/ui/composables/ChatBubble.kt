@@ -25,7 +25,7 @@ import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 @Composable
 fun ChatBubble(message: PartialMessage) {
     val author = remember(message.authorId) {
-        ApiClient.cache.filterIsInstance<User>().find { it.id == message.authorId }
+        ApiClient.cache[message.authorId] as User
     }
     // TODO: Needed a check whenever the authorID needed to be same as the authorID of the message.
     Column(

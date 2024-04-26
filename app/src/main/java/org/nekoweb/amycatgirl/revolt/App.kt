@@ -163,7 +163,7 @@ fun App(
                     "navigating to chat, id: ${backStackEntry.arguments?.getString("id")}"
                 )
                 val viewmodel: ChatViewmodel = viewModel {
-                    ChatViewmodel()
+                    ChatViewmodel(backStackEntry.arguments?.getString("id")!!)
                 }
                 ChatPage(
                     viewmodel,

@@ -59,10 +59,9 @@ import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatPage(
-    viewmodel: ChatViewmodel, ulid: String = "0000000000000000000000", goBack: () -> Unit
+    viewmodel: ChatViewmodel, ulid: String, goBack: () -> Unit
 ) {
-    val user = ApiClient.cache.filterIsInstance<User>().find { it.id == ulid }
-        ?: ApiClient.cache.filterIsInstance<Channel.Group>().find { it.id == ulid }
+    val user = ApiClient.cache[ulid]
 
     var messageValue by remember { mutableStateOf("") }
     val messages = remember { mutableStateListOf<PartialMessage>() }
@@ -76,9 +75,6 @@ fun ChatPage(
 
     val scope = rememberCoroutineScope()
 
-    val currentChannel = ApiClient.cache.filterIsInstance<Channel>()
-        .find { it.id == ulid || (it is Channel.DirectMessage && it.recipients.contains(ulid)) }
-
     LaunchedEffect(ulid) {
         viewmodel.getMessages(ulid).let {
             messages.addAll(it)
@@ -87,7 +83,7 @@ fun ChatPage(
 
     LaunchedEffect(ulid) {
         EventBus.subscribe<PartialMessage> {
-            if (it.channelId == currentChannel?.id) {
+            if (it.channelId == ulid) {
                 messages.add(0, it)
             }
         }
@@ -214,7 +210,7 @@ fun ChatPage(
 fun ChatPagePreview() {
     RevoltTheme {
         val viewmodel = viewModel {
-            ChatViewmodel()
+            ChatViewmodel("")
         }
         ChatPage(viewmodel, "1") {}
     }

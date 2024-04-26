@@ -26,8 +26,10 @@ class MainViewmodel : ViewModel() {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            EventBus.subscribe<ReadyEvent> {
-                ApiClient.cache.addAll(it.users)
+            EventBus.subscribe<ReadyEvent> { event ->
+                event.users.forEach {
+                    ApiClient.cache[it.id] = it
+                }
             }
         }
 

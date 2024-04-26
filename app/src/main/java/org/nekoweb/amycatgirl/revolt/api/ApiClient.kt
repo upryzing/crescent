@@ -70,7 +70,7 @@ object ApiClient {
         }
     }
 
-    var cache = mutableListOf<Any>()
+    var cache = mutableMapOf<String, Any>()
 
     private val client = HttpClient(OkHttp) {
         install(ContentNegotiation) {
@@ -110,8 +110,11 @@ object ApiClient {
             accept(ContentType.Application.Json)
         }.body<List<Channel>>()
 
-        cache.removeIf { res.contains(it) }
-        cache.addAll(res)
+
+        res.forEach {
+            cache[it.id] = it
+        }
+
         Log.d("Client", "Direct Messages: $res")
         Log.d("Cache", "Cache size: ${cache.size}")
         return res
@@ -129,8 +132,8 @@ object ApiClient {
                 accept(ContentType.Application.Json)
             }.body<PartialMessage>()
 
-            cache.removeIf { it == res }
-            cache.add(res)
+            cache[res.id!!] = res
+
             Log.d("Cache", "Cache size: ${cache.size}")
             return res
         } catch (e: Exception) {
@@ -139,12 +142,10 @@ object ApiClient {
         }
     }
 
-    suspend fun getChannelMessages(user: String): List<PartialMessage> {
-        val channel =
-            cache.filterIsInstance<Channel.DirectMessage>().find { it.recipients.contains(user) }
-                ?: cache.filterIsInstance<Channel.Group>().find { it.id == user }
+    suspend fun getChannelMessages(channelId: String): List<PartialMessage> {
+        val channel = cache[channelId] as Channel
         Log.d("Cache", "Found Channel: $channel")
-        val url = "${API_ROOT_URL}channels/${channel?.id}/messages?limit=30"
+        val url = "${API_ROOT_URL}channels/${channel.id}/messages?limit=30"
         val res = client.get(url) {
             headers {
                 append("X-Session-Token", currentSession?.userToken ?: "")
@@ -153,18 +154,16 @@ object ApiClient {
             accept(ContentType.Application.Json)
         }.body<List<PartialMessage>>()
 
-        cache.removeIf { res.contains(it) }
-        cache.addAll(res)
+
         Log.d("Cache", "Cache size: ${cache.size}")
 
         return res
     }
 
     suspend fun sendMessage(location: String, message: String) {
-        val channel = cache.filterIsInstance<Channel.DirectMessage>()
-            .find { it.recipients.contains(location) } ?: cache.filterIsInstance<Channel.Group>()
-            .find { it.id == location }
-        val url = "${API_ROOT_URL}channels/${channel?.id}/messages"
+        val channel = cache[location] as Channel
+
+        val url = "${API_ROOT_URL}channels/${channel.id}/messages"
         client.post(url) {
             headers {
                 append("X-Session-Token", currentSession?.userToken ?: "")
