@@ -191,17 +191,16 @@ fun ChatPage(
             reverseLayout = true
         ) {
             items(messages) { message ->
+                val isSelf = message.authorId == ApiClient.currentSession?.userId
+
                 Box(modifier = Modifier.fillMaxWidth()) {
                     ChatBubble(
                         message,
-                        modifier = Modifier
-                            .height(IntrinsicSize.Min)
-                            .align(
-                                if (message.authorId == ApiClient.currentSession?.id)
-                                    Alignment.CenterEnd
-                                else
-                                    Alignment.CenterStart
-                            )
+                        modifier = if (isSelf)
+                            Modifier.align(Alignment.BottomEnd)
+                        else
+                            Modifier.align(Alignment.BottomStart),
+                        isSelf
                     )
                 }
             }
