@@ -1,4 +1,4 @@
-package org.nekoweb.amycatgirl.revolt.models.app
+package org.nekoweb.amycatgirl.revolt.models.viewmodels
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf

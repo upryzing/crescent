@@ -1,6 +1,5 @@
 package org.nekoweb.amycatgirl.revolt
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
@@ -20,26 +19,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
-import org.nekoweb.amycatgirl.revolt.models.app.ChatViewmodel
-import org.nekoweb.amycatgirl.revolt.models.app.HomeViewmodel
-import org.nekoweb.amycatgirl.revolt.models.app.LoginViewmodel
-import org.nekoweb.amycatgirl.revolt.models.app.MainViewmodel
+import org.nekoweb.amycatgirl.revolt.models.viewmodels.ChatViewmodel
+import org.nekoweb.amycatgirl.revolt.models.viewmodels.HomeViewmodel
+import org.nekoweb.amycatgirl.revolt.models.viewmodels.LoginViewmodel
+import org.nekoweb.amycatgirl.revolt.models.viewmodels.MainViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.navigation.ChatPage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.DebugScreen
 import org.nekoweb.amycatgirl.revolt.ui.navigation.HomePage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.LoginPage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.SettingsPage
 
-@SuppressLint("RestrictedApi")
 @Composable
 fun App(
     mainViewmodel: MainViewmodel = viewModel()
 ) {
     val navigator = rememberNavController()
-
-    navigator.addOnDestinationChangedListener { controller, _, _ ->
-        Log.d("BackStackLog", "BackStack: ${controller.currentBackStack}")
-    }
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         NavHost(navController = navigator, startDestination = "auth") {
             composable("debug",

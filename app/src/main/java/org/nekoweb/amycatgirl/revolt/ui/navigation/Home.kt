@@ -26,7 +26,7 @@ import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.models.api.User
 import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
-import org.nekoweb.amycatgirl.revolt.models.app.HomeViewmodel
+import org.nekoweb.amycatgirl.revolt.models.viewmodels.HomeViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.composables.PeopleListItem
 
 @OptIn(ExperimentalMaterial3Api::class)

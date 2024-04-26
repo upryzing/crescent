@@ -41,7 +41,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.nekoweb.amycatgirl.revolt.R
-import org.nekoweb.amycatgirl.revolt.models.app.LoginViewmodel
+import org.nekoweb.amycatgirl.revolt.models.viewmodels.LoginViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.composables.AccountDisabledDialog
 import org.nekoweb.amycatgirl.revolt.ui.composables.MFADialog
 

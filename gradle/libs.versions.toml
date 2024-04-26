@@ -19,6 +19,9 @@ ulidj = "1.0.4"
 coil = "2.6.0"
 coilCompose = "2.6.0"
 materialIconsExtended = "1.6.4"
+roomRuntime = "2.6.1"
+roomCompiler = "2.6.1"
+roomKtx = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

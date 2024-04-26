@@ -49,7 +49,7 @@ import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.models.api.User
 import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.PartialMessage
-import org.nekoweb.amycatgirl.revolt.models.app.ChatViewmodel
+import org.nekoweb.amycatgirl.revolt.models.viewmodels.ChatViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.composables.ChatBubble
 import org.nekoweb.amycatgirl.revolt.ui.composables.CustomTextField
 import org.nekoweb.amycatgirl.revolt.ui.composables.ProfileImage
