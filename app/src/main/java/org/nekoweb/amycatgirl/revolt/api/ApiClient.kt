@@ -34,6 +34,7 @@ import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.AuthenticateEvent
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.BaseEvent
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.PartialMessage
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.SystemMessage
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.UnimplementedEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
@@ -66,6 +67,10 @@ object ApiClient {
         serializersModule = SerializersModule {
             polymorphic(BaseEvent::class) {
                 defaultDeserializer { UnimplementedEvent.serializer() }
+            }
+
+            polymorphic(SystemMessage::class) {
+                defaultDeserializer { SystemMessage.UnimplementedMessage.serializer() }
             }
         }
     }
