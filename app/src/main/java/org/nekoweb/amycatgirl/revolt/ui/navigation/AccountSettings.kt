@@ -20,9 +20,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,13 +35,13 @@ fun AccountSettingsPage() {
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Account Settings")
+                    Text(stringResource(R.string.settings_account))
                 },
                 navigationIcon = {
                     IconButton(onClick = { /*TODO*/ }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.ui_go_back)
                         )
                     }
                 }

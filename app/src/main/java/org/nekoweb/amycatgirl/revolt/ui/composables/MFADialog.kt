@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PhonelinkLock
 import androidx.compose.material3.Button
@@ -29,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -84,7 +86,8 @@ fun MFADialog(
                 OutlinedTextField(
                     value = mfaValue,
                     onValueChange = { mfaValue = it },
-                    label = { Text(stringResource(R.string.mfa_required_textfield_placeholder)) }
+                    label = { Text(stringResource(R.string.mfa_required_textfield_placeholder)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
             Row(
@@ -96,10 +99,10 @@ fun MFADialog(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Button(onClick = { /*TODO*/ }) {
-                    Text(stringResource(R.string.mfa_required_login))
+                    Text(stringResource(R.string.ui_button_login))
                 }
                 TextButton(onClick = dismissCallback) {
-                    Text(stringResource(R.string.mfa_required_dismiss))
+                    Text(stringResource(R.string.ui_button_cancel))
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))

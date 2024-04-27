@@ -70,11 +70,14 @@ fun SettingsPage(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(
-                title = { Text("Settings") },
+                title = { Text(stringResource(R.string.settings_header)) },
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = { goBack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            stringResource(R.string.ui_go_back)
+                        )
                     }
                 }
             )
@@ -83,32 +86,60 @@ fun SettingsPage(
         Column(modifier = Modifier.padding(innerPadding)) {
             // TODO: Needed navigation for each categories
             ListItem(
-                leadingContent = { Icon(Icons.Filled.LockPerson, "") },
-                headlineContent = { Text("Account") },
+                leadingContent = {
+                    Icon(
+                        Icons.Filled.LockPerson,
+                        stringResource(R.string.settings_about)
+                    )
+                },
+                headlineContent = { Text(stringResource(R.string.settings_account)) },
             )
             ListItem(
-                leadingContent = { Icon(Icons.Filled.Person, "") },
-                headlineContent = { Text("Profile") },
+                leadingContent = {
+                    Icon(
+                        Icons.Filled.Person,
+                        stringResource(R.string.settings_profile)
+                    )
+                },
+                headlineContent = { Text(stringResource(R.string.settings_profile)) },
             )
             ListItem(
-                leadingContent = { Icon(Icons.Default.Settings, "") },
-                headlineContent = { Text("Client Settings") },
+                leadingContent = {
+                    Icon(
+                        Icons.Default.Settings,
+                        stringResource(R.string.settings_client)
+                    )
+                },
+                headlineContent = { Text(stringResource(R.string.settings_client)) },
             )
             ListItem(
-                leadingContent = { Icon(Icons.Default.Info, "") },
-                headlineContent = { Text("About ${stringResource(R.string.app_name)}") },
+                leadingContent = {
+                    Icon(
+                        Icons.Default.Info,
+                        "${stringResource(R.string.settings_about)} ${stringResource(R.string.app_name)}"
+                    )
+                },
+                headlineContent = {
+                    Text(
+                        "${stringResource(R.string.settings_about)} ${
+                            stringResource(
+                                R.string.app_name
+                            )
+                        }"
+                    )
+                },
             )
             ListItem(
                 leadingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Logout,
-                        contentDescription = "",
+                        contentDescription = stringResource(R.string.settings_logout),
                         tint = MaterialTheme.colorScheme.error
                     )
                 },
                 headlineContent = {
                     Text(
-                        "Log Out",
+                        stringResource(R.string.settings_logout),
                         color = MaterialTheme.colorScheme.error
                     )
                 },

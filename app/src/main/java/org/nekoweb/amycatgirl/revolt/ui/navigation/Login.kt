@@ -53,7 +53,6 @@ fun LoginPage(
     var passwordValue by remember { mutableStateOf("") }
     // TODO: Please implement when the login gets an error or it's requires MFA code. And plus, implement login functionality too.
     // TODO: fuck off :trl:
-    // TODO: Switch to resource strings instead of hardcoded ones. It will make life easier
     AnimatedVisibility(visible = false) {
         MFADialog {}
     }
@@ -80,11 +79,11 @@ fun LoginPage(
                 ) {
                     Image(
                         painter = painterResource(R.drawable.ic_launcher_background),
-                        contentDescription = "",
+                        contentDescription = stringResource(R.string.app_name),
                     )
                     Image(
                         painter = painterResource(R.drawable.ic_launcher_foreground),
-                        contentDescription = ""
+                        contentDescription = stringResource(R.string.app_name)
                     )
                 }
                 Text(
@@ -100,7 +99,7 @@ fun LoginPage(
                     value = emailValue,
                     onValueChange = { emailValue = it },
                     leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-                    label = { Text("Email") },
+                    label = { Text(stringResource(R.string.ui_input_email)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                 )
                 OutlinedTextField(
@@ -108,7 +107,7 @@ fun LoginPage(
                     onValueChange = { passwordValue = it },
                     leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                     label = {
-                        Text("Password")
+                        Text(stringResource(R.string.ui_input_password))
                     },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
@@ -116,15 +115,15 @@ fun LoginPage(
                 Button(modifier = Modifier.fillMaxWidth(.7f), onClick = {
                     viewmodel.login(emailValue, passwordValue)
                 }) {
-                    Text("Login")
+                    Text(stringResource(R.string.ui_button_login))
                 }
             }
             TextButton(onClick = { /*TODO*/ }) {
-                Text("I forgot my password...")
+                Text(stringResource(R.string.ui_button_recover_password))
             }
             Spacer(modifier = Modifier.weight(1f))
             OutlinedButton(onClick = { /*TODO*/ }) {
-                Text("Create an account")
+                Text(stringResource(R.string.ui_button_create_account))
             }
             Spacer(modifier = Modifier.height(10.dp))
         }

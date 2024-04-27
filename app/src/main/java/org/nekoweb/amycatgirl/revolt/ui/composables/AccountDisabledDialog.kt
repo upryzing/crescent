@@ -20,24 +20,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @Composable
 fun AccountDisabledDialog(
     dismissCallback: () -> Unit
 ) {
-    var mfaValue by rememberSaveable { mutableStateOf("") }
-
     Dialog(
         onDismissRequest = { /*TODO*/ },
     )
@@ -64,7 +60,7 @@ fun AccountDisabledDialog(
                     tint = MaterialTheme.colorScheme.secondary,
                 )
                 Text(
-                    "You've been disabled",
+                    stringResource(R.string.account_disabled_title),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
@@ -73,7 +69,7 @@ fun AccountDisabledDialog(
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
-                    "Your account got disabled. This is because you inputted the wrong password too many times. Wait for a while before logging in.",
+                    stringResource(R.string.account_disabled_description),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

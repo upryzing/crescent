@@ -71,7 +71,12 @@ fun DebugScreen(
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = goBack) {
-                        Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Go Back")
+                        Icon(
+                            Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = stringResource(
+                                R.string.ui_go_back
+                            )
+                        )
                     }
                 },
                 actions = {

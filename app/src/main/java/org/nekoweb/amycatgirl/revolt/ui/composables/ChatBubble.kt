@@ -46,7 +46,7 @@ fun ChatBubble(message: PartialMessage, modifier: Modifier = Modifier, isSelf: B
         Spacer(modifier = Modifier.height(10.dp))
         Surface(
             color = if (isSelf) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
-            shape = RoundedCornerShape(10.dp)
+            shape = RoundedCornerShape(18.dp)
         ) {
             Text(
                 text = if (!message.content.isNullOrBlank()) message.content else if (message.attachments != null) "Message has no content, but it has attachments, and we can't render them yet." else "Unhandled",

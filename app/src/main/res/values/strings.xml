@@ -3,8 +3,6 @@
     <string name="mfa_requires_authenticator_title">Two-factor Authentication</string>
     <string name="mfa_required_authenticator_description">Enter the code provided by your authenticator app.</string>
     <string name="mfa_required_textfield_placeholder">Code</string>
-    <string name="mfa_required_login">Login</string>
-    <string name="mfa_required_dismiss">Cancel</string>
     <string name="settings_account">Account</string>
     <string name="settings_profile">Profile</string>
     <string name="settings_client">Client Settings</string>
@@ -18,7 +16,21 @@
     <string name="debug_appbar_header">Debug</string>
     <string name="chat_sendmessage">Send message</string>
     <string name="mfa_multiple_methods_title">Two-Factor Authentication</string>
-    <string name="mfa_multiple_methods_description">Your account has Multi-Factor Authentication enabled. Please select your prefered authentication method.</string>
+    <string name="mfa_multiple_methods_description">Your account has Multi-Factor Authentication enabled. Please select your preferred authentication method.</string>
     <string name="mfa_multiple_methods_2fa">Verification Code</string>
     <string name="mfa_multiple_methods_recovery">Recovery Code</string>
+    <string name="start_conversation_header">Start Conversation</string>
+    <string name="ui_go_back">Go Back</string>
+    <string name="ui_input_email">Email</string>
+    <string name="ui_button_login">Login</string>
+    <string name="ui_input_password">Password</string>
+    <string name="ui_button_recover_password">I forgot my password…</string>
+    <string name="ui_button_create_account">Create an account</string>
+    <string name="account_disabled_title">You\'ve been disabled</string>
+    <string name="account_disabled_description">Your account was disabled. This is because you inputed the wrong password too many times, please wait for a while before logging in.</string>
+    <string name="ui_button_accept">@android:string/ok</string>
+    <string name="ui_button_cancel">Cancel</string>
+    <string name="settings_about">About</string>
+    <string name="settings_header">Settings</string>
+    <string name="settings_logout">Log Out</string>
 </resources>

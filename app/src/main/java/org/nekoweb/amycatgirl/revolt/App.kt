@@ -1,12 +1,11 @@
 package org.nekoweb.amycatgirl.revolt
 
 import android.util.Log
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -36,35 +35,24 @@ fun App(
         NavHost(navController = navigator, startDestination = "auth") {
             composable("debug",
                 enterTransition = {
-                    fadeIn(
+                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
                         animationSpec = tween(
-                            200,
-                            easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
+                            durationMillis = 250,
+                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
                         ),
-                    ) + slideInHorizontally(
-                        tween(
-                            200,
-                            easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
-                        )
-                    ) {
-                        1500
-                    }
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    )
                 },
                 exitTransition = {
-                    fadeOut(
+                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
                         animationSpec = tween(
-                            200,
+                            durationMillis = 200,
                             easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
                         ),
-                    ) + slideOutHorizontally(
-                        tween(
-                            200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        )
-                    ) {
-                        1500
-                    }
-                }) {
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    )
+                }
+            ) {
                 DebugScreen(mainViewmodel.messageList, goBack = {
                     navigator.popBackStack()
                 }, navigateToDebugLogin = { navigator.navigate("auth") })
@@ -80,34 +68,22 @@ fun App(
             composable(
                 "home",
                 enterTransition = {
-                    fadeIn(
+                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
                         animationSpec = tween(
-                            200,
-                            easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
+                            durationMillis = 250,
+                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
                         ),
-                    ) + slideInHorizontally(
-                        tween(
-                            200,
-                            easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
-                        )
-                    ) {
-                        1500
-                    }
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    )
                 },
                 exitTransition = {
-                    fadeOut(
+                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
                         animationSpec = tween(
-                            200,
+                            durationMillis = 200,
                             easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
                         ),
-                    ) + slideOutHorizontally(
-                        tween(
-                            200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        )
-                    ) {
-                        1500
-                    }
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    )
                 }
             ) {
                 val homeViewmodel = viewModel {
@@ -125,34 +101,22 @@ fun App(
             composable(
                 "messages/{id}",
                 enterTransition = {
-                    fadeIn(
+                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
                         animationSpec = tween(
-                            200,
-                            easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
+                            durationMillis = 250,
+                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
                         ),
-                    ) + slideInHorizontally(
-                        tween(
-                            200,
-                            easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
-                        )
-                    ) {
-                        1500
-                    }
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    )
                 },
                 exitTransition = {
-                    fadeOut(
+                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
                         animationSpec = tween(
-                            200,
+                            durationMillis = 200,
                             easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
                         ),
-                    ) + slideOutHorizontally(
-                        tween(
-                            200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        )
-                    ) {
-                        1500
-                    }
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    )
                 },
                 arguments = listOf(navArgument("id") { type = NavType.StringType })
             ) { backStackEntry ->
@@ -172,34 +136,22 @@ fun App(
             composable(
                 "settings",
                 enterTransition = {
-                    fadeIn(
+                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
                         animationSpec = tween(
-                            200,
-                            easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
+                            durationMillis = 250,
+                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
                         ),
-                    ) + slideInHorizontally(
-                        tween(
-                            200,
-                            easing = CubicBezierEasing(0.005f, 0.7f, 0.1f, 1f)
-                        )
-                    ) {
-                        1500
-                    }
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    )
                 },
                 exitTransition = {
-                    fadeOut(
+                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
                         animationSpec = tween(
-                            200,
+                            durationMillis = 200,
                             easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
                         ),
-                    ) + slideOutHorizontally(
-                        tween(
-                            200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        )
-                    ) {
-                        1500
-                    }
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    )
                 }
             ) {
                 SettingsPage(

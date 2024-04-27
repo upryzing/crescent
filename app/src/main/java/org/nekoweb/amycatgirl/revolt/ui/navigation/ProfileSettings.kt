@@ -20,21 +20,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileSettingsPage() {
     var userName by remember { mutableStateOf("") }
-//    TODO: Profile Settings Design 🙏
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Profile Settings")
+                    Text(stringResource(R.string.settings_profile))
                 },
                 navigationIcon = {
                     IconButton(onClick = { /*TODO*/ }) {

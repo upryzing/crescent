@@ -118,7 +118,7 @@ fun ChatPage(
         }, navigationIcon = {
             IconButton(onClick = { goBack() }) {
                 Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack, "Go Back"
+                    Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.ui_go_back)
                 )
             }
         })
@@ -151,7 +151,7 @@ fun ChatPage(
                 modifier = Modifier
                     .clip(RoundedCornerShape(30.dp))
                     .background(MaterialTheme.colorScheme.primaryContainer)
-                    .padding(end = 12.dp)
+                    .padding()
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
