@@ -1,6 +1,9 @@
 package org.nekoweb.amycatgirl.revolt.ui.navigation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -85,7 +89,11 @@ fun ChatPage(
         }
     }
 
-    Scaffold(topBar = {
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 20.dp),
+        topBar = {
         CenterAlignedTopAppBar(title = {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -119,6 +127,7 @@ fun ChatPage(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surface)
+                .imePadding()
                 .padding(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -157,7 +166,11 @@ fun ChatPage(
                         .fillMaxWidth(.8f)
                         .heightIn(0.dp, 100.dp)
                 )
-                AnimatedVisibility(visible = messageValue.isNotBlank()) {
+                AnimatedVisibility(
+                    visible = messageValue.isNotBlank(),
+                    enter = scaleIn(animationSpec = tween(300)),
+                    exit = scaleOut(animationSpec = tween(200))
+                ) {
                     IconButton(
                         onClick = {
                             scope.launch {
