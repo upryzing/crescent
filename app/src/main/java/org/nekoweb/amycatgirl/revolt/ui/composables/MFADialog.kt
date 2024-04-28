@@ -70,7 +70,7 @@ fun MFADialog(
                     tint = MaterialTheme.colorScheme.secondary,
                 )
                 Text(
-                    stringResource(R.string.mfa_requires_authenticator_title),
+                    stringResource(R.string.mfa_required_authenticator_title),
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentSize(Alignment.Center),
@@ -86,7 +86,7 @@ fun MFADialog(
                 OutlinedTextField(
                     value = mfaValue,
                     onValueChange = { mfaValue = it },
-                    label = { Text(stringResource(R.string.mfa_required_textfield_placeholder)) },
+                    label = { Text(stringResource(R.string.mfa_required_text_field_placeholder)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }

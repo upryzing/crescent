@@ -80,7 +80,10 @@ fun AccountSettingsPage() {
 
             ListItem(
                 headlineContent = { Text("Password", modifier = Modifier.padding(end = 12.dp)) },
-                supportingContent = { Text("●●●●●●●●") },
+                supportingContent = {
+//                  TODO: Find a way to convert the password to a star character.
+                    Text("**********")
+                },
                 trailingContent = {
                     Button(
                         onClick = { /*TODO*/ },

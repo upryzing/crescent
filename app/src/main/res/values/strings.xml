@@ -1,20 +1,22 @@
 <resources>
     <string name="app_name" translatable="false">Crescent</string>
-    <string name="mfa_requires_authenticator_title">Two-factor Authentication</string>
-    <string name="mfa_required_authenticator_description">Enter the code provided by your authenticator app.</string>
-    <string name="mfa_required_textfield_placeholder">Code</string>
     <string name="settings_account">Account</string>
     <string name="settings_profile">Profile</string>
     <string name="settings_client">Client Settings</string>
-    <string name="settings_destroysession">Log Out</string>
-    <string name="settings_versioncode">Build</string>
+    <string name="settings_destroy_session">Log Out</string>
+    <string name="settings_version_code">Build</string>
+    <string name="settings_about">About</string>
+    <string name="settings_header">Settings</string>
+    <string name="settings_logout">Log Out</string>
     <string name="logout_title">Log Out</string>
     <string name="logout_description">Are you really sure you want to log out?</string>
     <string name="logout_accept">Go Ahead</string>
-    <string name="logout_dismiss">Cancel</string>
-    <string name="app_directmessages_header">Direct Messages</string>
-    <string name="debug_appbar_header">Debug</string>
-    <string name="chat_sendmessage">Send message</string>
+    <string name="direct_messages_header">Direct Messages</string>
+    <string name="debug_header">Debug</string>
+    <string name="chat_send_message">Send message</string>
+    <string name="mfa_required_authenticator_title">Two-factor Authentication</string>
+    <string name="mfa_required_authenticator_description">Enter the code provided by your authenticator app.</string>
+    <string name="mfa_required_text_field_placeholder">Code</string>
     <string name="mfa_multiple_methods_title">Two-Factor Authentication</string>
     <string name="mfa_multiple_methods_description">Your account has Multi-Factor Authentication enabled. Please select your preferred authentication method.</string>
     <string name="mfa_multiple_methods_2fa">Verification Code</string>
@@ -24,13 +26,10 @@
     <string name="ui_input_email">Email</string>
     <string name="ui_button_login">Login</string>
     <string name="ui_input_password">Password</string>
+    <string name="ui_button_accept">@android:string/ok</string>
+    <string name="ui_button_cancel">@android:string/cancel</string>
     <string name="ui_button_recover_password">I forgot my password…</string>
     <string name="ui_button_create_account">Create an account</string>
     <string name="account_disabled_title">You\'ve been disabled</string>
     <string name="account_disabled_description">Your account was disabled. This is because you inputed the wrong password too many times, please wait for a while before logging in.</string>
-    <string name="ui_button_accept">@android:string/ok</string>
-    <string name="ui_button_cancel">Cancel</string>
-    <string name="settings_about">About</string>
-    <string name="settings_header">Settings</string>
-    <string name="settings_logout">Log Out</string>
 </resources>

@@ -158,7 +158,7 @@ fun ChatPage(
             ) {
                 CustomTextField(
                     value = messageValue,
-                    placeholder = { Text(stringResource(R.string.chat_sendmessage)) },
+                    placeholder = { Text(stringResource(R.string.chat_send_message)) },
                     onValueChange = { messageValue = it },
                     singleLine = false,
                     modifier = Modifier

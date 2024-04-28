@@ -67,7 +67,7 @@ fun DebugScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.debug_appbar_header)) },
+                title = { Text(stringResource(R.string.debug_header)) },
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = goBack) {

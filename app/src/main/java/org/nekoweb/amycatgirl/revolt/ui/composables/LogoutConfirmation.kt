@@ -52,7 +52,7 @@ fun LogoutConfirmationDialog(logoutCallback: () -> Unit, dismissCallback: () -> 
                         )
                     }
                     TextButton(onClick = dismissCallback) {
-                        Text(stringResource(R.string.logout_dismiss))
+                        Text(stringResource(R.string.ui_button_cancel))
                     }
                 }
             }
