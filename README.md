@@ -1,3 +1,5 @@
+> this project has been discontinued
+> please refer to [this post on mastodon](https://wetdry.world/@amycatgirl/112418743522495043)
 <div align="center"><img alt="Crescent Logo" src="https://github.com/amycatgirl/crescent/assets/138383945/43791c77-0651-4108-b08a-442eb6086eeb" width="100"/></div>
 <div align="center"><h1>Crescent</h1></div>
 <div align="center">
