@@ -1,10 +1,8 @@
-> this project has been discontinued
-> please refer to [this post on mastodon](https://wetdry.world/@amycatgirl/112418743522495043)
 <div align="center"><img alt="Crescent Logo" src="https://github.com/amycatgirl/crescent/assets/138383945/43791c77-0651-4108-b08a-442eb6086eeb" width="100"/></div>
 <div align="center"><h1>Crescent</h1></div>
 <div align="center">
-    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/amycatgirl/crescent?style=flat-square&label=Stars">
-    <img alt="GitHub forks" src="https://img.shields.io/github/forks/amycatgirl/crescent?style=flat-square&color=%23448c32&label=Forks">
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/upryzing/crescent?style=flat-square&label=Stars">
+    <img alt="GitHub forks" src="https://img.shields.io/github/forks/upryzing/crescent?style=flat-square&color=%23448c32&label=Forks">
     <img alt="Made with Kotlin" src="https://img.shields.io/badge/Made_with_Kotlin-%237F52FF?style=flat-square&logo=kotlin&logoColor=white">
 </div>
 
@@ -17,13 +15,13 @@ inspiration from other chatting applications such as [Signal](https://signal.org
 
 ## Goals
 
-The main goal of this project is to simplify chatting on Revolt, by omitting Server support and
+The main goal of this project is to simplify chatting on Upryzing, by omitting Server support and
 focusing on direct messages and group chats, whilst also being snappy and lightweight.
 
 Other goals include:
 
 - Closely following Material design principles
-- Supporting other Revolt instances
+- Supporting other Upryzing and Revolt instances
 - Learn Kotlin, Jetpack and Android libraries and concepts
 
 ## Why Crescent?
@@ -54,11 +52,11 @@ As @lo2dev pointed out in a reply to a development screenshot showcasing the log
 
 ## Star History
 
-<a href="https://star-history.com/#amycatgirl/crescent&Timeline">
+<a href="https://star-history.com/#upryzing/crescent&Timeline">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=amycatgirl/crescent&type=Timeline&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=amycatgirl/crescent&type=Timeline" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=amycatgirl/crescent&type=Timeline" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=upryzing/crescent&type=Timeline&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=upryzing/crescent&type=Timeline" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=upryzing/crescent&type=Timeline" />
  </picture>
 </a>
 
