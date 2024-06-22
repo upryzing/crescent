@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -30,6 +31,7 @@ import org.nekoweb.amycatgirl.revolt.ui.navigation.SettingsPage
 fun App(
     mainViewmodel: MainViewmodel = viewModel()
 ) {
+    val context = LocalContext.current
     val navigator = rememberNavController()
     Surface(color = MaterialTheme.colorScheme.background) {
         NavHost(navController = navigator, startDestination = "auth") {
@@ -60,7 +62,7 @@ fun App(
 
             composable("auth") {
                 val viewmodel = viewModel {
-                    LoginViewmodel(ApiClient, navigator)
+                    LoginViewmodel(ApiClient, navigator, context)
                 }
                 LoginPage(viewmodel)
             }
