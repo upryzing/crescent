@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Badge
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +18,6 @@ import org.nekoweb.amycatgirl.revolt.models.api.User
 import org.nekoweb.amycatgirl.revolt.models.api.UserStatus
 import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PeopleListItem(
     user: User? = null,
@@ -51,11 +49,13 @@ fun PeopleListItem(
                         presence
                     )
                 },
+
                 headlineContent = {
                     Text(
                         name
                     )
                 },
+
                 supportingContent = {
                     AnimatedVisibility(visible = status != null) {
                         status?.let {
@@ -70,12 +70,14 @@ fun PeopleListItem(
                         }
                     }
                 },
+
                 trailingContent = {
                     AnimatedVisibility(visible = unreads != null) {
-                        Badge(containerColor = MaterialTheme.colorScheme.errorContainer) {
+                        Badge(containerColor = MaterialTheme.colorScheme.tertiary) {
                             if (unreads != null) {
                                 Text(
-                                    if (unreads > 100) "100+" else "$unreads"
+                                    if (unreads > 100) "100+" else "$unreads",
+                                    color = MaterialTheme.colorScheme.onTertiary
                                 )
                             }
                         }
