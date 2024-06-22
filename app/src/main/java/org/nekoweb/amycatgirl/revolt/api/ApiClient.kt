@@ -180,6 +180,7 @@ object ApiClient {
     }
 
     suspend fun loginWithPassword(email: String, password: String): SessionResponse {
+        // TODO: error handling
         val response = client.post("$API_ROOT_URL/auth/session/login") {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
@@ -193,7 +194,6 @@ object ApiClient {
             websocket?.send(
                 jsonDeserializer.encodeToString(
                     AuthenticateEvent(
-                        "Authenticate",
                         response.userToken
                     )
                 )
