@@ -144,16 +144,16 @@ fun ChatPage(
                 Icon(
                     painterResource(R.drawable.material_symbols_library_add),
                     "",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(30.dp))
                     .background(MaterialTheme.colorScheme.primaryContainer)
-                    .padding()
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    .padding(end = 7.dp)
+                    .weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(7.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 CustomTextField(
@@ -163,7 +163,7 @@ fun ChatPage(
                     singleLine = false,
                     modifier = Modifier
                         .height(IntrinsicSize.Min)
-                        .fillMaxWidth(.8f)
+                        .weight(1f)
                         .heightIn(0.dp, 100.dp)
                 )
                 AnimatedVisibility(
@@ -178,7 +178,7 @@ fun ChatPage(
                                 messageValue = ""
                             }
                         },
-                        modifier = Modifier.size(42.dp),
+                        modifier = Modifier.size(42.dp).weight(1f),
                         colors = IconButtonDefaults.iconButtonColors(
                             containerColor = MaterialTheme.colorScheme.primary
                         )
