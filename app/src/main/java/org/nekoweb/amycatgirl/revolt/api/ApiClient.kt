@@ -61,7 +61,7 @@ object ApiClient {
 
     var currentSession: SessionResponse.Success? = null
     private var websocket: DefaultWebSocketSession? = null
-    private val jsonDeserializer = Json {
+    val jsonDeserializer = Json {
         ignoreUnknownKeys = true
         isLenient = true
         serializersModule = SerializersModule {
