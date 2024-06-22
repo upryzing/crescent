@@ -56,9 +56,11 @@ fun LoginPage(
     AnimatedVisibility(visible = false) {
         MFADialog {}
     }
+
     AnimatedVisibility(visible = false) {
         AccountDisabledDialog {}
     }
+
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier
@@ -104,7 +106,8 @@ fun LoginPage(
                     onValueChange = { emailValue = it },
                     leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
                     label = { Text(stringResource(R.string.ui_input_email)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    maxLines = 1
                 )
                 OutlinedTextField(
                     value = passwordValue,
@@ -114,9 +117,10 @@ fun LoginPage(
                         Text(stringResource(R.string.ui_input_password))
                     },
                     visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    maxLines = 1
                 )
-                Button(modifier = Modifier.fillMaxWidth(.7f), onClick = {
+                Button(modifier = Modifier.fillMaxWidth(.625f), onClick = {
                     viewmodel.login(emailValue, passwordValue)
                 }) {
                     Text(stringResource(R.string.ui_button_login))
