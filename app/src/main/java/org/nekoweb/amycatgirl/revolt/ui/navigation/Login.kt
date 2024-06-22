@@ -94,7 +94,11 @@ fun LoginPage(
                 )
             }
             Spacer(modifier = Modifier.height(30.dp))
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
+            ) {
                 OutlinedTextField(
                     value = emailValue,
                     onValueChange = { emailValue = it },
