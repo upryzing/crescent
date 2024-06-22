@@ -39,18 +39,18 @@ fun ChatBubble(message: PartialMessage, modifier: Modifier = Modifier, isSelf: B
         if (author != null) {
             Text(
                 if (isSelf) "You" else author.displayName ?: author.username,
-                color = MaterialTheme.colorScheme.onBackground
+                color = if (isSelf) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
             )
         }
 
         Spacer(modifier = Modifier.height(10.dp))
         Surface(
-            color = if (isSelf) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
+            color = if (isSelf) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
             shape = RoundedCornerShape(18.dp)
         ) {
             Text(
                 text = if (!message.content.isNullOrBlank()) message.content else if (message.attachments != null) "Message has no content, but it has attachments, and we can't render them yet." else "Unhandled",
-                color = if (isSelf) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer,
+                color = if (isSelf) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(10.dp)
             )
@@ -63,7 +63,7 @@ fun ChatBubble(message: PartialMessage, modifier: Modifier = Modifier, isSelf: B
 fun ChatBubblePreview() {
     RevoltTheme {
         Column {
-            ChatBubble(PartialMessage())
+            ChatBubble(PartialMessage(), isSelf = true)
             ChatBubble(PartialMessage())
         }
     }
