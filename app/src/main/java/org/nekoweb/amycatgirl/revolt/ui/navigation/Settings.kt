@@ -2,22 +2,29 @@ package org.nekoweb.amycatgirl.revolt.ui.navigation
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.LockPerson
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
@@ -32,9 +39,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.nekoweb.amycatgirl.revolt.BuildConfig
 import org.nekoweb.amycatgirl.revolt.R
@@ -85,66 +95,107 @@ fun SettingsPage(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             // TODO: Needed navigation for each categories
-            ListItem(
-                leadingContent = {
-                    Icon(
-                        Icons.Filled.LockPerson,
-                        stringResource(R.string.settings_about)
-                    )
-                },
-                headlineContent = { Text(stringResource(R.string.settings_account)) },
-            )
-            ListItem(
-                leadingContent = {
-                    Icon(
-                        Icons.Filled.Person,
-                        stringResource(R.string.settings_profile)
-                    )
-                },
-                headlineContent = { Text(stringResource(R.string.settings_profile)) },
-            )
-            ListItem(
-                leadingContent = {
-                    Icon(
-                        Icons.Default.Settings,
-                        stringResource(R.string.settings_client)
-                    )
-                },
-                headlineContent = { Text(stringResource(R.string.settings_client)) },
-            )
-            ListItem(
-                leadingContent = {
-                    Icon(
-                        Icons.Default.Info,
-                        "${stringResource(R.string.settings_about)} ${stringResource(R.string.app_name)}"
-                    )
-                },
-                headlineContent = {
-                    Text(
-                        "${stringResource(R.string.settings_about)} ${
-                            stringResource(
-                                R.string.app_name
-                            )
-                        }"
-                    )
-                },
-            )
-            ListItem(
-                leadingContent = {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Logout,
-                        contentDescription = stringResource(R.string.settings_logout),
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                },
-                headlineContent = {
-                    Text(
-                        stringResource(R.string.settings_logout),
-                        color = MaterialTheme.colorScheme.error
-                    )
-                },
-                modifier = Modifier.clickable { shouldShowDialog = true }
-            )
+            Column(
+                Modifier
+                    .padding(12.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+            ) {
+                ListItem(
+                    modifier = Modifier.clickable { /* TODO */ },
+                    colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                    leadingContent = {
+                        Icon(
+                            painterResource(R.drawable.material_symbols_person),
+                            stringResource(R.string.settings_account)
+                        )
+                    },
+                    headlineContent = { Text(stringResource(R.string.settings_account)) },
+                    supportingContent = {
+                        Text(stringResource(R.string.settings_account_description))
+                    }
+                )
+                HorizontalDivider(
+                    Modifier.padding(horizontal = 16.dp),
+                    color = MaterialTheme.colorScheme.surfaceBright
+                )
+                ListItem(
+                    modifier = Modifier.clickable { /* TODO */ },
+                    colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                    leadingContent = {
+                        Icon(
+                            painterResource(R.drawable.material_symbols_badge),
+                            stringResource(R.string.settings_profile)
+                        )
+                    },
+                    headlineContent = { Text(stringResource(R.string.settings_profile)) },
+                    supportingContent = {
+                        Text(stringResource(R.string.settings_profile_description))
+                    }
+                )
+            }
+
+            Column(
+                Modifier
+                    .padding(12.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+            ) {
+                ListItem(
+                    modifier = Modifier.clickable { /* TODO */ },
+                    colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                    leadingContent = {
+                        Icon(
+                            Icons.Default.Settings,
+                            stringResource(R.string.settings_client)
+                        )
+                    },
+                    headlineContent = { Text(stringResource(R.string.settings_client)) },
+                    supportingContent = {
+                        Text(stringResource(R.string.settings_client_description))
+                    }
+                )
+                HorizontalDivider(
+                    Modifier.padding(horizontal = 16.dp),
+                    color = MaterialTheme.colorScheme.surfaceBright
+                )
+                ListItem(
+                    modifier = Modifier.clickable { /* TODO */ },
+                    colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                    leadingContent = {
+                        Icon(
+                            Icons.Default.Info,
+                            "${stringResource(R.string.settings_about)} ${stringResource(R.string.app_name)}"
+                        )
+                    },
+                    headlineContent = {
+                        Text("${stringResource(R.string.settings_about)} ${stringResource(R.string.app_name)}")
+                    },
+                    supportingContent = {
+                        Text(stringResource(R.string.settings_about_description))
+                    }
+                )
+            }
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Button(
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                    onClick = { shouldShowDialog = true }) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(7.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Logout,
+                            contentDescription = stringResource(R.string.settings_logout),
+                            tint = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                        Text(
+                            stringResource(R.string.settings_logout),
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.fillMaxHeight(0.9f))
             Text(
                 "${stringResource(R.string.app_name)} - Build ${BuildConfig.VERSION_CODE}",

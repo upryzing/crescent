@@ -32,4 +32,8 @@
     <string name="ui_button_create_account">Create an account</string>
     <string name="account_disabled_title">You\'ve been disabled</string>
     <string name="account_disabled_description">Your account was disabled. This is because you inputed the wrong password too many times, please wait for a while before logging in.</string>
+    <string name="settings_account_description">Configures email, password, and others</string>
+    <string name="settings_profile_description">Configures display names, bio and more</string>
+    <string name="settings_client_description">Configures the client\'s features</string>
+    <string name="settings_about_description">Reads information about the client</string>
 </resources>
