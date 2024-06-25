@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.MenuOpen
 import androidx.compose.material.icons.automirrored.filled.Message
-import androidx.compose.material.icons.automirrored.filled.More
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -125,7 +123,7 @@ fun ProfilePage() {
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Icon(painterResource(R.drawable.person_add), "Message")
+                            Icon(painterResource(R.drawable.material_symbols_person_add), "Message")
                             Text("Friend")
                         }
                     }
@@ -142,7 +140,7 @@ fun ProfilePage() {
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Icon(painterResource(R.drawable.more_horiz), "More")
+                            Icon(painterResource(R.drawable.material_symbols_more_horiz), "More")
                             Text("More")
                         }
                     }
