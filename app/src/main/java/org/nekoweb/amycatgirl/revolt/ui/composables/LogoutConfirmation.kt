@@ -25,7 +25,7 @@ import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 fun LogoutConfirmationDialog(logoutCallback: () -> Unit, dismissCallback: () -> Unit) {
     Dialog(onDismissRequest = { /*TODO*/ }) {
         Card(
-            modifier = Modifier.clip(RoundedCornerShape(28.dp))
+            modifier = Modifier.clip(MaterialTheme.shapes.extraLarge)
         ) {
             Column(
                 modifier = Modifier
