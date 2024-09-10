@@ -88,6 +88,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.dagger.hilt.android)
+    implementation(libs.androidx.constraintlayout.compose)
     kapt(libs.hilt.android.compiler)
 }
 

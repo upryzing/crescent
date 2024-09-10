@@ -25,6 +25,7 @@ import org.nekoweb.amycatgirl.revolt.ui.navigation.ChatPage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.DebugScreen
 import org.nekoweb.amycatgirl.revolt.ui.navigation.HomePage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.LoginPage
+import org.nekoweb.amycatgirl.revolt.ui.navigation.ProfileSettingsPage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.SettingsPage
 
 @Composable
@@ -158,12 +159,34 @@ fun App(
             ) {
                 SettingsPage(
                     goBack = { navigator.popBackStack() },
+                    navigateToAccount = {},
+                    navigateToProfile = { navigator.navigate("settings/profile") },
                     onSessionDropped = {
                         navigator.navigate("auth") {
                             popUpTo("settings") { inclusive = true }
                         }
                     }
                 )
+            }
+            composable("settings/profile", enterTransition = {
+                fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
+                    animationSpec = tween(
+                        durationMillis = 250,
+                        easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
+                    ),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Left
+                )
+            },
+                exitTransition = {
+                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
+                        animationSpec = tween(
+                            durationMillis = 200,
+                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+                        ),
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    )
+                }) {
+                ProfileSettingsPage(goBack = { navigator.popBackStack() })
             }
         }
     }

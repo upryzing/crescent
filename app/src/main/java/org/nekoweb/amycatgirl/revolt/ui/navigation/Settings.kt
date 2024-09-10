@@ -56,6 +56,8 @@ import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 @Composable
 fun SettingsPage(
     goBack: () -> Unit,
+    navigateToAccount: () -> Unit,
+    navigateToProfile: () -> Unit,
     onSessionDropped: () -> Unit
 ) {
     var shouldShowDialog by remember { mutableStateOf(false) }
@@ -102,7 +104,7 @@ fun SettingsPage(
                     .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 ListItem(
-                    modifier = Modifier.clickable { /* TODO */ },
+                    modifier = Modifier.clickable { navigateToAccount() },
                     colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
                     leadingContent = {
                         Icon(
@@ -120,7 +122,7 @@ fun SettingsPage(
                     color = MaterialTheme.colorScheme.surfaceBright
                 )
                 ListItem(
-                    modifier = Modifier.clickable { /* TODO */ },
+                    modifier = Modifier.clickable { navigateToProfile() },
                     colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
                     leadingContent = {
                         Icon(
@@ -210,6 +212,6 @@ fun SettingsPage(
 @Composable
 fun SettingsPagePreview() {
     RevoltTheme {
-        SettingsPage({}, {})
+        SettingsPage({}, {}, {}, {})
     }
 }
