@@ -76,7 +76,7 @@ fun PeopleListItem(
                         Badge(containerColor = MaterialTheme.colorScheme.tertiary) {
                             if (unreads != null) {
                                 Text(
-                                    if (unreads > 100) "100+" else "$unreads",
+                                    if (unreads > 100) "99+" else "$unreads",
                                     color = MaterialTheme.colorScheme.onTertiary
                                 )
                             }
