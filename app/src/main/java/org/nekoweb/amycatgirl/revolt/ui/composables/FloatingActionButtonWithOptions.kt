@@ -40,7 +40,7 @@ fun FloatingActionButtonWithOptions(
 ) {
 
 
-    var showAllOptions = remember { mutableStateOf(false) }
+    val showAllOptions = remember { mutableStateOf(false) }
 
     val rotation by animateFloatAsState(
         targetValue = if (showAllOptions.value) {
