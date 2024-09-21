@@ -108,7 +108,7 @@ fun HomePage(
                         }
 
                         Log.d("Cache", "Found author: $author in ${ApiClient.cache}")
-                        if (channel.active && author.flags != 2) {
+                        if (channel.active && author.flags != Flags.DELETED.ordinal) {
                             PeopleListItem(
                                 user = author,
                                 status = author.status,

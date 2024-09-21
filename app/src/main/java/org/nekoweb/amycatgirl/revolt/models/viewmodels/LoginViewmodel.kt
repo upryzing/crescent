@@ -40,10 +40,12 @@ class LoginViewmodel(
 
         if (currentSession.isNotEmpty()) {
             Log.d("Login", "SerializedSession exists, attempting deserialization.")
-            ApiClient.currentSession =
-                ApiClient.jsonDeserializer.decodeFromString<SessionResponse.Success>(
-                    currentSession
-                )
+            val availableSession = ApiClient.jsonDeserializer.decodeFromString<SessionResponse.Success>(
+                currentSession
+            )
+            ApiClient.currentSession = availableSession
+
+            ApiClient.startSession(availableSession)
             navigation.navigate("home") {
                 popUpTo("auth") { inclusive = true }
             }

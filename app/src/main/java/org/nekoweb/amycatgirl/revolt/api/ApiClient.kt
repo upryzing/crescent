@@ -18,8 +18,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.websocket.CloseReason
 import io.ktor.websocket.DefaultWebSocketSession
 import io.ktor.websocket.Frame
+import io.ktor.websocket.close
 import io.ktor.websocket.send
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -207,7 +209,7 @@ object ApiClient {
         return response
     }
 
-    private suspend fun startSession(response: SessionResponse.Success) {
+    suspend fun startSession(response: SessionResponse.Success) {
         Log.d("Client", "Got response from API: $response")
         currentSession = response
         CoroutineScope(Dispatchers.IO).launch {
@@ -243,6 +245,8 @@ object ApiClient {
         return try {
             removeExistingSession(currentSession!!)
             currentSession = null
+
+            websocket?.close()
 
             true
         } catch (error: Exception) {
