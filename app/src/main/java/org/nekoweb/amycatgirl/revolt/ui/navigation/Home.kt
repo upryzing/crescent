@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
+import org.nekoweb.amycatgirl.revolt.models.api.Flags
 import org.nekoweb.amycatgirl.revolt.models.api.User
 import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
 import org.nekoweb.amycatgirl.revolt.models.viewmodels.HomeViewmodel
