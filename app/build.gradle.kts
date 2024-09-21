@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.emoji.java)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
