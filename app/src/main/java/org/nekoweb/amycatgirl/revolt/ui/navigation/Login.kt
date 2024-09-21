@@ -53,9 +53,6 @@ fun LoginPage(
     var passwordValue by remember { mutableStateOf("") }
     // TODO: Please implement when the login gets an error or it's requires MFA code. And plus, implement login functionality too.
     // TODO: fuck off :trl:
-    AnimatedVisibility(visible = false) {
-        MFADialog {}
-    }
 
     AnimatedVisibility(visible = false) {
         AccountDisabledDialog {}
