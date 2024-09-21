@@ -18,7 +18,6 @@ class MainViewmodel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            ApiClient.connectToWebsocket()
             EventBus.subscribe<Any> { ev ->
                 Log.d("EventBus", "$ev")
                 messageList.add(ev)

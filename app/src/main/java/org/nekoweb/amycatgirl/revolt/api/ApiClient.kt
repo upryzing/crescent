@@ -22,21 +22,38 @@ import io.ktor.websocket.DefaultWebSocketSession
 import io.ktor.websocket.Frame
 import io.ktor.websocket.send
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
-import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionRequestWithFriendlyName
+import org.nekoweb.amycatgirl.revolt.models.api.authentication.EmailSessionRequest
+import org.nekoweb.amycatgirl.revolt.models.api.authentication.MFAResponse
+import org.nekoweb.amycatgirl.revolt.models.api.authentication.MFASessionRequest
 import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionResponse
 import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.AuthenticateEvent
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.BaseEvent
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.PartialMessage
+import org.nekoweb.amycatgirl.revolt.models.api.websocket.PingEvent
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.SystemMessage
 import org.nekoweb.amycatgirl.revolt.models.api.websocket.UnimplementedEvent
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
+import kotlin.random.Random
+
+@OptIn(DelicateCoroutinesApi::class)
+private fun intervalPing(ws: DefaultWebSocketSession) = GlobalScope.launch {
+    while (true) {
+        delay(20 * 1000)
+        Log.d("Socket", "Pinging!")
+        ws.send(ApiClient.jsonDeserializer.encodeToString(PingEvent(1)))
+    }
+}
 
 object ApiClient {
     var useStaging = false
@@ -55,10 +72,10 @@ object ApiClient {
             }
             field = value
         }
-    private var SOCKET_ROOT_URL: String = "wss://ws.revolt.chat?format=json&version=1"
+    private var SOCKET_ROOT_URL: String = "wss://ws.revolt.chat?version=1&format=json"
     private var API_ROOT_URL: String = "https://api.revolt.chat/"
     const val S3_ROOT_URL: String = "https://autumn.revolt.chat/"
-
+    private var currentIntervalJob: Job? = null
     var currentSession: SessionResponse.Success? = null
     private var websocket: DefaultWebSocketSession? = null
     val jsonDeserializer = Json {
@@ -83,26 +100,6 @@ object ApiClient {
         }
         install(WebSockets) {
             contentConverter = KotlinxWebsocketSerializationConverter(jsonDeserializer)
-        }
-    }
-
-    fun connectToWebsocket() {
-        CoroutineScope(Dispatchers.IO).launch {
-            client.wss(SOCKET_ROOT_URL) {
-                websocket = this@wss
-
-                try {
-                    for (frame in incoming) {
-                        if (frame is Frame.Text) {
-                            val event: BaseEvent = receiveDeserialized()
-                            Log.d("Socket", "Got Event: $event")
-                            EventBus.publish(event)
-                        }
-                    }
-                } catch (exception: Exception) {
-                    Log.e("Socket", "$exception")
-                }
-            }
         }
     }
 
@@ -185,24 +182,54 @@ object ApiClient {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
 
-            setBody(SessionRequestWithFriendlyName(email, password))
+            setBody(EmailSessionRequest(email, password))
         }.body<SessionResponse>()
 
         if (response is SessionResponse.Success) {
-            Log.d("Client", "Got response from API: $response")
-            currentSession = response
-            websocket?.send(
-                jsonDeserializer.encodeToString(
-                    AuthenticateEvent(
-                        response.userToken
-                    )
-                )
-            )
-        } else {
-            Log.d("Client", "TODO: Implement 2FA")
+            startSession(response)
         }
 
         return response
+    }
+
+    suspend fun confirm2FA(ticket: String, code: String): SessionResponse {
+        val response = client.post("$API_ROOT_URL/auth/session/login") {
+            accept(ContentType.Application.Json)
+            contentType(ContentType.Application.Json)
+
+            setBody(MFASessionRequest(ticket, MFAResponse.TwoFactorMFA(code)))
+        }.body<SessionResponse>()
+
+        if (response is SessionResponse.Success) {
+            startSession(response)
+        }
+
+        return response
+    }
+
+    private suspend fun startSession(response: SessionResponse.Success) {
+        Log.d("Client", "Got response from API: $response")
+        currentSession = response
+        CoroutineScope(Dispatchers.IO).launch {
+            Log.d("Socket", "Starting websocket!")
+            client.wss("$SOCKET_ROOT_URL&token=${response.userToken}") {
+                websocket = this@wss
+
+                try {
+                    for (frame in incoming) {
+                        if (frame is Frame.Text) {
+                            val event: BaseEvent = receiveDeserialized()
+                            Log.d("Socket", "Got Event: $event")
+                            EventBus.publish(event)
+                        }
+                    }
+                } catch (exception: Exception) {
+                    Log.e("Socket", "$exception")
+                }
+
+                currentIntervalJob = intervalPing(this@wss)
+            }
+        }
     }
 
     private suspend fun removeExistingSession(sessionResponse: SessionResponse.Success) {
