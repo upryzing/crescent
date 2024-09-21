@@ -40,10 +40,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.serialization.Serializable
 import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.models.viewmodels.LoginViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.composables.AccountDisabledDialog
-import org.nekoweb.amycatgirl.revolt.ui.composables.MFADialog
+
+@Serializable
+object Login
 
 @Composable
 fun LoginPage(
