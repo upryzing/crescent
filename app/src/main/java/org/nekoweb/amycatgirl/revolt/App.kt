@@ -14,13 +14,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.models.viewmodels.ChatViewmodel
 import org.nekoweb.amycatgirl.revolt.models.viewmodels.HomeViewmodel
 import org.nekoweb.amycatgirl.revolt.models.viewmodels.LoginViewmodel
 import org.nekoweb.amycatgirl.revolt.models.viewmodels.MainViewmodel
+import org.nekoweb.amycatgirl.revolt.ui.composables.LoginMFA
+import org.nekoweb.amycatgirl.revolt.ui.composables.MFADialog
 import org.nekoweb.amycatgirl.revolt.ui.navigation.ChatPage
 import org.nekoweb.amycatgirl.revolt.ui.navigation.DebugScreen
 import org.nekoweb.amycatgirl.revolt.ui.navigation.HomePage
@@ -66,6 +70,14 @@ fun App(
                     LoginViewmodel(ApiClient, navigator, context)
                 }
                 LoginPage(viewmodel)
+            }
+            dialog<LoginMFA> { backStackEntry ->
+                val data: LoginMFA = backStackEntry.toRoute()
+                MFADialog(data, dismissCallback = { navigator.popBackStack() }, successCallback = {
+                    navigator.navigate("home") {
+                        popUpTo("auth") { inclusive = true }
+                    }
+                })
             }
 
             composable(

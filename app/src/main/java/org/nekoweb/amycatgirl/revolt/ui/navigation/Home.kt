@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.api.ApiClient
+import org.nekoweb.amycatgirl.revolt.models.api.Flags
 import org.nekoweb.amycatgirl.revolt.models.api.User
 import org.nekoweb.amycatgirl.revolt.models.api.channels.Channel
 import org.nekoweb.amycatgirl.revolt.models.viewmodels.HomeViewmodel
@@ -107,7 +108,7 @@ fun HomePage(
                         }
 
                         Log.d("Cache", "Found author: $author in ${ApiClient.cache}")
-                        if (channel.active && author.flags != 2) {
+                        if (channel.active && author.flags != Flags.DELETED.ordinal) {
                             PeopleListItem(
                                 user = author,
                                 status = author.status,

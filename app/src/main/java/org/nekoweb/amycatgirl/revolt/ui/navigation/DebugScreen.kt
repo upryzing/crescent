@@ -56,10 +56,6 @@ fun DebugScreen(
         mutableStateOf(false)
     }
 
-    AnimatedVisibility(visible = shouldShowDebugMfaDialog) {
-        MFADialog { shouldShowDebugMfaDialog = false }
-    }
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize()

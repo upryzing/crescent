@@ -12,6 +12,7 @@ import org.nekoweb.amycatgirl.revolt.api.ApiClient
 import org.nekoweb.amycatgirl.revolt.datastore.ConfigDataStoreKeys
 import org.nekoweb.amycatgirl.revolt.datastore.PreferenceDataStoreHelper
 import org.nekoweb.amycatgirl.revolt.models.api.authentication.SessionResponse
+import org.nekoweb.amycatgirl.revolt.ui.composables.LoginMFA
 
 class LoginViewmodel(
     private val client: ApiClient,
@@ -39,10 +40,12 @@ class LoginViewmodel(
 
         if (currentSession.isNotEmpty()) {
             Log.d("Login", "SerializedSession exists, attempting deserialization.")
-            ApiClient.currentSession =
-                ApiClient.jsonDeserializer.decodeFromString<SessionResponse.Success>(
-                    currentSession
-                )
+            val availableSession = ApiClient.jsonDeserializer.decodeFromString<SessionResponse.Success>(
+                currentSession
+            )
+            ApiClient.currentSession = availableSession
+
+            ApiClient.startSession(availableSession)
             navigation.navigate("home") {
                 popUpTo("auth") { inclusive = true }
             }
@@ -56,7 +59,7 @@ class LoginViewmodel(
             when (val response = client.loginWithPassword(email, password)) {
                 is SessionResponse.NeedsMultiFactorAuth ->
                     navigation.navigate(
-                        "auth/2fa/${response.ticket}"
+                        LoginMFA(response.ticket)
                     )
 
                 is SessionResponse.AccountDisabled -> println("Account has been disabled")

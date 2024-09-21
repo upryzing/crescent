@@ -57,6 +57,7 @@ import org.nekoweb.amycatgirl.revolt.models.viewmodels.ChatViewmodel
 import org.nekoweb.amycatgirl.revolt.ui.composables.ChatBubble
 import org.nekoweb.amycatgirl.revolt.ui.composables.CustomTextField
 import org.nekoweb.amycatgirl.revolt.ui.composables.ProfileImage
+import org.nekoweb.amycatgirl.revolt.ui.composables.SystemMessageDisplay
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
@@ -207,14 +208,17 @@ fun ChatPage(
                 val isSelf = message.authorId == ApiClient.currentSession?.userId
 
                 Box(modifier = Modifier.fillMaxWidth()) {
-                    ChatBubble(
-                        message,
-                        modifier = if (isSelf)
-                            Modifier.align(Alignment.BottomEnd)
-                        else
-                            Modifier.align(Alignment.BottomStart),
-                        isSelf
-                    )
+                    when (message.system != null) {
+                        true -> SystemMessageDisplay(message.system)
+                        false -> ChatBubble(
+                            message,
+                            modifier = if (isSelf)
+                                Modifier.align(Alignment.BottomEnd)
+                            else
+                                Modifier.align(Alignment.BottomStart),
+                            isSelf
+                        )
+                    }
                 }
             }
 

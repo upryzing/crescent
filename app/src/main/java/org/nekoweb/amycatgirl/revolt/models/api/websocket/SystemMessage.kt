@@ -7,7 +7,7 @@ import kotlinx.serialization.json.JsonClassDiscriminator
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
-@JsonClassDiscriminator("Type")
+@JsonClassDiscriminator("type")
 sealed class SystemMessage {
     @SerialName("text")
     data class Text(val content: String) : SystemMessage()
