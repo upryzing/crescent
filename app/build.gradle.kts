@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.serialization)
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+    id("kotlin-parcelize")
 }
 val versionMajor = 1
 val versionMinor = 1

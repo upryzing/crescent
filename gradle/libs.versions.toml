@@ -13,7 +13,7 @@ composeBom = "2024.06.00"
 ktor_version = "2.3.12"
 kotlinxSerializationJson = "1.7.0"
 serializationPlugin = "1.9.22"
-navigationVersion = "2.8.0-beta03"
+navigationVersion = "2.8.1"
 hilt = "2.44"
 hiltNavigationCompose = "1.2.0"
 ulidj = "1.0.4"
@@ -34,7 +34,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.9.0" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.9.2" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
