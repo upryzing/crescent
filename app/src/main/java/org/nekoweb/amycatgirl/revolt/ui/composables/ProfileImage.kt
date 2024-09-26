@@ -4,22 +4,23 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
@@ -38,13 +39,28 @@ fun ProfileImage(
     presence: Presence? = null,
     size: Dp = 32.dp
 ) {
-    // TODO: Add image implementation
-    Box(modifier = Modifier.wrapContentSize()) {
-        SubcomposeAsyncImage(model = url, contentDescription = "None... yet.") {
+    ConstraintLayout {
+        val (image, presenceIndicator) = createRefs()
+
+        SubcomposeAsyncImage(
+            model = url,
+            contentDescription = "None... yet.",
+            Modifier
+                .constrainAs(image) {
+                    top.linkTo(parent.top)
+                })
+        {
             val state = painter.state
             when (state) {
                 is AsyncImagePainter.State.Loading -> {
-                    CircularProgressIndicator()
+                    Box(
+                        Modifier
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .padding(5.dp)
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
 
                 is AsyncImagePainter.State.Error,
@@ -77,10 +93,24 @@ fun ProfileImage(
         }
         AnimatedVisibility(
             presence != null,
-            modifier = Modifier.align(AbsoluteAlignment.BottomRight)
+            modifier = Modifier
+                .constrainAs(presenceIndicator) {
+                    bottom.linkTo(image.bottom, margin = (-3).dp)
+                    end.linkTo(image.end, margin = (-3).dp)
+                }
+                .graphicsLayer {
+                    clip = true
+                    shape = CircleShape
+                }
         ) {
             Box(
+                // Weird workaround for this "effect"
+                // TODO: find a way to cut off to create interesting effect just like in SF Symbols by Apple.
+                // I know the way I'm doing with "graphics", but it will be painful due how it was programmed :,)
                 modifier = Modifier
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(2.dp)
                     .clip(CircleShape)
                     .background(
                         when (presence) {
@@ -94,11 +124,13 @@ fun ProfileImage(
                             }
                         }
                     )
-                    .size(12.dp)
+                    .size(size / 4 * 1.2f)
+
             )
         }
     }
 }
+
 
 @Preview
 @Composable
