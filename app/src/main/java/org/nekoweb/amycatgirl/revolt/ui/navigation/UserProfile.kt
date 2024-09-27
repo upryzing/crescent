@@ -35,12 +35,14 @@ import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfilePage() {
+fun UserProfilePage(
+    goBack: () -> Unit
+) {
     //TODO: Implement profile texts and images (replace these placeholders please)
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = { Text("User Profile") }, navigationIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { goBack() }) {
                 Icon(
                     Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = stringResource(R.string.ui_go_back)
@@ -168,8 +170,8 @@ fun ProfilePage() {
 
 @Composable
 @Preview
-fun ProfilePagePreview() {
+fun UserProfilePagePreview() {
     RevoltTheme {
-        ProfilePage()
+        UserProfilePage({})
     }
 }

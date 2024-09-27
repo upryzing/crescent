@@ -65,7 +65,10 @@ import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatPage(
-    viewmodel: ChatViewmodel, ulid: String, goBack: () -> Unit
+    viewmodel: ChatViewmodel,
+    ulid: String,
+    navigateToUserProfile: () -> Unit = {},
+    goBack: () -> Unit
 ) {
     val user = ApiClient.cache[ulid]
 
@@ -96,106 +99,114 @@ fun ChatPage(
             .fillMaxSize()
             .padding(bottom = 20.dp),
         topBar = {
-        CenterAlignedTopAppBar(title = {
-            Row(
-                modifier = Modifier.clickable { /* TODO */ },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                ProfileImage(
-                    fallback = when (user) {
-                        is User -> user.username
-                        is Channel.Group -> user.name
-                        else -> "Unknown"
-                    }, url = avatar, size = 26.dp
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = when (user) {
-                        is Channel.Group -> user.name
-                        is User -> user.displayName ?: "${user.username}#${user.discriminator}"
+            CenterAlignedTopAppBar(title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ProfileImage(
+                        fallback = when (user) {
+                            is User -> user.username
+                            is Channel.Group -> user.name
+                            else -> "Unknown"
+                        }, url = avatar, size = 26.dp
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = when (user) {
+                            is Channel.Group -> user.name
+                            is User -> user.displayName ?: "${user.username}#${user.discriminator}"
 
-                        else -> "Unknown"
-                    }, maxLines = 1, overflow = TextOverflow.Ellipsis
-                )
-            }
-        }, navigationIcon = {
-            IconButton(onClick = { goBack() }) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.ui_go_back)
-                )
-            }
-        })
-    }, bottomBar = {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
-                .imePadding()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .height(IntrinsicSize.Min)
-                    .width(IntrinsicSize.Min),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            ) {
-                Icon(
-                    painterResource(R.drawable.material_symbols_library_add),
-                    "",
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
+                            else -> "Unknown"
+                        }, maxLines = 1, overflow = TextOverflow.Ellipsis
+                    )
+                }
+            },
+                actions = {
+                    IconButton(onClick = { navigateToUserProfile() }) {
+                        Icon(painterResource(R.drawable.material_symbols_info), null)
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { goBack() }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.ui_go_back)
+                        )
+                    }
+
+                })
+        }, bottomBar = {
             Row(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(30.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .padding(end = 7.dp)
-                    .weight(1f),
-                horizontalArrangement = Arrangement.spacedBy(7.dp),
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .imePadding()
+                    .padding(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                CustomTextField(
-                    value = messageValue,
-                    placeholder = { Text(stringResource(R.string.chat_send_message)) },
-                    onValueChange = { messageValue = it },
-                    singleLine = false,
+                IconButton(
+                    onClick = { navigateToUserProfile() },
                     modifier = Modifier
                         .height(IntrinsicSize.Min)
-                        .weight(1f)
-                        .heightIn(0.dp, 100.dp)
-                )
-                AnimatedVisibility(
-                    visible = messageValue.isNotBlank(),
-                    enter = scaleIn(animationSpec = tween(300)),
-                    exit = scaleOut(animationSpec = tween(200))
+                        .width(IntrinsicSize.Min),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
                 ) {
-                    IconButton(
-                        onClick = {
-                            scope.launch {
-                                ApiClient.sendMessage(ulid, messageValue)
-                                messageValue = ""
-                            }
-                        },
-                        modifier = Modifier.size(42.dp).weight(1f),
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
+                    Icon(
+                        painterResource(R.drawable.material_symbols_library_add),
+                        "",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(30.dp))
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .padding(end = 7.dp)
+                        .weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(7.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CustomTextField(
+                        value = messageValue,
+                        placeholder = { Text(stringResource(R.string.chat_send_message)) },
+                        onValueChange = { messageValue = it },
+                        singleLine = false,
+                        modifier = Modifier
+                            .height(IntrinsicSize.Min)
+                            .weight(1f)
+                            .heightIn(0.dp, 100.dp)
+                    )
+                    AnimatedVisibility(
+                        visible = messageValue.isNotBlank(),
+                        enter = scaleIn(animationSpec = tween(300)),
+                        exit = scaleOut(animationSpec = tween(200))
                     ) {
-                        Icon(
-                            painterResource(R.drawable.material_symbols_send),
-                            "",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
+                        IconButton(
+                            onClick = {
+                                scope.launch {
+                                    ApiClient.sendMessage(ulid, messageValue)
+                                    messageValue = ""
+                                }
+                            },
+                            modifier = Modifier
+                                .size(42.dp)
+                                .weight(1f),
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.material_symbols_send),
+                                "",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
                     }
                 }
             }
         }
-    }
 
     ) { innerPadding ->
         LazyColumn(
@@ -236,6 +247,6 @@ fun ChatPagePreview() {
         val viewmodel = viewModel {
             ChatViewmodel("")
         }
-        ChatPage(viewmodel, "1") {}
+        ChatPage(viewmodel, "1", {}) {}
     }
 }

@@ -144,8 +144,11 @@ fun App(
                 }
                 ChatPage(
                     viewmodel,
-                    backStackEntry.arguments?.getString("id")!!
-                ) { navigator.popBackStack() }
+                    backStackEntry.arguments?.getString("id")!!,
+                    goBack = {
+                        navigator.popBackStack()
+                    }
+                )
             }
 
             composable(
