@@ -198,7 +198,7 @@ fun SettingsPage(
                     }
                 }
             }
-            Spacer(modifier = Modifier.fillMaxHeight(0.9f))
+            Spacer(modifier = Modifier.fillMaxHeight(0.8f))
             Text(
                 "${stringResource(R.string.app_name)} - Build ${BuildConfig.VERSION_CODE}",
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
