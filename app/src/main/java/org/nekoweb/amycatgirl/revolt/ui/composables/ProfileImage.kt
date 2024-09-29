@@ -105,11 +105,15 @@ fun ProfileImage(
                     Modifier
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primaryContainer)
-                        .padding(5.dp),
+                        .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
                 ) {
-                    CircularProgressIndicator(Modifier.size(5.dp))
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                        strokeWidth = 2.dp
+                    )
                 }
             }
 
