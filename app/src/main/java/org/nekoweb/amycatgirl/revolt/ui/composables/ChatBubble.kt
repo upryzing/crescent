@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -61,12 +62,14 @@ fun ChatBubble(message: PartialMessage, modifier: Modifier = Modifier, isSelf: B
                 MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
             shape = RoundedCornerShape(18.dp)
         ) {
-            Text(
-                text = if (!message.content.isNullOrBlank()) message.content else if (message.attachments != null) "Message has no content, but it has attachments, and we can't render them yet." else "Unhandled",
-                color = if (isSelf) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
-                fontSize = if (isOnlyEmoji) 48.sp else 16.sp,
-                modifier = Modifier.padding(10.dp)
-            )
+            SelectionContainer {
+                Text(
+                    text = if (!message.content.isNullOrBlank()) message.content else if (message.attachments != null) "Message has no content, but it has attachments, and we can't render them yet." else "Unhandled",
+                    color = if (isSelf) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
+                    fontSize = if (isOnlyEmoji) 48.sp else 16.sp,
+                    modifier = Modifier.padding(10.dp)
+                )
+            }
         }
     }
 }
