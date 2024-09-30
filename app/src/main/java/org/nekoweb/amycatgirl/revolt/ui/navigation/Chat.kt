@@ -91,7 +91,6 @@ fun ChatPage(
         else -> null
     }
 
-
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(ulid) {
@@ -143,7 +142,6 @@ fun ChatPage(
                     }) {
                         if (navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden) {
                             Icon(painterResource(R.drawable.material_symbols_info), null)
-
                         } else {
                             Icon(painterResource(R.drawable.material_symbols_filled_info), null)
                         }
