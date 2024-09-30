@@ -8,6 +8,7 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +34,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
@@ -139,7 +141,12 @@ fun ChatPage(
                             navigator.navigateBack()
                         }
                     }) {
-                        Icon(painterResource(R.drawable.material_symbols_info), null)
+                        if (navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden) {
+                            Icon(painterResource(R.drawable.material_symbols_info), null)
+
+                        } else {
+                            Icon(painterResource(R.drawable.material_symbols_filled_info), null)
+                        }
                     }
                 },
                 navigationIcon = {
@@ -230,35 +237,41 @@ fun ChatPage(
             directive = navigator.scaffoldDirective,
             value = navigator.scaffoldValue,
             mainPane = {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    reverseLayout = true
-                ) {
-                    items(messages) { message ->
-                        val isSelf = message.authorId == ApiClient.currentSession?.userId
+                AnimatedPane {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        reverseLayout = true
+                    ) {
+                        items(messages) { message ->
+                            val isSelf = message.authorId == ApiClient.currentSession?.userId
 
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            when (message.system != null) {
-                                true -> SystemMessageDisplay(message.system)
-                                false -> ChatBubble(
-                                    message,
-                                    modifier = if (isSelf)
-                                        Modifier.align(Alignment.BottomEnd)
-                                    else
-                                        Modifier.align(Alignment.BottomStart),
-                                    isSelf
-                                )
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                when (message.system != null) {
+                                    true -> SystemMessageDisplay(message.system)
+                                    false -> ChatBubble(
+                                        message,
+                                        modifier = if (isSelf)
+                                            Modifier.align(Alignment.BottomEnd)
+                                        else
+                                            Modifier.align(Alignment.BottomStart),
+                                        isSelf
+                                    )
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
             },
             supportingPane = {
-
+                AnimatedPane {
+                    Column {
+                        Text("Hello!")
+                    }
+                }
             }
         )
     }
