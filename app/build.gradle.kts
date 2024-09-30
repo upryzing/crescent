@@ -13,12 +13,12 @@ val versionBuild = 0
 
 android {
     namespace = "org.nekoweb.amycatgirl.revolt"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "org.nekoweb.amycatgirl.revolt"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
