@@ -1,5 +1,6 @@
 package org.nekoweb.amycatgirl.revolt.ui.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
@@ -31,6 +32,11 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
+import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
+import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
+import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -61,7 +67,7 @@ import org.nekoweb.amycatgirl.revolt.ui.composables.SystemMessageDisplay
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 import org.nekoweb.amycatgirl.revolt.utilities.EventBus
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ChatPage(
     viewmodel: ChatViewmodel,
@@ -75,6 +81,7 @@ fun ChatPage(
 
     var messageValue by remember { mutableStateOf("") }
     val messages = remember { viewmodel.messages }
+    val navigator = rememberSupportingPaneScaffoldNavigator()
 
     val avatar = when (user) {
         is Channel.Group -> "${ApiClient.S3_ROOT_URL}icons/${user.icon?.id}?max_side=256"
@@ -91,6 +98,10 @@ fun ChatPage(
                 messages.add(0, it)
             }
         }
+    }
+
+    BackHandler(navigator.canNavigateBack()) {
+        navigator.navigateBack()
     }
 
     Scaffold(
@@ -121,7 +132,13 @@ fun ChatPage(
                 }
             },
                 actions = {
-                    IconButton(onClick = { navigateToUserProfile() }) {
+                    IconButton(onClick = {
+                        if (navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden) {
+                            navigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
+                        } else {
+                            navigator.navigateBack()
+                        }
+                    }) {
                         Icon(painterResource(R.drawable.material_symbols_info), null)
                     }
                 },
@@ -207,35 +224,43 @@ fun ChatPage(
             }
         }
 
-    ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = innerPadding,
-            reverseLayout = true
-        ) {
-            items(messages) { message ->
-                val isSelf = message.authorId == ApiClient.currentSession?.userId
+    ) {
+        SupportingPaneScaffold(
+            modifier = Modifier.padding(it),
+            directive = navigator.scaffoldDirective,
+            value = navigator.scaffoldValue,
+            mainPane = {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    reverseLayout = true
+                ) {
+                    items(messages) { message ->
+                        val isSelf = message.authorId == ApiClient.currentSession?.userId
 
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    when (message.system != null) {
-                        true -> SystemMessageDisplay(message.system)
-                        false -> ChatBubble(
-                            message,
-                            modifier = if (isSelf)
-                                Modifier.align(Alignment.BottomEnd)
-                            else
-                                Modifier.align(Alignment.BottomStart),
-                            isSelf
-                        )
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            when (message.system != null) {
+                                true -> SystemMessageDisplay(message.system)
+                                false -> ChatBubble(
+                                    message,
+                                    modifier = if (isSelf)
+                                        Modifier.align(Alignment.BottomEnd)
+                                    else
+                                        Modifier.align(Alignment.BottomStart),
+                                    isSelf
+                                )
+                            }
+                        }
                     }
+
                 }
+            },
+            supportingPane = {
+
             }
-
-        }
-
+        )
     }
 }
 
