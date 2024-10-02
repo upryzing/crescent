@@ -15,6 +15,9 @@
     <string name="direct_messages_header">Direct Messages</string>
     <string name="debug_header">Debug</string>
     <string name="chat_send_message">Send message</string>
+    <string name="chat_add_media">Add media</string>
+    <string name="chat_show_user_profile">Show user\'s profile</string>
+    <string name="chat_hide_user_profile">Hide user\'s profile</string>
     <string name="mfa_required_authenticator_title">Two-factor Authentication</string>
     <string name="mfa_required_authenticator_description">Enter the code provided by your authenticator app.</string>
     <string name="mfa_required_text_field_placeholder">Code</string>
