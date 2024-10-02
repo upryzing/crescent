@@ -18,11 +18,11 @@ import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
 @Composable
 fun CustomTextField(
+    modifier: Modifier = Modifier,
     value: String,
-    placeholder: @Composable () -> Unit,
+    placeholder: String = "Placeholder",
     onValueChange: (String) -> Unit,
-    singleLine: Boolean,
-    modifier: Modifier = Modifier
+    singleLine: Boolean
 ) {
     TextField(
         value = value,
@@ -34,13 +34,13 @@ fun CustomTextField(
             focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
-            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
-            focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f)
+            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+            focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
         ),
         shape = CircleShape,
         placeholder = {
             AnimatedVisibility(visible = value.isEmpty()) {
-                placeholder()
+                Text(placeholder, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
             }
         },
         modifier = modifier,
@@ -56,7 +56,7 @@ fun CustomTextFieldPreview() {
         CustomTextField(
             value = text,
             onValueChange = { text = it },
-            placeholder = { Text("Placeholder") },
+            placeholder = "Placeholder",
             singleLine = true
         )
     }
