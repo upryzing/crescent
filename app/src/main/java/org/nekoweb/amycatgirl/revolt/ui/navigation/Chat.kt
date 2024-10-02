@@ -11,13 +11,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -106,13 +106,12 @@ fun ChatPage(
     }
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 20.dp),
         topBar = {
-            CenterAlignedTopAppBar(title = {
+            CenterAlignedTopAppBar(
+                title = {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     ProfileImage(
                         fallback = when (user) {
@@ -121,7 +120,6 @@ fun ChatPage(
                             else -> "Unknown"
                         }, url = avatar, size = 26.dp
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
                     Text(
                         text = when (user) {
                             is Channel.Group -> user.name
@@ -141,9 +139,9 @@ fun ChatPage(
                         }
                     }) {
                         if (navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden) {
-                            Icon(painterResource(R.drawable.material_symbols_info), null)
+                            Icon(painterResource(R.drawable.material_symbols_info), stringResource(R.string.chat_show_user_profile))
                         } else {
-                            Icon(painterResource(R.drawable.material_symbols_filled_info), null)
+                            Icon(painterResource(R.drawable.material_symbols_filled_info), stringResource(R.string.chat_hide_user_profile))
                         }
                     }
                 },
@@ -158,6 +156,7 @@ fun ChatPage(
         }, bottomBar = {
             Row(
                 modifier = Modifier
+                    .safeContentPadding()
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surface)
                     .imePadding()
@@ -182,6 +181,7 @@ fun ChatPage(
                 }
                 Row(
                     modifier = Modifier
+                        .padding(bottom = 2.dp)
                         .clip(RoundedCornerShape(30.dp))
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(end = 7.dp)
@@ -191,7 +191,7 @@ fun ChatPage(
                 ) {
                     CustomTextField(
                         value = messageValue,
-                        placeholder = { Text(stringResource(R.string.chat_send_message)) },
+                        placeholder = stringResource(R.string.chat_send_message),
                         onValueChange = { messageValue = it },
                         singleLine = false,
                         modifier = Modifier
@@ -231,11 +231,11 @@ fun ChatPage(
 
     ) {
         SupportingPaneScaffold(
-            modifier = Modifier.padding(it),
+            modifier = Modifier.safeContentPadding().padding(it),
             directive = navigator.scaffoldDirective,
             value = navigator.scaffoldValue,
             mainPane = {
-                AnimatedPane {
+                AnimatedPane (Modifier.safeContentPadding()) {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
@@ -265,9 +265,32 @@ fun ChatPage(
                 }
             },
             supportingPane = {
-                AnimatedPane {
-                    Column {
-                        Text("Hello!")
+                AnimatedPane (Modifier.safeContentPadding()) {
+                    Column(
+                        modifier = Modifier
+                            .padding(end = 12.dp)
+                            .clip(MaterialTheme.shapes.large)
+                            .background(MaterialTheme.colorScheme.surfaceContainer)
+                            .padding(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
+                        when (user) {
+                            is User -> {
+                                ProfileImage(
+                                    fallback = user.username,
+                                    url = avatar,
+                                    presence = user.status?.presence
+                                )
+                                user.displayName?.let { it1 ->
+                                    Text(
+                                        it1,
+                                        style = MaterialTheme.typography.headlineSmall
+                                    )
+                                }
+                            }
+                            else -> Text("Unknown", style = MaterialTheme.typography.headlineMedium)
+                        }
                     }
                 }
             }
