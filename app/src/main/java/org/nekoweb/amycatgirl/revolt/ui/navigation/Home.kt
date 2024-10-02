@@ -41,7 +41,6 @@ fun HomePage(
     navigateToDebug: () -> Unit,
     navigateToSettings: () -> Unit
 ) {
-
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
@@ -119,7 +118,6 @@ fun HomePage(
                     is Channel.Group -> {
                         PeopleListItem(channel = channel, callback = { navigateToChat(channel.id) })
                     }
-
                     else -> {}
                 }
             }
