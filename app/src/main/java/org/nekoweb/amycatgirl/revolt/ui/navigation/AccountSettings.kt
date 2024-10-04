@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import org.nekoweb.amycatgirl.revolt.R
 import org.nekoweb.amycatgirl.revolt.ui.theme.RevoltTheme
 
+// TODO: Add resource strings for translation
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountSettingsPage() {
@@ -48,7 +49,10 @@ fun AccountSettingsPage() {
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(
+                modifier = Modifier.padding(start = 12.dp, end = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -58,10 +62,17 @@ fun AccountSettingsPage() {
                         .padding(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Column {
                             Text("Change Username")
-                            Text("Current username: dummy#1234", style = MaterialTheme.typography.bodySmall)
+                            Text(
+                                "Current username: dummy#1234",
+                                style = MaterialTheme.typography.bodySmall
+                            )
                         }
                         Icon(painterResource(R.drawable.material_symbols_edit), "")
                     }
@@ -75,10 +86,17 @@ fun AccountSettingsPage() {
                         .padding(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Column {
                             Text("Change Email")
-                            Text("Your current email: dummy@example.com", style = MaterialTheme.typography.bodySmall)
+                            Text(
+                                "Your current email: dummy@example.com",
+                                style = MaterialTheme.typography.bodySmall
+                            )
                         }
                         Icon(painterResource(R.drawable.material_symbols_edit), "")
                     }
@@ -92,12 +110,105 @@ fun AccountSettingsPage() {
                         .padding(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Column {
                             Text("Change Password")
-                            Text("Your password: *********", style = MaterialTheme.typography.bodySmall)
+                            Text(
+                                "Your password: *********",
+                                style = MaterialTheme.typography.bodySmall
+                            )
                         }
                         Icon(painterResource(R.drawable.material_symbols_edit), "")
+                    }
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(MaterialTheme.shapes.large)
+                        .clickable { /* TODO: Show the dialog here :) */ }
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                        .padding(12.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.material_symbols_devices_outlined),
+                                ""
+                            )
+                            Column() {
+                                Text("Session")
+                                Text(
+                                    "Manage, revoke and revoke all sessions",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                        }
+
+                        Icon(
+                            painterResource(R.drawable.material_symbols_chevron_right_outlined),
+                            ""
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(MaterialTheme.shapes.large)
+                            .clickable { /* TODO */ }
+                            .background(MaterialTheme.colorScheme.errorContainer)
+                            .padding(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.material_symbols_person_off_outlined),
+                                "",
+                                tint = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                            Text(
+                                "Disable Account",
+                                color = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        }
+                    }
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(MaterialTheme.shapes.large)
+                            .clickable { /* TODO */ }
+                            .background(MaterialTheme.colorScheme.errorContainer)
+                            .padding(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Icon(painterResource(R.drawable.material_symbols_delete_outlined),
+                                "",
+                                tint = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                            Text(
+                                "Delete Account",
+                                color = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        }
                     }
                 }
             }
