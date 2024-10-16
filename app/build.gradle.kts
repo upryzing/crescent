@@ -97,6 +97,11 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     kapt(libs.hilt.android.compiler)
 }
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
 
 kapt {
     correctErrorTypes = true
