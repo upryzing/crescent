@@ -100,7 +100,7 @@ fun SettingsPage(
             Column(
                 Modifier
                     .padding(12.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(MaterialTheme.shapes.large)
                     .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 ListItem(
@@ -119,7 +119,7 @@ fun SettingsPage(
                 )
                 HorizontalDivider(
                     Modifier.padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.surfaceBright
+                    color = MaterialTheme.colorScheme.outlineVariant
                 )
                 ListItem(
                     modifier = Modifier.clickable { navigateToProfile() },
@@ -140,7 +140,7 @@ fun SettingsPage(
             Column(
                 Modifier
                     .padding(12.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(MaterialTheme.shapes.large)
                     .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 ListItem(
@@ -159,7 +159,7 @@ fun SettingsPage(
                 )
                 HorizontalDivider(
                     Modifier.padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.surfaceBright
+                    color = MaterialTheme.colorScheme.outlineVariant
                 )
                 ListItem(
                     modifier = Modifier.clickable { /* TODO */ },
