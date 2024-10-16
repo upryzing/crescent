@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -84,21 +85,47 @@ fun AccountSettingsPage() {
                         .clickable { /* TODO: Show the dialog here :) */ }
                         .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                         .padding(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Column {
-                            Text("Change Email")
-                            Text(
-                                "Your current email: dummy@example.com",
-                                style = MaterialTheme.typography.bodySmall
-                            )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column {
+                                Text("Change Email")
+                                Text(
+                                    "Your current email: dummy@example.com",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                            Icon(painterResource(R.drawable.material_symbols_edit), "")
                         }
-                        Icon(painterResource(R.drawable.material_symbols_edit), "")
+                    }
+                    HorizontalDivider(
+                        Modifier.padding(horizontal = 6.dp),
+                        color = MaterialTheme.colorScheme.outlineVariant
+                    )
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column {
+                                Text("Change Password")
+                                Text(
+                                    "Your password: *********",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                            Icon(painterResource(R.drawable.material_symbols_edit), "")
+                        }
                     }
                 }
                 Column(
@@ -108,23 +135,36 @@ fun AccountSettingsPage() {
                         .clickable { /* TODO: Show the dialog here :) */ }
                         .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                         .padding(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
-                            Text("Change Password")
-                            Text(
-                                "Your password: *********",
-                                style = MaterialTheme.typography.bodySmall
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.material_symbols_phonelink_lock_outlined),
+                                ""
                             )
+                            Column {
+                                Text("Two-Step Authentication")
+                                Text(
+                                    "Enable, disable and view backup codes",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
                         }
-                        Icon(painterResource(R.drawable.material_symbols_edit), "")
+
+                        Icon(
+                            painterResource(R.drawable.material_symbols_chevron_right_outlined),
+                            ""
+                        )
                     }
                 }
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -146,7 +186,7 @@ fun AccountSettingsPage() {
                                 painterResource(R.drawable.material_symbols_devices_outlined),
                                 ""
                             )
-                            Column() {
+                            Column {
                                 Text("Session")
                                 Text(
                                     "Manage, revoke and revoke all sessions",
