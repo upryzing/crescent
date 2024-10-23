@@ -64,8 +64,8 @@ fun ProfileSettingsPage(goBack: () -> Unit) {
                 }
             )
         }
-    ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
+    ) {
+        Column(modifier = Modifier.padding(it)) {
             ConstraintLayout {
                 val (banner, circle) = createRefs() // Define references for composables
                 Box(
