@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -36,8 +37,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.upryzing.crescent.R
@@ -60,6 +64,10 @@ fun LoginPage(
     AnimatedVisibility(visible = false) {
         AccountDisabledDialog {}
     }
+
+    val showPassword = viewmodel.showPassword
+    val passwordIcon = if (showPassword) painterResource(R.drawable.material_symbols_eye_off) else painterResource(R.drawable.material_symbols_eye)
+    val passwordTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation()
 
     Scaffold { innerPadding ->
         Column(
@@ -106,7 +114,7 @@ fun LoginPage(
                     onValueChange = { emailValue = it },
                     leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
                     label = { Text(stringResource(R.string.ui_input_email)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
                     maxLines = 1
                 )
                 OutlinedTextField(
@@ -116,9 +124,14 @@ fun LoginPage(
                     label = {
                         Text(stringResource(R.string.ui_input_password))
                     },
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    maxLines = 1
+                    visualTransformation = passwordTransformation,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                    maxLines = 1,
+                    trailingIcon = { IconButton(onClick = {
+                        viewmodel.toggleShowPassword()
+                    }) {
+                        Icon(painter = passwordIcon, contentDescription = "")
+                    } }
                 )
                 Button(modifier = Modifier.fillMaxWidth(.625f), onClick = {
                     viewmodel.login(emailValue, passwordValue)
@@ -137,4 +150,3 @@ fun LoginPage(
         }
     }
 }
-
