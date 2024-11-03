@@ -47,7 +47,7 @@ sealed class Channel {
         @SerialName("last_message_id")
         val lastSentMessage: String? = null,
         @SerialName("permissions")
-        val memberPermissions: Int? = null,
+        val memberPermissions: Long? = null,
         @SerialName("nsfw")
         val notSafeForWork: Boolean? = null
     ) : Channel()
