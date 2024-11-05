@@ -1,4 +1,4 @@
-package app.upryzing.crescent.datastore
+package app.upryzing.crescent.persistence.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore

@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import app.upryzing.crescent.api.ApiClient
-import app.upryzing.crescent.datastore.ConfigDataStoreKeys
-import app.upryzing.crescent.datastore.PreferenceDataStoreHelper
+import app.upryzing.crescent.persistence.datastore.ConfigDataStoreKeys
+import app.upryzing.crescent.persistence.datastore.PreferenceDataStoreHelper
 import kotlinx.serialization.encodeToString
 
 enum class SelectedMethod {

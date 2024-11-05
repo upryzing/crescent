@@ -10,9 +10,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import app.upryzing.crescent.api.ApiClient
-import app.upryzing.crescent.datastore.ConfigDataStoreKeys
-import app.upryzing.crescent.datastore.PreferenceDataStoreHelper
 import app.upryzing.crescent.models.api.authentication.SessionResponse
+import app.upryzing.crescent.persistence.datastore.ConfigDataStoreKeys
+import app.upryzing.crescent.persistence.datastore.PreferenceDataStoreHelper
 import app.upryzing.crescent.ui.composables.LoginMFA
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString

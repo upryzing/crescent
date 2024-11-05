@@ -1,4 +1,4 @@
-package app.upryzing.crescent.datastore
+package app.upryzing.crescent.persistence.datastore
 
 import androidx.datastore.preferences.core.Preferences
 import kotlinx.coroutines.flow.Flow
