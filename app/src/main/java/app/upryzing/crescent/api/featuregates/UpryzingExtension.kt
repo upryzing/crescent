@@ -1,4 +1,4 @@
-package app.upryzing.crescent.api.featureFlags
+package app.upryzing.crescent.api.featuregates
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
