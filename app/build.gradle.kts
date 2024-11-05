@@ -12,11 +12,11 @@ val versionPatch = 0
 val versionBuild = 0
 
 android {
-    namespace = "org.nekoweb.amycatgirl.revolt"
+    namespace = "app.upryzing.crescent"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "org.nekoweb.amycatgirl.revolt"
+        applicationId = "app.upryzing.crescent"
         minSdk = 24
         targetSdk = 35
         versionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
