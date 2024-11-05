@@ -10,6 +10,7 @@ import app.upryzing.crescent.models.api.websocket.BaseEvent
 import app.upryzing.crescent.models.api.websocket.PartialMessage
 import app.upryzing.crescent.models.api.websocket.PingEvent
 import app.upryzing.crescent.models.api.websocket.SystemMessage
+import app.upryzing.crescent.models.api.websocket.UnimplementedEvent
 import app.upryzing.crescent.utilities.EventBus
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
