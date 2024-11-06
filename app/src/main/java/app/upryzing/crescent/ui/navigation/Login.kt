@@ -41,13 +41,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.upryzing.crescent.R
 import app.upryzing.crescent.models.viewmodels.LoginViewmodel
 import app.upryzing.crescent.ui.composables.AccountDisabledDialog
 import kotlinx.serialization.Serializable
+import app.upryzing.crescent.R
 
 @Serializable
 object Login
@@ -66,8 +65,10 @@ fun LoginPage(
     }
 
     val showPassword = viewmodel.showPassword
-    val passwordIcon = if (showPassword) painterResource(R.drawable.material_symbols_eye_off) else painterResource(R.drawable.material_symbols_eye)
-    val passwordTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation()
+    val passwordIcon = if (showPassword) painterResource(R.drawable.material_symbols_eye_off)
+    else painterResource(R.drawable.material_symbols_eye)
+    val passwordTransformation = if (showPassword) VisualTransformation.None
+    else PasswordVisualTransformation()
 
     Scaffold { innerPadding ->
         Column(
