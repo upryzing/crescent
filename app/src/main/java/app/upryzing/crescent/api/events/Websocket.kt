@@ -50,7 +50,7 @@ class Websocket(private val client: RevoltAPI) {
     fun connect() {
         CoroutineScope(Dispatchers.IO).launch {
             ws.wss(client.connection.websocket) {
-                _socket = this;
+                _socket = this
 
                 try {
                     for (frame in incoming) {
