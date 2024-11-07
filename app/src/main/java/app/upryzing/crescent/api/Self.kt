@@ -22,7 +22,7 @@ class Self(
     discriminator: String,
     displayName: String,
     override var client: RevoltAPI
-    ) : User(
+) : User(
     id = id,
     relations = relations,
     flags = flags,
@@ -36,7 +36,7 @@ class Self(
     discriminator = discriminator,
     displayName = displayName
 ) {
-        suspend fun getDirectMessages(): List<Channel> {
-            return client!!.http.get("users/dms").body<List<Channel>>()
-        }
+    suspend fun getDirectMessages(): List<Channel> {
+        return client!!.http.get("users/dms").body<List<Channel>>()
+    }
 }
