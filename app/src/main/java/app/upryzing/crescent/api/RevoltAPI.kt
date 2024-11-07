@@ -7,8 +7,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class RevoltAPI(options: ApiOptions? = null) {
-    internal val options: ApiOptions = options ?: ApiOptions();
-    lateinit var connection: ConnectionDetails;
+    internal val options: ApiOptions = options ?: ApiOptions()
+    lateinit var connection: ConnectionDetails
 
     val session: Session = Session(this)
 
