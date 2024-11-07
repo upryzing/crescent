@@ -12,7 +12,11 @@ class RevoltAPI(options: ApiOptions? = null) {
     lateinit var connection: ConnectionDetails;
 
     val session: Session = Session(this)
+
     val users: Users = Users(this)
+    val channels: Channels = Channels(this)
+    val messages: Messages = Messages()
+
     val http: Raw = Raw(this)
 
     var self: User? = null
