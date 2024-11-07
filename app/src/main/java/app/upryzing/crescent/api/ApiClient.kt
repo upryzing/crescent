@@ -1,16 +1,6 @@
 package app.upryzing.crescent.api
 
 import android.util.Log
-import app.upryzing.crescent.models.api.authentication.EmailSessionRequest
-import app.upryzing.crescent.models.api.authentication.MFAResponse
-import app.upryzing.crescent.models.api.authentication.MFASessionRequest
-import app.upryzing.crescent.models.api.authentication.SessionResponse
-import app.upryzing.crescent.models.api.channels.Channel
-import app.upryzing.crescent.models.api.websocket.BaseEvent
-import app.upryzing.crescent.models.api.websocket.PartialMessage
-import app.upryzing.crescent.models.api.websocket.PingEvent
-import app.upryzing.crescent.models.api.websocket.SystemMessage
-import app.upryzing.crescent.models.api.websocket.UnimplementedEvent
 import app.upryzing.crescent.utilities.EventBus
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -50,7 +40,11 @@ private fun intervalPing(ws: DefaultWebSocketSession) = GlobalScope.launch {
     while (true) {
         delay(20 * 1000)
         Log.d("Socket", "Pinging!")
-        ws.send(ApiClient.jsonDeserializer.encodeToString(PingEvent(1)))
+        ws.send(ApiClient.jsonDeserializer.encodeToString(
+            app.upryzing.crescent.api.models.websocket.PingEvent(
+                1
+            )
+        ))
     }
 }
 
@@ -75,18 +69,18 @@ object ApiClient {
     private var API_ROOT_URL: String = "https://api.revolt.chat/"
     const val S3_ROOT_URL: String = "https://autumn.revolt.chat/"
     private var currentIntervalJob: Job? = null
-    var currentSession: SessionResponse.Success? = null
+    var currentSession: app.upryzing.crescent.api.models.authentication.SessionResponse.Success? = null
     private var websocket: DefaultWebSocketSession? = null
     val jsonDeserializer = Json {
         ignoreUnknownKeys = true
         isLenient = true
         serializersModule = SerializersModule {
-            polymorphic(BaseEvent::class) {
-                defaultDeserializer { UnimplementedEvent.serializer() }
+            polymorphic(app.upryzing.crescent.api.models.websocket.BaseEvent::class) {
+                defaultDeserializer { app.upryzing.crescent.api.models.websocket.UnimplementedEvent.serializer() }
             }
 
-            polymorphic(SystemMessage::class) {
-                defaultDeserializer { SystemMessage.UnimplementedMessage.serializer() }
+            polymorphic(app.upryzing.crescent.api.models.websocket.SystemMessage::class) {
+                defaultDeserializer { app.upryzing.crescent.api.models.websocket.SystemMessage.UnimplementedMessage.serializer() }
             }
         }
     }
@@ -102,14 +96,14 @@ object ApiClient {
         }
     }
 
-    suspend fun getDirectMessages(): List<Channel> {
+    suspend fun getDirectMessages(): List<app.upryzing.crescent.api.models.channels.Channel> {
         val res = client.get("$API_ROOT_URL/users/dms") {
             headers {
                 append("X-Session-Token", currentSession?.userToken ?: "")
             }
 
             accept(ContentType.Application.Json)
-        }.body<List<Channel>>()
+        }.body<List<app.upryzing.crescent.api.models.channels.Channel>>()
 
 
         res.forEach {
@@ -122,8 +116,8 @@ object ApiClient {
     }
 
     suspend fun getSpecificMessageFromChannel(
-        channel: Channel, messageId: String
-    ): PartialMessage? {
+        channel: app.upryzing.crescent.api.models.channels.Channel, messageId: String
+    ): app.upryzing.crescent.api.models.websocket.PartialMessage? {
         return try {
             val res = client.get("$API_ROOT_URL/channel/${channel.id}/messages/${messageId}") {
                 headers {
@@ -131,7 +125,7 @@ object ApiClient {
                 }
 
                 accept(ContentType.Application.Json)
-            }.body<PartialMessage>()
+            }.body<app.upryzing.crescent.api.models.websocket.PartialMessage>()
 
             cache[res.id!!] = res
 
@@ -143,8 +137,8 @@ object ApiClient {
         }
     }
 
-    suspend fun getChannelMessages(channelId: String): List<PartialMessage> {
-        val channel = cache[channelId] as Channel
+    suspend fun getChannelMessages(channelId: String): List<app.upryzing.crescent.api.models.websocket.PartialMessage> {
+        val channel = cache[channelId] as app.upryzing.crescent.api.models.channels.Channel
         Log.d("Cache", "Found Channel: $channel")
         val url = "${API_ROOT_URL}channels/${channel.id}/messages?limit=30"
         val res = client.get(url) {
@@ -153,7 +147,7 @@ object ApiClient {
             }
 
             accept(ContentType.Application.Json)
-        }.body<List<PartialMessage>>()
+        }.body<List<app.upryzing.crescent.api.models.websocket.PartialMessage>>()
 
 
         Log.d("Cache", "Cache size: ${cache.size}")
@@ -162,7 +156,7 @@ object ApiClient {
     }
 
     suspend fun sendMessage(location: String, message: String) {
-        val channel = cache[location] as Channel
+        val channel = cache[location] as app.upryzing.crescent.api.models.channels.Channel
 
         val url = "${API_ROOT_URL}channels/${channel.id}/messages"
         client.post(url) {
@@ -171,42 +165,42 @@ object ApiClient {
             }
 
             contentType(ContentType.Application.Json)
-            setBody(PartialMessage(content = message))
+            setBody(app.upryzing.crescent.api.models.websocket.PartialMessage(content = message))
         }
     }
 
-    suspend fun loginWithPassword(email: String, password: String): SessionResponse {
+    suspend fun loginWithPassword(email: String, password: String): app.upryzing.crescent.api.models.authentication.SessionResponse {
         // TODO: error handling
         val response = client.post("$API_ROOT_URL/auth/session/login") {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
 
-            setBody(EmailSessionRequest(email, password))
-        }.body<SessionResponse>()
+            setBody(app.upryzing.crescent.api.models.authentication.SessionRequest.Email(email, password))
+        }.body<app.upryzing.crescent.api.models.authentication.SessionResponse>()
 
-        if (response is SessionResponse.Success) {
+        if (response is app.upryzing.crescent.api.models.authentication.SessionResponse.Success) {
             startSession(response)
         }
 
         return response
     }
 
-    suspend fun confirm2FA(ticket: String, code: String): SessionResponse {
+    suspend fun confirm2FA(ticket: String, code: String): app.upryzing.crescent.api.models.authentication.SessionResponse {
         val response = client.post("$API_ROOT_URL/auth/session/login") {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
 
-            setBody(MFASessionRequest(ticket, MFAResponse.TwoFactorMFA(code)))
-        }.body<SessionResponse>()
+            setBody(app.upryzing.crescent.api.models.authentication.SessionRequest.MultiFactor(ticket, app.upryzing.crescent.api.models.authentication.MFAResponse.TwoFactorMFA(code)))
+        }.body<app.upryzing.crescent.api.models.authentication.SessionResponse>()
 
-        if (response is SessionResponse.Success) {
+        if (response is app.upryzing.crescent.api.models.authentication.SessionResponse.Success) {
             startSession(response)
         }
 
         return response
     }
 
-    suspend fun startSession(response: SessionResponse.Success) {
+    suspend fun startSession(response: app.upryzing.crescent.api.models.authentication.SessionResponse.Success) {
         Log.d("Client", "Got response from API: $response")
         currentSession = response
         CoroutineScope(Dispatchers.IO).launch {
@@ -217,7 +211,7 @@ object ApiClient {
                 try {
                     for (frame in incoming) {
                         if (frame is Frame.Text) {
-                            val event: BaseEvent = receiveDeserialized()
+                            val event: app.upryzing.crescent.api.models.websocket.BaseEvent = receiveDeserialized()
                             Log.d("Socket", "Got Event: $event")
                             EventBus.publish(event)
                         }
@@ -231,7 +225,7 @@ object ApiClient {
         }
     }
 
-    private suspend fun removeExistingSession(sessionResponse: SessionResponse.Success) {
+    private suspend fun removeExistingSession(sessionResponse: app.upryzing.crescent.api.models.authentication.SessionResponse.Success) {
         client.delete("${API_ROOT_URL}auth/session/${sessionResponse.id}") {
             headers { append("X-Session-Token", currentSession?.userToken ?: "") }
             contentType(ContentType.Application.Json)

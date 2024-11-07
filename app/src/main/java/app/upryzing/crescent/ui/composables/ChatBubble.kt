@@ -21,13 +21,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.upryzing.crescent.api.ApiClient
-import app.upryzing.crescent.models.api.User
-import app.upryzing.crescent.models.api.websocket.PartialMessage
+import app.upryzing.crescent.api.models.user.User
 import app.upryzing.crescent.ui.theme.RevoltTheme
 import com.vdurmont.emoji.EmojiParser
 
 @Composable
-fun ChatBubble(message: PartialMessage, modifier: Modifier = Modifier, isSelf: Boolean = false) {
+fun ChatBubble(message: app.upryzing.crescent.api.models.websocket.PartialMessage, modifier: Modifier = Modifier, isSelf: Boolean = false) {
     val author = remember(message.authorId) {
         ApiClient.cache[message.authorId] as User?
     }
@@ -78,9 +77,9 @@ fun ChatBubble(message: PartialMessage, modifier: Modifier = Modifier, isSelf: B
 fun ChatBubblePreview() {
     RevoltTheme {
         Column {
-            ChatBubble(PartialMessage(), isSelf = true)
-            ChatBubble(PartialMessage())
-            ChatBubble(PartialMessage(content = "🥺"))
+            ChatBubble(app.upryzing.crescent.api.models.websocket.PartialMessage(), isSelf = true)
+            ChatBubble(app.upryzing.crescent.api.models.websocket.PartialMessage())
+            ChatBubble(app.upryzing.crescent.api.models.websocket.PartialMessage(content = "🥺"))
         }
     }
 }

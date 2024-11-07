@@ -57,9 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.upryzing.crescent.R
 import app.upryzing.crescent.api.ApiClient
-import app.upryzing.crescent.models.api.User
-import app.upryzing.crescent.models.api.channels.Channel
-import app.upryzing.crescent.models.api.websocket.PartialMessage
+import app.upryzing.crescent.api.models.user.User
 import app.upryzing.crescent.models.viewmodels.ChatViewmodel
 import app.upryzing.crescent.ui.composables.ChatBubble
 import app.upryzing.crescent.ui.composables.CustomTextField
@@ -86,7 +84,7 @@ fun ChatPage(
     val navigator = rememberSupportingPaneScaffoldNavigator()
 
     val avatar = when (user) {
-        is Channel.Group -> "${ApiClient.S3_ROOT_URL}icons/${user.icon?.id}?max_side=256"
+        is app.upryzing.crescent.api.models.channels.Channel.Group -> "${ApiClient.S3_ROOT_URL}icons/${user.icon?.id}?max_side=256"
         is User -> "${ApiClient.S3_ROOT_URL}avatars/${user.avatar?.id}?max_side=256"
         else -> null
     }
@@ -94,7 +92,7 @@ fun ChatPage(
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(ulid) {
-        EventBus.subscribe<PartialMessage> {
+        EventBus.subscribe<app.upryzing.crescent.api.models.websocket.PartialMessage> {
             if (it.channelId == ulid) {
                 messages.add(0, it)
             }
@@ -116,13 +114,13 @@ fun ChatPage(
                     ProfileImage(
                         fallback = when (user) {
                             is User -> user.username
-                            is Channel.Group -> user.name
+                            is app.upryzing.crescent.api.models.channels.Channel.Group -> user.name
                             else -> "Unknown"
                         }, url = avatar, size = 26.dp
                     )
                     Text(
                         text = when (user) {
-                            is Channel.Group -> user.name
+                            is app.upryzing.crescent.api.models.channels.Channel.Group -> user.name
                             is User -> user.displayName ?: "${user.username}#${user.discriminator}"
 
                             else -> "Unknown"

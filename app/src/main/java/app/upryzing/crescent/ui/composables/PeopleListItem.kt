@@ -14,14 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.upryzing.crescent.api.ApiClient
-import app.upryzing.crescent.models.api.User
-import app.upryzing.crescent.models.api.UserStatus
-import app.upryzing.crescent.models.api.channels.Channel
+import app.upryzing.crescent.api.models.user.User
+import app.upryzing.crescent.api.models.user.UserStatus
 
 @Composable
 fun PeopleListItem(
     user: User? = null,
-    channel: Channel.Group? = null,
+    channel: app.upryzing.crescent.api.models.channels.Channel.Group? = null,
     status: UserStatus? = null,
     unreads: Int? = null,
     callback: (() -> Unit)

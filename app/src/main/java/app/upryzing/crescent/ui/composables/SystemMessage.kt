@@ -18,11 +18,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import app.upryzing.crescent.models.api.websocket.SystemMessage
 import app.upryzing.crescent.ui.theme.RevoltTheme
 
 @Composable
-fun SystemMessageDisplay(systemMessage: SystemMessage) {
+fun SystemMessageDisplay(systemMessage: app.upryzing.crescent.api.models.websocket.SystemMessage) {
     val sysMsgTextStyle = TextStyle(
         fontSize = 12.sp,
         color = MaterialTheme.colorScheme.outline,
@@ -38,36 +37,36 @@ fun SystemMessageDisplay(systemMessage: SystemMessage) {
         modifier = Modifier.fillMaxWidth()
     ) {
         when (systemMessage) {
-            is SystemMessage.Text -> Text(
+            is app.upryzing.crescent.api.models.websocket.SystemMessage.Text -> Text(
                 systemMessage.content, style = sysMsgTextStyle
             )
 
-            is SystemMessage.UserAdded -> Text(
+            is app.upryzing.crescent.api.models.websocket.SystemMessage.UserAdded -> Text(
                 "${systemMessage.id} was added by ${systemMessage.by}", // TODO: Resolve user in cache and by fetching user
                 style = sysMsgTextStyle
             )
 
-            is SystemMessage.UserRemove -> Text(
+            is app.upryzing.crescent.api.models.websocket.SystemMessage.UserRemove -> Text(
                 "${systemMessage.id} was removed by ${systemMessage.by}",
                 style = sysMsgTextStyle
             )
 
-            is SystemMessage.UserKicked -> Text(
+            is app.upryzing.crescent.api.models.websocket.SystemMessage.UserKicked -> Text(
                 "${systemMessage.name} was kicked by ${systemMessage.by}",
                 style = sysMsgTextStyle
             )
 
-            is SystemMessage.ChannelTransferred -> Text(
+            is app.upryzing.crescent.api.models.websocket.SystemMessage.ChannelTransferred -> Text(
                 "Ownership of channel has been transferred to ${systemMessage.to}",
                 style = sysMsgTextStyle
             )
 
-            is SystemMessage.ChannelDescriptionChanged -> Text(
+            is app.upryzing.crescent.api.models.websocket.SystemMessage.ChannelDescriptionChanged -> Text(
                 "${systemMessage.by} changed this group's description",
                 style = sysMsgTextStyle
             )
 
-            is SystemMessage.ChannelIconChanged -> Text(
+            is app.upryzing.crescent.api.models.websocket.SystemMessage.ChannelIconChanged -> Text(
                 "${systemMessage.by} changed this group's icon",
                 style = sysMsgTextStyle
             )
@@ -88,30 +87,30 @@ fun SystemMessagePreview() {
     RevoltTheme {
         Scaffold { innerPadding ->
             Column(Modifier.padding(innerPadding)) {
-                SystemMessageDisplay(SystemMessage.Text(content = "I am going to make an announcement"))
+                SystemMessageDisplay(app.upryzing.crescent.api.models.websocket.SystemMessage.Text(content = "I am going to make an announcement"))
                 SystemMessageDisplay(
-                    SystemMessage.UserAdded(
+                    app.upryzing.crescent.api.models.websocket.SystemMessage.UserAdded(
                         id = "0".repeat(26),
                         by = "0".repeat(26)
                     )
                 )
                 SystemMessageDisplay(
-                    SystemMessage.UserRemove(
+                    app.upryzing.crescent.api.models.websocket.SystemMessage.UserRemove(
                         id = "0".repeat(26),
                         by = "0".repeat(26)
                     )
                 )
-                SystemMessageDisplay(SystemMessage.UserKicked(name = "John", by = "0".repeat(26)))
-                SystemMessageDisplay(SystemMessage.ChannelDescriptionChanged(by = "0".repeat(26)))
-                SystemMessageDisplay(SystemMessage.ChannelIconChanged(by = "0".repeat(26)))
+                SystemMessageDisplay(app.upryzing.crescent.api.models.websocket.SystemMessage.UserKicked(name = "John", by = "0".repeat(26)))
+                SystemMessageDisplay(app.upryzing.crescent.api.models.websocket.SystemMessage.ChannelDescriptionChanged(by = "0".repeat(26)))
+                SystemMessageDisplay(app.upryzing.crescent.api.models.websocket.SystemMessage.ChannelIconChanged(by = "0".repeat(26)))
                 SystemMessageDisplay(
-                    SystemMessage.ChannelTransferred(
+                    app.upryzing.crescent.api.models.websocket.SystemMessage.ChannelTransferred(
                         from = "0".repeat(26),
                         to = "0".repeat(26)
                     )
                 )
                 SystemMessageDisplay(
-                    SystemMessage.UnimplementedMessage
+                    app.upryzing.crescent.api.models.websocket.SystemMessage.UnimplementedMessage
                 )
             }
         }

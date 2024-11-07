@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.upryzing.crescent.models.api.Presence
+import app.upryzing.crescent.api.models.user.Presence
 import app.upryzing.crescent.ui.theme.Blue500
 import app.upryzing.crescent.ui.theme.Gray400
 import app.upryzing.crescent.ui.theme.Green500

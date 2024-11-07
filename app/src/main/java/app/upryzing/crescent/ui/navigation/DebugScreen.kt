@@ -31,10 +31,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import app.upryzing.crescent.R
 import app.upryzing.crescent.api.ApiClient
-import app.upryzing.crescent.models.api.websocket.AuthenticatedEvent
-import app.upryzing.crescent.models.api.websocket.PartialMessage
-import app.upryzing.crescent.models.api.websocket.ReadyEvent
-import app.upryzing.crescent.models.api.websocket.UnimplementedEvent
 import app.upryzing.crescent.ui.theme.Green500
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,7 +92,7 @@ fun DebugScreen(
         ) {
             items(list) {
                 when (it) {
-                    is AuthenticatedEvent -> {
+                    is app.upryzing.crescent.api.models.websocket.AuthenticatedEvent -> {
                         Surface(
                             modifier = Modifier.fillMaxWidth(), color = Green500,
                         ) {
@@ -104,7 +100,7 @@ fun DebugScreen(
                         }
                     }
 
-                    is ReadyEvent -> {
+                    is app.upryzing.crescent.api.models.websocket.ReadyEvent -> {
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
                             color = MaterialTheme.colorScheme.primaryContainer,
@@ -116,7 +112,7 @@ fun DebugScreen(
                         }
                     }
 
-                    is PartialMessage -> {
+                    is app.upryzing.crescent.api.models.websocket.PartialMessage -> {
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
                             color = MaterialTheme.colorScheme.secondaryContainer,
@@ -128,7 +124,7 @@ fun DebugScreen(
                         }
                     }
 
-                    is UnimplementedEvent -> {
+                    is app.upryzing.crescent.api.models.websocket.UnimplementedEvent -> {
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
                             color = MaterialTheme.colorScheme.errorContainer,

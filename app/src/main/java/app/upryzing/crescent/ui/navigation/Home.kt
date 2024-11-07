@@ -25,9 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import app.upryzing.crescent.R
 import app.upryzing.crescent.api.ApiClient
-import app.upryzing.crescent.models.api.Flags
-import app.upryzing.crescent.models.api.User
-import app.upryzing.crescent.models.api.channels.Channel
+import app.upryzing.crescent.api.models.user.Flags
+import app.upryzing.crescent.api.models.user.User
 import app.upryzing.crescent.models.viewmodels.HomeViewmodel
 import app.upryzing.crescent.ui.composables.FloatingActionButtonListItem
 import app.upryzing.crescent.ui.composables.FloatingActionButtonWithOptions
@@ -97,7 +96,7 @@ fun HomePage(
         ) {
             items(homeViewmodel.channels) { channel ->
                 when (channel) {
-                    is Channel.DirectMessage -> {
+                    is app.upryzing.crescent.api.models.channels.Channel.DirectMessage -> {
                         val author = remember {
                             ApiClient.cache.asIterable().filterIsInstance<Map.Entry<String, User>>()
                                 .find { entry ->
@@ -115,7 +114,7 @@ fun HomePage(
                         }
                     }
 
-                    is Channel.Group -> {
+                    is app.upryzing.crescent.api.models.channels.Channel.Group -> {
                         PeopleListItem(channel = channel, callback = { navigateToChat(channel.id) })
                     }
                     else -> {}

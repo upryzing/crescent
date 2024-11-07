@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import app.upryzing.crescent.api.ApiClient
-import app.upryzing.crescent.models.api.authentication.SessionResponse
 import app.upryzing.crescent.persistence.datastore.ConfigDataStoreKeys
 import app.upryzing.crescent.persistence.datastore.PreferenceDataStoreHelper
 import app.upryzing.crescent.ui.composables.LoginMFA
@@ -43,7 +42,7 @@ class LoginViewmodel(
 
         if (currentSession.isNotEmpty()) {
             Log.d("Login", "SerializedSession exists, attempting deserialization.")
-            val availableSession = ApiClient.jsonDeserializer.decodeFromString<SessionResponse.Success>(
+            val availableSession = ApiClient.jsonDeserializer.decodeFromString<app.upryzing.crescent.api.models.authentication.SessionResponse.Success>(
                 currentSession
             )
             ApiClient.currentSession = availableSession
@@ -60,13 +59,13 @@ class LoginViewmodel(
     fun login(email: String, password: String) {
         viewModelScope.launch {
             when (val response = client.loginWithPassword(email, password)) {
-                is SessionResponse.NeedsMultiFactorAuth ->
+                is app.upryzing.crescent.api.models.authentication.SessionResponse.NeedsMultiFactorAuth ->
                     navigation.navigate(
                         LoginMFA(response.ticket)
                     )
 
-                is SessionResponse.AccountDisabled -> println("Account has been disabled")
-                is SessionResponse.Success -> {
+                is app.upryzing.crescent.api.models.authentication.SessionResponse.AccountDisabled -> println("Account has been disabled")
+                is app.upryzing.crescent.api.models.authentication.SessionResponse.Success -> {
                     val serializedSession = ApiClient.jsonDeserializer.encodeToString(response)
                     Log.d("Preferences", "Login Completed, saving current session")
                     preferenceDataStoreHelper.putPreference(

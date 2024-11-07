@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.upryzing.crescent.api.ApiClient
-import app.upryzing.crescent.models.api.websocket.ReadyEvent
 import app.upryzing.crescent.utilities.EventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +23,7 @@ class MainViewmodel : ViewModel() {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            EventBus.subscribe<ReadyEvent> { event ->
+            EventBus.subscribe<app.upryzing.crescent.api.models.websocket.ReadyEvent> { event ->
                 event.users.forEach {
                     ApiClient.cache[it.id] = it
                 }

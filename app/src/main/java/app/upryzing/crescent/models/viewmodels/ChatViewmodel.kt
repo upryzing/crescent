@@ -4,13 +4,12 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.upryzing.crescent.api.ApiClient
-import app.upryzing.crescent.models.api.websocket.PartialMessage
 import kotlinx.coroutines.launch
 
 class ChatViewmodel(
     id: String
 ) : ViewModel() {
-    val messages = mutableStateListOf<PartialMessage>()
+    val messages = mutableStateListOf<app.upryzing.crescent.api.models.websocket.PartialMessage>()
 
     init {
         messages.clear()
@@ -19,7 +18,7 @@ class ChatViewmodel(
             messages.addAll(getMessages(id))
         }
     }
-    suspend fun getMessages(channel: String): List<PartialMessage> {
+    suspend fun getMessages(channel: String): List<app.upryzing.crescent.api.models.websocket.PartialMessage> {
         return ApiClient.getChannelMessages(channel).toMutableList()
     }
 }
