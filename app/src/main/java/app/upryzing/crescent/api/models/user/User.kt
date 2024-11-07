@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-class User(
+open class User(
     @SerialName("_id") val id: String,
     val username: String,
     @SerialName("display_name") val displayName: String? = null,
@@ -23,9 +23,9 @@ class User(
     val flags: Int? = null,
     val status: Status? = null,
     val relations: List<Relation>? = null,
-    val relationship: RelationshipStatus? = null,
+    open val relationship: RelationshipStatus? = null,
     val online: Boolean? = null,
-    @Transient val client: RevoltAPI? = null
+    @Transient open val client: RevoltAPI? = null
 ) {
     val profile
          get() = run {

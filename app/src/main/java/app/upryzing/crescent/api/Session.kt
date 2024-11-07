@@ -27,7 +27,8 @@ class Session(private val client: RevoltAPI) {
         if (response is SessionResponse.Success) {
             currentSession = response
 
-            client.self = client.http.get("users/@me").body<User>()
+            client.self = client.http.get("users/@me").body<Self>()
+            client.self!!.client = client
         }
 
         return response

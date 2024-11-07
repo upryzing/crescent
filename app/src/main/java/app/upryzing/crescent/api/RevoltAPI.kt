@@ -1,7 +1,6 @@
 package app.upryzing.crescent.api
 
 import app.upryzing.crescent.api.models.information.ApiInformation
-import app.upryzing.crescent.api.models.user.User
 import io.ktor.client.call.body
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +18,7 @@ class RevoltAPI(options: ApiOptions? = null) {
 
     val http: Raw = Raw(this)
 
-    var self: User? = null
+    var self: Self? = null
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
