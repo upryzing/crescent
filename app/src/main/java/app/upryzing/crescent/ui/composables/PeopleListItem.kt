@@ -31,14 +31,14 @@ import androidx.compose.ui.unit.dp
 import app.upryzing.crescent.R
 import app.upryzing.crescent.api.ApiClient
 import app.upryzing.crescent.api.models.user.User
-import app.upryzing.crescent.api.models.user.UserStatus
+import app.upryzing.crescent.api.models.user.Status
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PeopleListItem(
     user: User? = null,
     channel: app.upryzing.crescent.api.models.channels.Channel.Group? = null,
-    status: UserStatus? = null,
+    status: Status? = null,
     unreads: Int? = null,
     disableBottomSheet: Boolean = false,
     callback: (() -> Unit)
