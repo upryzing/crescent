@@ -1,5 +1,6 @@
 package app.upryzing.crescent.api
 
+import app.upryzing.crescent.api.events.Websocket
 import app.upryzing.crescent.api.models.information.ApiInformation
 import io.ktor.client.call.body
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +18,7 @@ class RevoltAPI(options: ApiOptions? = null) {
     val messages: Messages = Messages()
 
     val http: Raw = Raw(this)
+    val ws: Websocket = Websocket(this)
 
     var self: Self? = null
 
