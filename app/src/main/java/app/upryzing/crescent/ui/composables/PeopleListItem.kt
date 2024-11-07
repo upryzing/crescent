@@ -30,17 +30,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.upryzing.crescent.R
 import app.upryzing.crescent.api.ApiClient
-import app.upryzing.crescent.models.api.User
-import app.upryzing.crescent.models.api.UserStatus
-import app.upryzing.crescent.models.api.channels.Channel
-import kotlinx.coroutines.launch
+import app.upryzing.crescent.api.models.user.User
+import app.upryzing.crescent.api.models.user.UserStatus
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PeopleListItem(
     user: User? = null,
     channel: app.upryzing.crescent.api.models.channels.Channel.Group? = null,
-    status: Status? = null,
+    status: UserStatus? = null,
     unreads: Int? = null,
     disableBottomSheet: Boolean = false,
     callback: (() -> Unit)

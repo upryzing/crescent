@@ -1,15 +1,15 @@
 package app.upryzing.crescent.api
 
-import android.util.Log
-import app.upryzing.crescent.api.events.Websocket
 import app.upryzing.crescent.api.models.information.ApiInformation
+import app.upryzing.crescent.api.models.user.User
 import io.ktor.client.call.body
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class RevoltAPI(internal val options: ApiOptions = ApiOptions()) {
-    var connection: ConnectionDetails? = null
+class RevoltAPI(options: ApiOptions? = null) {
+    internal val options: ApiOptions = options ?: ApiOptions();
+    lateinit var connection: ConnectionDetails;
 
     val session: Session = Session(this)
 
@@ -18,15 +18,12 @@ class RevoltAPI(internal val options: ApiOptions = ApiOptions()) {
     val messages: Messages = Messages()
 
     val http: Raw = Raw(this)
-    val ws: Websocket = Websocket(this)
 
-    var self: Self? = null
+    var self: User? = null
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
             val info = http.get("/").body<ApiInformation>()
-
-            Log.d("API", "Got API Information: $info")
 
             this@RevoltAPI.connection = ConnectionDetails(
                 api = this@RevoltAPI.options.apiUrl,
@@ -35,8 +32,6 @@ class RevoltAPI(internal val options: ApiOptions = ApiOptions()) {
                 proxy = info.features?.proxy?.url,
                 version = info.version
             )
-
-            Log.d("API", "Init done, Client can now be used!")
         }
     }
 }

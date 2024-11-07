@@ -8,10 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.upryzing.crescent.api.ApiClient
-import app.upryzing.crescent.api.RevoltAPI
-import app.upryzing.crescent.api.models.authentication.SessionRequest
-import app.upryzing.crescent.api.models.authentication.SessionResponse
-import app.upryzing.crescent.api.models.authentication.SessionResponse.*
 import app.upryzing.crescent.persistence.datastore.ConfigDataStoreKeys
 import app.upryzing.crescent.persistence.datastore.PreferenceDataStoreHelper
 import app.upryzing.crescent.ui.navigation.Navigator
@@ -48,7 +44,7 @@ class LoginViewmodel @Inject constructor(
 
         if (currentSession.isNotEmpty()) {
             Log.d("Login", "SerializedSession exists, attempting deserialization.")
-            val availableSession = ApiClient.jsonDeserializer.decodeFromString<SessionResponse.Success>(
+            val availableSession = ApiClient.jsonDeserializer.decodeFromString<app.upryzing.crescent.api.models.authentication.SessionResponse.Success>(
                 currentSession
             )
             ApiClient.currentSession = availableSession
@@ -59,28 +55,25 @@ class LoginViewmodel @Inject constructor(
         }
     }
 
-    suspend fun login(email: String, password: String): Navigator.NavTarget? {
-        return viewModelScope.async(Dispatchers.IO) {
-            return@async when(val response = clientNext?.session?.createSession(
-                SessionRequest.Email(
-                    email,
-                    password
-                )
-            )) {
-                is Success -> Navigator.NavTarget.Home
+    fun login(email: String, password: String) {
+        viewModelScope.launch {
+            when (val response = client.loginWithPassword(email, password)) {
+                is app.upryzing.crescent.api.models.authentication.SessionResponse.NeedsMultiFactorAuth ->
+                    navigation.navigate(
+                        LoginMFA(response.ticket)
+                    )
 
-                is NeedsMultiFactorAuth -> Navigator.NavTarget.MFADialog(
-                    ticket = response.ticket
-                    // TODO: Allow methods
-                )
-
-                is AccountDisabled -> {
-                    Log.d("Internal",  "TODO: Handle accountDisabled")
-                    null
-                }
-                null -> {
-                    Log.d("Internal", "Uhhhhhhhhhhhhhhhhh, that shouldn't happen! ;w;")
-                    null
+                is app.upryzing.crescent.api.models.authentication.SessionResponse.AccountDisabled -> println("Account has been disabled")
+                is app.upryzing.crescent.api.models.authentication.SessionResponse.Success -> {
+                    val serializedSession = ApiClient.jsonDeserializer.encodeToString(response)
+                    Log.d("Preferences", "Login Completed, saving current session")
+                    preferenceDataStoreHelper.putPreference(
+                        ConfigDataStoreKeys.SerializedCurrentSession,
+                        serializedSession
+                    )
+                    navigation.navigate("home") {
+                        popUpTo("auth") { inclusive = true }
+                    }
                 }
             }
             }.await()
