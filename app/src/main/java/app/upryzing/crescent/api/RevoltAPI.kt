@@ -1,7 +1,7 @@
 package app.upryzing.crescent.api
 
 class RevoltAPI {
-    private val options: RevoltAPIOptions;
+    internal val options: RevoltAPIOptions;
 
     constructor(
         options: RevoltAPIOptions
@@ -15,5 +15,5 @@ class RevoltAPI {
 
     val session: Session = Session(this)
     val users: Users = Users(this)
-    val http: Raw = Raw()
+    val http: Raw = Raw(this)
 }
