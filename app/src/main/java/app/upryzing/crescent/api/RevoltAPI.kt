@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class RevoltAPI(options: ApiOptions? = null) {
+open class RevoltAPI(options: ApiOptions? = null) {
     internal val options: ApiOptions = options ?: ApiOptions()
     lateinit var connection: ConnectionDetails
 
