@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.serialization)
     kotlin("kapt")
-    id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
 }
 val versionMajor = 1
@@ -75,7 +74,6 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.dynamic.features.fragment)
     implementation(libs.ktor.serialization.kotlinx.json)
-    implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.ulidj)
     implementation(libs.coil)
     implementation(libs.coil.compose)
@@ -93,9 +91,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.dagger.hilt.android)
     implementation(libs.androidx.constraintlayout.compose)
-    kapt(libs.hilt.android.compiler)
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
 }
 java {
     toolchain {
