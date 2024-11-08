@@ -1,5 +1,6 @@
 package app.upryzing.crescent.ui.navigation
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,22 +50,20 @@ import app.upryzing.crescent.models.viewmodels.LoginViewmodel
 import app.upryzing.crescent.ui.composables.AccountDisabledDialog
 import kotlinx.serialization.Serializable
 import app.upryzing.crescent.R
+import kotlinx.coroutines.launch
 
 @Serializable
 object Login
 
 @Composable
 fun LoginPage(
+    navigator: Navigator,
     viewmodel: LoginViewmodel
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     var emailValue by remember { mutableStateOf("") }
     var passwordValue by remember { mutableStateOf("") }
-    // TODO: Please implement when the login gets an error or it's requires MFA code. And plus, implement login functionality too.
-    // TODO: fuck off :trl:
-
-    AnimatedVisibility(visible = false) {
-        AccountDisabledDialog {}
-    }
 
     val showPassword = viewmodel.showPassword
     val passwordIcon = if (showPassword) painterResource(R.drawable.material_symbols_eye_off)
@@ -136,7 +136,12 @@ fun LoginPage(
                     } }
                 )
                 Button(modifier = Modifier.fillMaxWidth(.625f), onClick = {
-                    viewmodel.login(emailValue, passwordValue)
+                    coroutineScope.launch {
+                        when(val target = viewmodel.login(emailValue, passwordValue)) {
+                            null -> Log.d("Login", "Do absolutely nothing.")
+                            else -> navigator.navigateTo(target)
+                        }
+                    }
                 }) {
                     Text(stringResource(R.string.ui_button_login))
                 }

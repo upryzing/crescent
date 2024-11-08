@@ -39,30 +39,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import app.upryzing.crescent.R
 import app.upryzing.crescent.models.viewmodels.MFADialogViewModel
 import app.upryzing.crescent.models.viewmodels.SelectedMethod
+import app.upryzing.crescent.ui.navigation.Navigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 
-@Serializable
-data class LoginMFA(
-    val ticket: String
-)
 
 @Composable
 fun MFADialog(
-    data: LoginMFA,
+    data: Navigator.NavTarget.MFADialog,
     dismissCallback: () -> Unit,
-    successCallback: () -> Unit
+    successCallback: () -> Unit,
+    viewModel: MFADialogViewModel
 ) {
-    val ctx = LocalContext.current
-    val dialogViewmodel: MFADialogViewModel = viewModel {
-        MFADialogViewModel(
-            data.ticket,
-            ctx
-        )
-    }
     var mfaValue by rememberSaveable { mutableStateOf("") }
     var has2FAFinished by remember { mutableStateOf(false) }
 
@@ -124,7 +115,7 @@ fun MFADialog(
             ) {
                 Button(onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        dialogViewmodel.handleMFAMethod(SelectedMethod.TWO_FACTOR_AUTHENTICATION, mfaValue)
+                        viewModel.handleMFAMethod(SelectedMethod.TWO_FACTOR_AUTHENTICATION, mfaValue)
                     }.invokeOnCompletion { cause -> if (cause == null) has2FAFinished = true }
                 }) {
                     Text(stringResource(R.string.ui_button_login))

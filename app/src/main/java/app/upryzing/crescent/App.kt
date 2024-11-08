@@ -15,11 +15,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -34,17 +36,19 @@ import app.upryzing.crescent.api.models.authentication.SessionResponse
 import app.upryzing.crescent.models.viewmodels.ChatViewmodel
 import app.upryzing.crescent.models.viewmodels.HomeViewmodel
 import app.upryzing.crescent.models.viewmodels.LoginViewmodel
+import app.upryzing.crescent.models.viewmodels.MFADialogViewModel
 import app.upryzing.crescent.models.viewmodels.MainViewmodel
-import app.upryzing.crescent.ui.composables.LoginMFA
 import app.upryzing.crescent.ui.composables.MFADialog
 import app.upryzing.crescent.ui.navigation.ChatPage
 import app.upryzing.crescent.ui.navigation.DebugScreen
 import app.upryzing.crescent.ui.navigation.HomePage
 import app.upryzing.crescent.ui.navigation.LoginPage
+import app.upryzing.crescent.ui.navigation.Navigator
 import app.upryzing.crescent.ui.navigation.ProfileSettingsPage
 import app.upryzing.crescent.ui.navigation.SettingsPage
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
@@ -52,69 +56,61 @@ fun App(
     mainViewmodel: MainViewmodel = viewModel(),
 ) {
     val context = LocalContext.current
-    val navigator = rememberNavController()
+    val navController = rememberNavController()
+
+    val newNavigator = Navigator()
+
+    LaunchedEffect("navigation") {
+        newNavigator.sharedFlow.onEach {
+            navController.navigate(it)
+        }.launchIn(this)
+    }
+
     Surface(color = MaterialTheme.colorScheme.background) {
-        NavHost(navController = navigator, startDestination = "debug/next") {
-            composable("debug",
-                enterTransition = {
-                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left
-                    )
-                },
-                exitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
-                        animationSpec = tween(
-                            durationMillis = 200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right
-                    )
-                }
-            ) {
+        NavHost(navController = navController, startDestination = "debug/next", enterTransition = {
+            fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
+                animationSpec = tween(
+                    durationMillis = 250,
+                    easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
+                ),
+                towards = AnimatedContentTransitionScope.SlideDirection.Left
+            )
+        },
+            exitTransition = {
+                fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
+                    animationSpec = tween(
+                        durationMillis = 200,
+                        easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+                    ),
+                    towards = AnimatedContentTransitionScope.SlideDirection.Right
+                )
+            }) {
+            composable("debug") {
                 DebugScreen(mainViewmodel.messageList, goBack = {
-                    navigator.popBackStack()
-                }, navigateToDebugLogin = { navigator.navigate("auth") })
+                    navController.popBackStack()
+                }, navigateToDebugLogin = { navController.navigate("auth") })
             }
 
-            composable("auth") {
-                val viewmodel = viewModel {
-                    LoginViewmodel(ApiClient, navigator, context)
-                }
-                LoginPage(viewmodel)
+            composable<Navigator.NavTarget.Login> {
+                val viewmodel = hiltViewModel<LoginViewmodel>()
+                LoginPage(newNavigator, viewmodel)
             }
-            dialog<LoginMFA> { backStackEntry ->
-                val data: LoginMFA = backStackEntry.toRoute()
-                MFADialog(data, dismissCallback = { navigator.popBackStack() }, successCallback = {
-                    navigator.navigate("home") {
-                        popUpTo("auth") { inclusive = true }
-                    }
-                })
+
+            dialog<Navigator.NavTarget.MFADialog> { backStackEntry ->
+                val data: Navigator.NavTarget.MFADialog = backStackEntry.toRoute()
+                val viewmodel: MFADialogViewModel = hiltViewModel()
+                MFADialog(
+                    data,
+                    dismissCallback = { navController.popBackStack() },
+                    successCallback = {
+                        navController.navigate("home") {
+                            popUpTo("auth") { inclusive = true }
+                        }
+                    }, viewmodel)
             }
 
             composable(
-                "home",
-                enterTransition = {
-                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right
-                    )
-                },
-                exitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
-                        animationSpec = tween(
-                            durationMillis = 200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left
-                    )
-                }
+                "home"
             ) {
                 val homeViewmodel = viewModel {
                     HomeViewmodel()
@@ -122,32 +118,14 @@ fun App(
 
                 HomePage(
                     homeViewmodel,
-                    navigateToChat = { navigator.navigate("messages/${it}") },
-                    navigateToDebug = { navigator.navigate("debug") },
-                    navigateToSettings = { navigator.navigate("settings") }
+                    navigateToChat = { navController.navigate("messages/${it}") },
+                    navigateToDebug = { navController.navigate("debug") },
+                    navigateToSettings = { navController.navigate("settings") }
                 )
             }
 
             composable(
                 "messages/{id}",
-                enterTransition = {
-                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left
-                    )
-                },
-                exitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
-                        animationSpec = tween(
-                            durationMillis = 200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right
-                    )
-                },
                 arguments = listOf(navArgument("id") { type = NavType.StringType })
             ) { backStackEntry ->
                 Log.d(
@@ -161,73 +139,40 @@ fun App(
                     viewmodel,
                     backStackEntry.arguments?.getString("id")!!,
                     goBack = {
-                        navigator.popBackStack()
+                        navController.popBackStack()
                     }
                 )
             }
 
             composable(
-                "settings",
-                enterTransition = {
-                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left
-                    )
-                },
-                exitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
-                        animationSpec = tween(
-                            durationMillis = 200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right
-                    )
-                }
+                "settings"
             ) {
                 SettingsPage(
-                    goBack = { navigator.popBackStack() },
+                    goBack = { navController.popBackStack() },
                     navigateToAccount = {},
-                    navigateToProfile = { navigator.navigate("settings/profile") },
+                    navigateToProfile = { navController.navigate("settings/profile") },
                     onSessionDropped = {
-                        navigator.navigate("auth") {
+                        navController.navigate("auth") {
                             popUpTo("settings") { inclusive = true }
                         }
                     }
                 )
             }
-            composable("settings/profile", enterTransition = {
-                fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
-                    animationSpec = tween(
-                        durationMillis = 250,
-                        easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-                    ),
-                    towards = AnimatedContentTransitionScope.SlideDirection.Left
-                )
-            },
-                exitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
-                        animationSpec = tween(
-                            durationMillis = 200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right
-                    )
-                }) {
-                ProfileSettingsPage(goBack = { navigator.popBackStack() })
+            composable("settings/profile") {
+                ProfileSettingsPage(goBack = { navController.popBackStack() })
             }
 
             composable("debug/next") {
                 var clientConnectionInformation = mainViewmodel.getClientInformation()
                 val coroutineScope = rememberCoroutineScope()
 
-                var emailValue = remember { mutableStateOf("") }
-                var passwordValue = remember { mutableStateOf("") }
+                val emailValue = remember { mutableStateOf("") }
+                val passwordValue = remember { mutableStateOf("") }
 
-                var doesNeedMFA = remember { mutableStateOf(false) }
+                val doesNeedMFA = remember { mutableStateOf(false) }
                 var response: SessionResponse.NeedsMultiFactorAuth? = null
+
+                val didLogIn = remember { mutableStateOf(false) }
 
                 Scaffold { paddingValues ->
                     Column(modifier = Modifier.padding(paddingValues)) {
@@ -268,13 +213,29 @@ fun App(
                                     doesNeedMFA.value = true
                                     response = result
                                 } else if (result is SessionResponse.Success) {
-                                    Log.d("API", "Logged in! Token: ${mainViewmodel.clientNext.session.currentSession?.userToken} | User: ${mainViewmodel.clientNext.self?.user?.username}")
+                                    Log.d(
+                                        "API",
+                                        "Logged in! Token: ${mainViewmodel.clientNext.session.currentSession?.userToken} | User: ${mainViewmodel.clientNext.self?.user?.username}"
+                                    )
+                                    didLogIn.value = true
                                 }
                             }
                         }) { Text("Test login with email/password") }
 
                         if (doesNeedMFA.value) {
                             Text("Account reports that it needs 2 factor auth")
+                        }
+
+                        if (didLogIn.value) {
+                            Text("Signed in as ${mainViewmodel.clientNext.self?.user?.username}#${mainViewmodel.clientNext.self?.user?.discriminator}")
+                        }
+
+                        Button(onClick = {
+                            newNavigator.navigateTo(
+                                Navigator.NavTarget.Login
+                            )
+                        }) {
+                            Text("Test/Navigate to Login")
                         }
                     }
                 }

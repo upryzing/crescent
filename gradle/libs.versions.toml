@@ -28,6 +28,7 @@ window = "1.4.0-alpha03"
 adaptive = "1.1.0-alpha03"
 adaptiveLayout = "1.1.0-alpha03"
 adaptiveNavigation = "1.1.0-alpha03"
+hiltNavigationCompose = "1.2.0"
 
 [libraries]
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "androidx-constraintlayout" }
@@ -69,6 +70,7 @@ androidx-adaptive-layout = { group = "androidx.compose.material3.adaptive", name
 androidx-adaptive-navigation = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation", version.ref = "adaptiveNavigation" }
 dagger = { group="com.google.dagger", name="dagger", version.ref="dagger"}
 dagger-compiler = { group="com.google.dagger", name="dagger-compiler", version.ref="dagger"}
+androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
 
 [plugins]
