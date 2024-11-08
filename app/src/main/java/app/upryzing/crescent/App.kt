@@ -15,7 +15,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -47,10 +46,8 @@ import app.upryzing.crescent.ui.navigation.Navigator
 import app.upryzing.crescent.ui.navigation.ProfileSettingsPage
 import app.upryzing.crescent.ui.navigation.SettingsPage
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import app.upryzing.crescent.ui.navigation.StartConversationPage
 
 @Composable
 fun App(
@@ -193,13 +190,11 @@ fun App(
                 var clientConnectionInformation = mainViewmodel.getClientInformation()
                 val coroutineScope = rememberCoroutineScope()
 
-                val emailValue = remember { mutableStateOf("") }
-                val passwordValue = remember { mutableStateOf("") }
+                var emailValue = remember { mutableStateOf("") }
+                var passwordValue = remember { mutableStateOf("") }
 
-                val doesNeedMFA = remember { mutableStateOf(false) }
+                var doesNeedMFA = remember { mutableStateOf(false) }
                 var response: SessionResponse.NeedsMultiFactorAuth? = null
-
-                val didLogIn = remember { mutableStateOf(false) }
 
                 Scaffold { paddingValues ->
                     Column(modifier = Modifier.padding(paddingValues)) {
@@ -240,29 +235,13 @@ fun App(
                                     doesNeedMFA.value = true
                                     response = result
                                 } else if (result is SessionResponse.Success) {
-                                    Log.d(
-                                        "API",
-                                        "Logged in! Token: ${mainViewmodel.clientNext.session.currentSession?.userToken} | User: ${mainViewmodel.clientNext.self?.user?.username}"
-                                    )
-                                    didLogIn.value = true
+                                    Log.d("API", "Logged in! Token: ${mainViewmodel.clientNext.session.currentSession?.userToken} | User: ${mainViewmodel.clientNext.self?.user?.username}")
                                 }
                             }
                         }) { Text("Test login with email/password") }
 
                         if (doesNeedMFA.value) {
                             Text("Account reports that it needs 2 factor auth")
-                        }
-
-                        if (didLogIn.value) {
-                            Text("Signed in as ${mainViewmodel.clientNext.self?.user?.username}#${mainViewmodel.clientNext.self?.user?.discriminator}")
-                        }
-
-                        Button(onClick = {
-                            newNavigator.navigateTo(
-                                Navigator.NavTarget.Login
-                            )
-                        }) {
-                            Text("Test/Navigate to Login")
                         }
                     }
                 }

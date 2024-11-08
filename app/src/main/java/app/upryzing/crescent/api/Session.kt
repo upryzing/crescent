@@ -1,5 +1,6 @@
 package app.upryzing.crescent.api
 
+import android.util.Log
 import app.upryzing.crescent.api.models.authentication.*
 import app.upryzing.crescent.api.models.user.User
 import io.ktor.client.call.body
@@ -33,7 +34,10 @@ class Session(private val client: RevoltAPI) {
         if (response is SessionResponse.Success) {
             currentSession = response
 
-            client.self = client.http.get("users/@me").body<User>()
+            Log.d("API", "Current session token: ${currentSession?.userToken}")
+
+
+            populateSelf()
         }
 
         return response
@@ -51,5 +55,22 @@ class Session(private val client: RevoltAPI) {
         // Assume session has been dropped, remove current session and self user
         currentSession = null
         client.self = null
+    }
+
+    private suspend fun populateSelf() {
+        val response = client.http.get("users/@me")
+
+        val rawResponse = response.bodyAsText()
+        val headers = response.request.headers
+
+        Log.d("API", "got user: $rawResponse")
+        Log.d("API", "used headers: $headers")
+
+        val selfUser = response.body<User>()
+
+            client.self = Self(
+                selfUser,
+                client
+            )
     }
 }
