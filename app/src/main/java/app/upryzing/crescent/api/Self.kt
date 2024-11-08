@@ -7,33 +7,11 @@ import app.upryzing.crescent.api.models.friends.RelationshipStatus
 import app.upryzing.crescent.api.models.user.Status
 import app.upryzing.crescent.api.models.user.User
 import io.ktor.client.call.body
+import kotlinx.serialization.Transient
 
 class Self(
-    id: String,
-    relations: List<Relation>?,
-    flags: Int?,
-    avatar: Attachment?,
-    badges: Int,
-    online: Boolean,
-    status: Status,
-    username: String,
-    override val relationship: RelationshipStatus = RelationshipStatus.USER,
-    discriminator: String,
-    displayName: String,
-    override var client: RevoltAPI
-) : User(
-    id = id,
-    relations = relations,
-    flags = flags,
-    avatar = avatar,
-    badges = badges,
-    client = client,
-    online = online,
-    status = status,
-    username = username,
-    relationship = relationship,
-    discriminator = discriminator,
-    displayName = displayName
+    val user: User,
+    val client: RevoltAPI
 ) {
     suspend fun getDirectMessages(): List<Channel> {
         return client.http.get("users/dms").body<List<Channel>>()

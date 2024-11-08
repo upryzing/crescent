@@ -13,8 +13,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,6 +29,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.toRoute
 import app.upryzing.crescent.api.ApiClient
+import app.upryzing.crescent.api.models.authentication.SessionRequest
+import app.upryzing.crescent.api.models.authentication.SessionResponse
 import app.upryzing.crescent.models.viewmodels.ChatViewmodel
 import app.upryzing.crescent.models.viewmodels.HomeViewmodel
 import app.upryzing.crescent.models.viewmodels.LoginViewmodel
@@ -38,6 +43,9 @@ import app.upryzing.crescent.ui.navigation.HomePage
 import app.upryzing.crescent.ui.navigation.LoginPage
 import app.upryzing.crescent.ui.navigation.ProfileSettingsPage
 import app.upryzing.crescent.ui.navigation.SettingsPage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 @Composable
 fun App(
@@ -213,6 +221,13 @@ fun App(
 
             composable("debug/next") {
                 var clientConnectionInformation = mainViewmodel.getClientInformation()
+                val coroutineScope = rememberCoroutineScope()
+
+                var emailValue = remember { mutableStateOf("") }
+                var passwordValue = remember { mutableStateOf("") }
+
+                var doesNeedMFA = remember { mutableStateOf(false) }
+                var response: SessionResponse.NeedsMultiFactorAuth? = null
 
                 Scaffold { paddingValues ->
                     Column(modifier = Modifier.padding(paddingValues)) {
@@ -225,6 +240,41 @@ fun App(
                             Log.d("API", "$clientConnectionInformation")
                         }) {
                             Text("Refresh")
+                        }
+
+                        TextField(
+                            value = emailValue.value,
+                            onValueChange = { value -> emailValue.value = value },
+                            placeholder = { Text("Email") }
+                        )
+
+
+                        TextField(
+                            value = passwordValue.value,
+                            onValueChange = { value -> passwordValue.value = value },
+                            placeholder = { Text("password") }
+                        )
+
+                        Button(onClick = {
+                            coroutineScope.launch(Dispatchers.IO) {
+                                val result = mainViewmodel.clientNext.session.createSession(
+                                    SessionRequest.Email(
+                                        emailValue.value,
+                                        passwordValue.value
+                                    )
+                                )
+
+                                if (result is SessionResponse.NeedsMultiFactorAuth) {
+                                    doesNeedMFA.value = true
+                                    response = result
+                                } else if (result is SessionResponse.Success) {
+                                    Log.d("API", "Logged in! Token: ${mainViewmodel.clientNext.session.currentSession?.userToken} | User: ${mainViewmodel.clientNext.self?.user?.username}")
+                                }
+                            }
+                        }) { Text("Test login with email/password") }
+
+                        if (doesNeedMFA.value) {
+                            Text("Account reports that it needs 2 factor auth")
                         }
                     }
                 }
