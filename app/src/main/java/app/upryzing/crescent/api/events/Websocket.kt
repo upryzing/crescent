@@ -49,7 +49,7 @@ class Websocket(private val client: RevoltAPI) {
 
     fun connect() {
         CoroutineScope(Dispatchers.IO).launch {
-            ws.wss(client.connection.websocket) {
+            ws.wss(client.connection!!.websocket) {
                 _socket = this
 
                 try {

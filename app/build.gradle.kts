@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.serialization)
     kotlin("kapt")
     id("kotlin-parcelize")
+    id("com.google.dagger.hilt.android")
 }
 val versionMajor = 1
 val versionMinor = 1
@@ -94,6 +95,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
 }
 java {
     toolchain {

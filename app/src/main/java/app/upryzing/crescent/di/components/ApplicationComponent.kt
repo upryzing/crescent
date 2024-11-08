@@ -1,11 +1,14 @@
 package app.upryzing.crescent.di.components
 
+import app.upryzing.crescent.CrescentApplication
 import app.upryzing.crescent.MainActivity
-import dagger.Component
+import dagger.hilt.DefineComponent
+import dagger.hilt.InstallIn
 import javax.inject.Singleton
 
-@Singleton
-@Component
-interface ApplicationComponent {
-    fun inject(activity: MainActivity)
-}
+//@Singleton
+//@DefineComponent
+//@InstallIn(CrescentApplication::class)
+//interface ApplicationComponent {
+//    fun inject(activity: MainActivity)
+//}

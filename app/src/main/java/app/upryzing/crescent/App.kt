@@ -6,9 +6,16 @@ import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -34,12 +41,12 @@ import app.upryzing.crescent.ui.navigation.SettingsPage
 
 @Composable
 fun App(
-    mainViewmodel: MainViewmodel = viewModel()
+    mainViewmodel: MainViewmodel = viewModel(),
 ) {
     val context = LocalContext.current
     val navigator = rememberNavController()
     Surface(color = MaterialTheme.colorScheme.background) {
-        NavHost(navController = navigator, startDestination = "auth") {
+        NavHost(navController = navigator, startDestination = "debug/next") {
             composable("debug",
                 enterTransition = {
                     fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
@@ -202,6 +209,25 @@ fun App(
                     )
                 }) {
                 ProfileSettingsPage(goBack = { navigator.popBackStack() })
+            }
+
+            composable("debug/next") {
+                var clientConnectionInformation = mainViewmodel.getClientInformation()
+
+                Scaffold { paddingValues ->
+                    Column(modifier = Modifier.padding(paddingValues)) {
+                        Text("API CONFIGURATION FOR api.revolt.chat:")
+                        Text("$clientConnectionInformation", softWrap = true)
+
+                        Button(onClick = {
+                            clientConnectionInformation = mainViewmodel.getClientInformation()
+
+                            Log.d("API", "$clientConnectionInformation")
+                        }) {
+                            Text("Refresh")
+                        }
+                    }
+                }
             }
         }
     }
