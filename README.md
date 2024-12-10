@@ -27,7 +27,7 @@ Other goals include:
 ## Why Crescent?
 
 Crescent started as a port of the small hobby project called
-[RevoltMini](https://amycatgirl.codeberg.org/revoltmini). As the name suggests, the client aimed to
+[RevoltMini](https://amycatgirl.codeberg.page/revoltmini). As the name suggests, the client aimed to
 be a small and lightweight web app for revolt, as low-end devices can struggle loading the official
 web client, but ended up being discontinued after the codebase became a huge, unmaintainable mess.
 
