@@ -75,7 +75,10 @@ fun SystemMessageDisplay(systemMessage: app.upryzing.crescent.api.models.websock
                 color = MaterialTheme.colorScheme.errorContainer,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Caught Unimplemented event, please report issue on GitHub.", fontSize = 12.sp)
+                Row (verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center)
+                {
+                    Text("Caught Unimplemented event, please report issue on GitHub.", fontSize = 12.sp)
+                }
             }
         }
     }
