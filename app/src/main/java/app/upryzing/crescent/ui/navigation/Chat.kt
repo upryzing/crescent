@@ -234,7 +234,7 @@ fun ChatPage(
 
     ) {
         SupportingPaneScaffold(
-            modifier = Modifier.padding(it),
+            modifier = Modifier.safeContentPadding().padding(it),
             directive = navigator.scaffoldDirective,
             value = navigator.scaffoldValue,
             mainPane = {
