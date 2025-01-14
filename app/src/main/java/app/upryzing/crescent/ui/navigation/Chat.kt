@@ -69,6 +69,8 @@ import app.upryzing.crescent.ui.theme.RevoltTheme
 import app.upryzing.crescent.utilities.EventBus
 import kotlinx.coroutines.launch
 
+// TODO: Currently it's buggy and might crash.
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ChatPage(
