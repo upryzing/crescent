@@ -28,14 +28,14 @@ fun CustomTextField(
         value = value,
         onValueChange = onValueChange,
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
-            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
-            focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
         ),
         shape = CircleShape,
         placeholder = {

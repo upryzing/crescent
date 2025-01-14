@@ -50,7 +50,7 @@ fun ChatBubble(message: PartialMessage, modifier: Modifier = Modifier, isSelf: B
         if (author != null) {
             Text(
                 if (isSelf) "You" else author.displayName ?: author.username,
-                color = if (isSelf) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
