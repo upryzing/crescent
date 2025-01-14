@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -53,10 +55,16 @@ fun FloatingActionButtonWithOptions(
     )
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            for (option in options) {
-                AnimatedVisibility(showAllOptions.value) {
-                    SmallFloatingActionButton(onClick = option.onClick) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            for ((index, option) in options.withIndex().reversed()) {
+                AnimatedVisibility(
+                    visible = showAllOptions.value,
+                    enter = scaleIn(tween(300, delayMillis = index * 50)),
+                    exit = scaleOut(tween(200, delayMillis = (options.size - 1 - index) * 50))
+                ) {
+                    SmallFloatingActionButton(
+                        onClick = option.onClick,
+                    ) {
                         option.icon()
                     }
                 }
@@ -64,14 +72,18 @@ fun FloatingActionButtonWithOptions(
         }
 
         AnimatedVisibility(showAllOptions.value) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(10.dp))
         }
 
         FloatingActionButton(onClick = {
             showAllOptions.apply { value = !value }
             Log.d("Debug", "clicked")
         }) {
-            Icon(Icons.Outlined.Add, contentDescription = "Add", modifier = Modifier.rotate(rotation))
+            Icon(
+                Icons.Outlined.Add,
+                contentDescription = "Add",
+                modifier = Modifier.rotate(rotation)
+            )
         }
     }
 }
