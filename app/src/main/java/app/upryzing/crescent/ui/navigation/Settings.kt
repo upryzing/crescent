@@ -147,7 +147,7 @@ fun SettingsPage(
                     colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
                     leadingContent = {
                         Icon(
-                            Icons.Default.Settings,
+                            painterResource(R.drawable.material_symbols_settings),
                             stringResource(R.string.settings_client)
                         )
                     },
@@ -165,7 +165,7 @@ fun SettingsPage(
                     colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
                     leadingContent = {
                         Icon(
-                            Icons.Default.Info,
+                            painterResource(R.drawable.material_symbols_info),
                             "${stringResource(R.string.settings_about)} ${stringResource(R.string.app_name)}"
                         )
                     },
