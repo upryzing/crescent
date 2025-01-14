@@ -77,6 +77,7 @@ fun ChatPage(
     navigateToUserProfile: () -> Unit = {},
     goBack: () -> Unit
 ) {
+    // TODO: Fix user not getting data
     val user = ApiClient.cache[ulid]
 
     println("User: $user")
@@ -183,7 +184,7 @@ fun ChatPage(
                     modifier = Modifier
                         .padding(bottom = 2.dp)
                         .clip(RoundedCornerShape(30.dp))
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                         .padding(end = 7.dp)
                         .weight(1f),
                     horizontalArrangement = Arrangement.spacedBy(7.dp),
@@ -231,15 +232,14 @@ fun ChatPage(
 
     ) {
         SupportingPaneScaffold(
-            modifier = Modifier.safeContentPadding().padding(it),
+            modifier = Modifier.padding(it),
             directive = navigator.scaffoldDirective,
             value = navigator.scaffoldValue,
             mainPane = {
-                AnimatedPane (Modifier.safeContentPadding()) {
+                AnimatedPane {
                     LazyColumn(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(12.dp),
+                            .fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         reverseLayout = true
                     ) {
