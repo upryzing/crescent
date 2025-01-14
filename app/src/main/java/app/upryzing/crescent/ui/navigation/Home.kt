@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -73,22 +71,16 @@ fun HomePage(
             FloatingActionButtonWithOptions(options = listOf(
                 FloatingActionButtonListItem(
                     icon = {
-                        Icon(Icons.Outlined.Add, contentDescription = "Add")
+                        Icon(painterResource(R.drawable.material_symbols_person_add), contentDescription = "Add")
                     },
                     onClick = { Log.d("Debug", "hi") }
                 ),
                 FloatingActionButtonListItem(
                     icon = {
-                        Icon(Icons.Outlined.Add, contentDescription = "Add")
+                        Icon(painterResource(R.drawable.material_symbols_group_add), contentDescription = "Add")
                     },
                     onClick = { Log.d("Debug", "hi") }
                 ),
-                FloatingActionButtonListItem(
-                    icon = {
-                        Icon(Icons.Outlined.Add, contentDescription = "Add")
-                    },
-                    onClick = { Log.d("Debug", "hi") }
-                )
             ))
         }) { innerPadding ->
         LazyColumn(
