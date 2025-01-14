@@ -49,7 +49,7 @@ fun ChatBubble(message: app.upryzing.crescent.api.models.websocket.PartialMessag
         if (author != null) {
             Text(
                 if (isSelf) "You" else author.displayName ?: author.username,
-                color = if (isSelf) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
