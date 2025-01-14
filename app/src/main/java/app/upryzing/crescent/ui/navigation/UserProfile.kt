@@ -110,7 +110,7 @@ fun UserProfilePage(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Icon(painterResource(R.drawable.block), "Message")
+                            Icon(painterResource(R.drawable.material_symbols_block), "Message")
                             Text("Block")
                         }
                     }
