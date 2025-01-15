@@ -48,7 +48,7 @@ fun HomePage(
         topBar = {
             MediumTopAppBar(title = {
                 Text(
-                    stringResource(R.string.direct_messages_header),
+                    stringResource(R.string.app_name),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
