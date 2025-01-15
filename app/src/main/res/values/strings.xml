@@ -12,7 +12,6 @@
     <string name="logout_title">Log Out</string>
     <string name="logout_description">Are you really sure you want to log out?</string>
     <string name="logout_accept">Go Ahead</string>
-    <string name="direct_messages_header">Direct Messages</string>
     <string name="debug_header">Debug</string>
     <string name="chat_send_message">Send message</string>
     <string name="chat_add_media">Add media</string>
