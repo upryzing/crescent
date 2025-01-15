@@ -171,13 +171,13 @@ fun ChatPage(
                         .height(IntrinsicSize.Min)
                         .width(IntrinsicSize.Min),
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest
                     )
                 ) {
                     Icon(
                         painterResource(R.drawable.material_symbols_library_add),
                         "",
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
                 Row(
