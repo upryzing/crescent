@@ -31,6 +31,7 @@ import app.upryzing.crescent.ui.navigation.HomePage
 import app.upryzing.crescent.ui.navigation.LoginPage
 import app.upryzing.crescent.ui.navigation.ProfileSettingsPage
 import app.upryzing.crescent.ui.navigation.SettingsPage
+import app.upryzing.crescent.ui.navigation.StartConversationPage
 
 @Composable
 fun App(
@@ -38,6 +39,7 @@ fun App(
 ) {
     val context = LocalContext.current
     val navigator = rememberNavController()
+
     Surface(color = MaterialTheme.colorScheme.background) {
         NavHost(navController = navigator, startDestination = "auth") {
             composable("debug",
@@ -109,8 +111,33 @@ fun App(
                     homeViewmodel,
                     navigateToChat = { navigator.navigate("messages/${it}") },
                     navigateToDebug = { navigator.navigate("debug") },
-                    navigateToSettings = { navigator.navigate("settings") }
+                    navigateToSettings = { navigator.navigate("settings") },
+                    navigateToStartConversation = { navigator.navigate("home/startconversation") }
                 )
+            }
+
+            composable(
+                "home/startconversation",
+                enterTransition = {
+                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
+                        animationSpec = tween(
+                            durationMillis = 250,
+                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
+                        ),
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    )
+                },
+                exitTransition = {
+                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
+                        animationSpec = tween(
+                            durationMillis = 200,
+                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+                        ),
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    )
+                }
+            ) {
+                StartConversationPage (goBack = { navigator.popBackStack() })
             }
 
             composable(
