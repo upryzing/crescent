@@ -25,12 +25,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import app.upryzing.crescent.R
 import app.upryzing.crescent.api.ApiClient
 import app.upryzing.crescent.models.api.User
 import app.upryzing.crescent.models.api.UserStatus
 import app.upryzing.crescent.models.api.channels.Channel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -39,6 +42,7 @@ fun PeopleListItem(
     channel: Channel.Group? = null,
     status: UserStatus? = null,
     unreads: Int? = null,
+    disableBottomSheet: Boolean = false,
     callback: (() -> Unit)
 ) {
     // BottomSheet states
@@ -46,24 +50,28 @@ fun PeopleListItem(
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
 
+    val name = if (user != null) {
+        user.displayName ?: "${user.username}#${user.discriminator}"
+    } else channel?.name ?: "Unknown"
+    val avatar = if (user?.avatar != null) {
+        "${ApiClient.S3_ROOT_URL}avatars/${user.avatar.id}?max_side=256"
+    } else if (channel?.icon != null) {
+        "${ApiClient.S3_ROOT_URL}icons/${channel.icon.id}"
+    } else null
+
+    val presence = if (user != null) {
+        user.status?.presence
+    } else null
+
     Surface(modifier = Modifier.combinedClickable(
         onClick = callback,
-        onLongClick = { showBottomSheet = true}
+        onLongClick = {
+            if (!disableBottomSheet) {
+                showBottomSheet = true
+            }
+        }
     )) {
         Column {
-            val name = if (user != null) {
-                user.displayName ?: "${user.username}#${user.discriminator}"
-            } else channel?.name ?: "Unknown"
-            val avatar = if (user?.avatar != null) {
-                "${ApiClient.S3_ROOT_URL}avatars/${user.avatar.id}?max_side=256"
-            } else if (channel?.icon != null) {
-                "${ApiClient.S3_ROOT_URL}icons/${channel.icon.id}"
-            } else null
-
-            val presence = if (user != null) {
-                user.status?.presence
-            } else null
-
             ListItem(
                 leadingContent = {
                     ProfileImage(
@@ -117,12 +125,30 @@ fun PeopleListItem(
             },
             sheetState = sheetState
         ) {
-            repeat(5) {
-                ListItem(
-                    headlineContent = { Text("Item") },
-                    leadingContent = { Icon(Icons.Default.Square, "Not Localized yet") },
-                    modifier = Modifier.clickable { /* TODO: Do something! */ })
-            }
+            ListItem(
+                headlineContent = { Text("Block $name") },
+                leadingContent = { Icon(painterResource(R.drawable.material_symbols_block), "Not Localized yet") },
+                modifier = Modifier.clickable {
+                    /* TODO: Do something! */
+                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            showBottomSheet = false
+                        }
+                    }
+                },
+            )
+            ListItem(
+                headlineContent = { Text("Report $name") },
+                leadingContent = { Icon(painterResource(R.drawable.material_symbols_flag), "Not Localized yet") },
+                modifier = Modifier.clickable {
+                    /* TODO: Do something! */
+                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            showBottomSheet = false
+                        }
+                    }
+                },
+            )
         }
     }
 }
