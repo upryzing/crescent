@@ -50,6 +50,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import app.upryzing.crescent.ui.navigation.StartConversationPage
 
 @Composable
 fun App(
@@ -57,6 +58,7 @@ fun App(
 ) {
     val context = LocalContext.current
     val navController = rememberNavController()
+
 
     val newNavigator = Navigator()
 
@@ -120,8 +122,33 @@ fun App(
                     homeViewmodel,
                     navigateToChat = { navController.navigate("messages/${it}") },
                     navigateToDebug = { navController.navigate("debug") },
-                    navigateToSettings = { navController.navigate("settings") }
+                    navigateToSettings = { navController.navigate("settings") },
+                    navigateToStartConversation = { navigator.navigate("home/startconversation") }
                 )
+            }
+
+            composable(
+                "home/startconversation",
+                enterTransition = {
+                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
+                        animationSpec = tween(
+                            durationMillis = 250,
+                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
+                        ),
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    )
+                },
+                exitTransition = {
+                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
+                        animationSpec = tween(
+                            durationMillis = 200,
+                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+                        ),
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    )
+                }
+            ) {
+                StartConversationPage (goBack = { navigator.popBackStack() })
             }
 
             composable(

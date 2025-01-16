@@ -1,7 +1,7 @@
 package app.upryzing.crescent.ui.navigation
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -10,17 +10,24 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import app.upryzing.crescent.R
+import app.upryzing.crescent.ui.composables.PeopleListItem
 import app.upryzing.crescent.ui.theme.RevoltTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartConversationPage(goBack: () -> Unit) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.start_conversation_header)) },
@@ -33,12 +40,23 @@ fun StartConversationPage(goBack: () -> Unit) {
                             )
                         )
                     }
-                }
+                },
+                scrollBehavior = scrollBehavior,
             )
-        }
+        },
     ) {
-        Column(modifier = Modifier.padding(it)) {
-            // TODO: Add a friends list here
+        val range = 1..100
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentPadding = it,
+        ) {
+            items(range.count()) {
+                PeopleListItem (
+                    callback = {},
+                    disableBottomSheet = true
+                )
+            }
         }
     }
 }
