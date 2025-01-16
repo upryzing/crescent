@@ -1,7 +1,6 @@
 package app.upryzing.crescent.ui.navigation
 
 import android.util.Log
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,14 +36,16 @@ fun HomePage(
     homeViewmodel: HomeViewmodel,
     navigateToChat: (location: String) -> Unit,
     navigateToDebug: () -> Unit,
-    navigateToSettings: () -> Unit
+    navigateToSettings: () -> Unit,
+    navigateToStartConversation: () -> Unit,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-    Scaffold(modifier = Modifier
-        .safeDrawingPadding()
-        .nestedScroll(scrollBehavior.nestedScrollConnection),
+    Scaffold(
+        modifier = Modifier
+            .safeDrawingPadding()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(title = {
                 Text(
@@ -65,7 +66,7 @@ fun HomePage(
                         contentDescription = null
                     )
                 }
-            }, scrollBehavior = scrollBehavior, windowInsets = WindowInsets(0, 0, 0, 0)
+            }, scrollBehavior = scrollBehavior
             )
         },
         floatingActionButton = {
@@ -74,7 +75,7 @@ fun HomePage(
                     icon = {
                         Icon(painterResource(R.drawable.material_symbols_person_add), contentDescription = "Add")
                     },
-                    onClick = { Log.d("Debug", "hi") }
+                    onClick = { navigateToStartConversation() }
                 ),
                 FloatingActionButtonListItem(
                     icon = {
