@@ -52,13 +52,7 @@ As @lo2dev pointed out in a reply to a development screenshot showcasing the log
 
 ## Star History
 
-<a href="https://star-history.com/#upryzing/crescent&Timeline">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=upryzing/crescent&type=Timeline&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=upryzing/crescent&type=Timeline" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=upryzing/crescent&type=Timeline" />
- </picture>
-</a>
+[![Star History Chart](https://api.star-history.com/svg?repos=upryzing/crescent&type=Timeline)](https://star-history.com/#upryzing/crescent&Timeline)
 
 ## License
 
