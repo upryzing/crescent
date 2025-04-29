@@ -73,7 +73,9 @@ object ApiClient {
         }
     private var SOCKET_ROOT_URL: String = "wss://ws.revolt.chat?version=1&format=json"
     private var API_ROOT_URL: String = "https://api.revolt.chat/"
-    const val S3_ROOT_URL: String = "https://autumn.revolt.chat/"
+    // EDIT: https://autumn.revolt.chat is moving to https://cdn.revoltusercontent.com
+    // Learn more at https://revolt.chat/updates/api-new-cdn
+    const val S3_ROOT_URL: String = "https://cdn.revoltusercontent.com"
     private var currentIntervalJob: Job? = null
     var currentSession: SessionResponse.Success? = null
     private var websocket: DefaultWebSocketSession? = null
