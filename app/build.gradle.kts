@@ -13,7 +13,7 @@ val versionBuild = 0
 
 android {
     namespace = "app.upryzing.crescent"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "app.upryzing.crescent"
