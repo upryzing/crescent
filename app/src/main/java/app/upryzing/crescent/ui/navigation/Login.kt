@@ -1,7 +1,9 @@
 package app.upryzing.crescent.ui.navigation
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,8 +21,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -43,14 +49,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.upryzing.crescent.R
 import app.upryzing.crescent.models.viewmodels.LoginViewmodel
 import app.upryzing.crescent.ui.composables.AccountDisabledDialog
-import kotlinx.serialization.Serializable
-import app.upryzing.crescent.R
 
-@Serializable
-object Login
-
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LoginPage(
     viewmodel: LoginViewmodel
@@ -70,84 +73,155 @@ fun LoginPage(
     val passwordTransformation = if (showPassword) VisualTransformation.None
     else PasswordVisualTransformation()
 
-    Scaffold { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+    AnimatedContent(
+        targetState = viewmodel.isLoggingIn,
+    ) { isLoading ->
+        when (isLoading) {
+            true -> {
                 Box(
-                    modifier = Modifier
-                        .size(46.dp)
-                        .clip(CircleShape)
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_launcher_background),
-                        contentDescription = stringResource(R.string.app_name),
-                    )
-                    Image(
-                        painter = painterResource(R.drawable.ic_launcher_foreground),
-                        contentDescription = stringResource(R.string.app_name)
+                    LoadingIndicator(
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .align(Alignment.Center)
                     )
                 }
-                Text(
-                    stringResource(R.string.app_name),
-                    fontSize = 50.sp,
-                    fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.Medium
-                )
             }
-            Spacer(modifier = Modifier.height(30.dp))
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
-            ) {
-                OutlinedTextField(
-                    value = emailValue,
-                    onValueChange = { emailValue = it },
-                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-                    label = { Text(stringResource(R.string.ui_input_email)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-                    maxLines = 1
-                )
-                OutlinedTextField(
-                    value = passwordValue,
-                    onValueChange = { passwordValue = it },
-                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                    label = {
-                        Text(stringResource(R.string.ui_input_password))
-                    },
-                    visualTransformation = passwordTransformation,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                    maxLines = 1,
-                    trailingIcon = { IconButton(onClick = {
-                        viewmodel.toggleShowPassword()
-                    }) {
-                        Icon(painter = passwordIcon, contentDescription = "")
-                    } }
-                )
-                Button(modifier = Modifier.fillMaxWidth(.625f), onClick = {
-                    viewmodel.login(emailValue, passwordValue)
-                }) {
-                    Text(stringResource(R.string.ui_button_login))
+
+            false -> {
+                Scaffold { innerPadding ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                            .safeContentPadding(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(46.dp)
+                                    .clip(CircleShape)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.ic_launcher_background),
+                                    contentDescription = stringResource(R.string.app_name),
+                                )
+                                Image(
+                                    painter = painterResource(R.drawable.ic_launcher_foreground),
+                                    contentDescription = stringResource(R.string.app_name)
+                                )
+                            }
+                            Text(
+                                stringResource(R.string.app_name),
+                                fontSize = 50.sp,
+                                style = MaterialTheme.typography.titleLargeEmphasized,
+                                fontWeight = FontWeight.Bold,
+                                fontStyle = FontStyle.Italic
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        Column(
+                            modifier = Modifier
+                                .clip(MaterialTheme.shapes.medium)
+                                .background(MaterialTheme.colorScheme.errorContainer)
+                                .padding(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                        ) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                Icon(
+                                    painterResource(R.drawable.material_symbols_warning),
+                                    "Not localized yet",
+                                    tint = MaterialTheme.colorScheme.onErrorContainer
+                                )
+                                Text(
+                                    "Work in Progress",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onErrorContainer
+                                )
+                            }
+                            Text(
+                                "This client is a work in progress, it may be more unstable, as it can cause issues even crashes.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(30.dp))
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(
+                                10.dp,
+                                Alignment.CenterVertically
+                            )
+                        ) {
+                            OutlinedTextField(
+                                value = emailValue,
+                                onValueChange = { emailValue = it },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Default.Email,
+                                        contentDescription = null
+                                    )
+                                },
+                                label = { Text(stringResource(R.string.ui_input_email)) },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Email,
+                                    imeAction = ImeAction.Next
+                                ),
+                                maxLines = 1
+                            )
+                            OutlinedTextField(
+                                value = passwordValue,
+                                onValueChange = { passwordValue = it },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Default.Lock,
+                                        contentDescription = null
+                                    )
+                                },
+                                label = {
+                                    Text(stringResource(R.string.ui_input_password))
+                                },
+                                visualTransformation = passwordTransformation,
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Password,
+                                    imeAction = ImeAction.Done
+                                ),
+                                maxLines = 1,
+                                trailingIcon = {
+                                    IconButton(onClick = {
+                                        viewmodel.toggleShowPassword()
+                                    }) {
+                                        Icon(painter = passwordIcon, contentDescription = "")
+                                    }
+                                }
+                            )
+                            Button(modifier = Modifier.fillMaxWidth(.625f), onClick = {
+                                viewmodel.login(emailValue, passwordValue)
+                            }) {
+                                Text(stringResource(R.string.ui_button_login))
+                            }
+                        }
+                        TextButton(onClick = { /*TODO*/ }) {
+                            Text(stringResource(R.string.ui_button_recover_password))
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        OutlinedButton(onClick = { /*TODO*/ }) {
+                            Text(stringResource(R.string.ui_button_create_account))
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
                 }
             }
-            TextButton(onClick = { /*TODO*/ }) {
-                Text(stringResource(R.string.ui_button_recover_password))
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            OutlinedButton(onClick = { /*TODO*/ }) {
-                Text(stringResource(R.string.ui_button_create_account))
-            }
-            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
