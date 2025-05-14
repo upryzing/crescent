@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import app.upryzing.crescent.api.ApiClient
 import app.upryzing.crescent.datastore.ConfigDataStoreKeys
 import app.upryzing.crescent.datastore.PreferenceDataStoreHelper
-import kotlinx.serialization.encodeToString
 
 enum class SelectedMethod {
     TWO_FACTOR_AUTHENTICATION,
