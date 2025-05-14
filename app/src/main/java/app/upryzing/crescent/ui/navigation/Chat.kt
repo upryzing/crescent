@@ -2,7 +2,6 @@ package app.upryzing.crescent.ui.navigation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
@@ -27,11 +26,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.motionScheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
@@ -71,7 +73,9 @@ import kotlinx.coroutines.launch
 
 // TODO: Currently it's buggy and might crash.
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class,
+    ExperimentalMaterial3ExpressiveApi::class
+)
 @Composable
 fun ChatPage(
     viewmodel: ChatViewmodel,
@@ -105,7 +109,9 @@ fun ChatPage(
     }
 
     BackHandler(navigator.canNavigateBack()) {
-        navigator.navigateBack()
+        scope.launch {
+            navigator.navigateBack()
+        }
     }
 
     Scaffold(
@@ -136,9 +142,13 @@ fun ChatPage(
                 actions = {
                     IconButton(onClick = {
                         if (navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden) {
-                            navigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
+                            scope.launch {
+                                navigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
+                            }
                         } else {
-                            navigator.navigateBack()
+                            scope.launch {
+                                navigator.navigateBack()
+                            }
                         }
                     }) {
                         if (navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden) {
@@ -157,6 +167,14 @@ fun ChatPage(
 
                 })
         }, bottomBar = {
+            Surface (
+                tonalElevation = 2.dp,
+                contentColor = MaterialTheme.colorScheme.secondary
+            ) {
+                Column {
+
+                }
+            }
             Row(
                 modifier = Modifier
                     .safeContentPadding()
@@ -204,8 +222,8 @@ fun ChatPage(
                     )
                     AnimatedVisibility(
                         visible = messageValue.isNotBlank(),
-                        enter = scaleIn(animationSpec = tween(300)),
-                        exit = scaleOut(animationSpec = tween(200))
+                        enter = scaleIn(animationSpec = motionScheme.slowEffectsSpec()),
+                        exit = scaleOut(animationSpec = motionScheme.slowSpatialSpec())
                     ) {
                         IconButton(
                             onClick = {

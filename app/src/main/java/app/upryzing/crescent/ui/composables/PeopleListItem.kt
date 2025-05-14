@@ -2,12 +2,14 @@ package app.upryzing.crescent.ui.composables
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Square
 import androidx.compose.material3.Badge
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -59,9 +61,7 @@ fun PeopleListItem(
         "${ApiClient.S3_ROOT_URL}icons/${channel.icon.id}"
     } else null
 
-    val presence = if (user != null) {
-        user.status?.presence
-    } else null
+    val presence = user?.status?.presence
 
     Surface(modifier = Modifier.combinedClickable(
         onClick = callback,
@@ -125,30 +125,46 @@ fun PeopleListItem(
             },
             sheetState = sheetState
         ) {
-            ListItem(
-                headlineContent = { Text("Block $name") },
-                leadingContent = { Icon(painterResource(R.drawable.material_symbols_block), "Not Localized yet") },
-                modifier = Modifier.clickable {
-                    /* TODO: Do something! */
-                    scope.launch { sheetState.hide() }.invokeOnCompletion {
-                        if (!sheetState.isVisible) {
-                            showBottomSheet = false
+            Surface (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                    .clickable(
+                    onClick = {
+                        /* TODO: Do something! */
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                            }
                         }
                     }
-                },
-            )
-            ListItem(
-                headlineContent = { Text("Report $name") },
-                leadingContent = { Icon(painterResource(R.drawable.material_symbols_flag), "Not Localized yet") },
-                modifier = Modifier.clickable {
-                    /* TODO: Do something! */
-                    scope.launch { sheetState.hide() }.invokeOnCompletion {
-                        if (!sheetState.isVisible) {
-                            showBottomSheet = false
+                ).padding(12.dp),
+            ) {
+                Row (horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Icon(painterResource(R.drawable.material_symbols_block), "Not Localized yet")
+                    Text("Block $name")
+                }
+            }
+            Surface (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                    .clickable(
+                    onClick = {
+                        /* TODO: Do something! */
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                            }
                         }
                     }
-                },
-            )
+                ).padding(12.dp),
+            ) {
+                Row (horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Icon(painterResource(R.drawable.material_symbols_flag), "Not Localized yet")
+                    Text("Report $name")
+                }
+            }
         }
     }
 }

@@ -39,4 +39,6 @@
     <string name="settings_profile_description">Configures display names, bio and more</string>
     <string name="settings_client_description">Configures the client\'s features</string>
     <string name="settings_about_description">Reads information about the client</string>
+    <string name="chat_fab_options_new_chat">Start Conversation</string>
+    <string name="chat_fab_options_new_group">New Group</string>
 </resources>

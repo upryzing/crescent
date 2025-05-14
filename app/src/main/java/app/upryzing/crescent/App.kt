@@ -2,10 +2,8 @@ package app.upryzing.crescent
 
 import android.util.Log
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -33,6 +31,7 @@ import app.upryzing.crescent.ui.navigation.ProfileSettingsPage
 import app.upryzing.crescent.ui.navigation.SettingsPage
 import app.upryzing.crescent.ui.navigation.StartConversationPage
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun App(
     mainViewmodel: MainViewmodel = viewModel()
@@ -42,23 +41,30 @@ fun App(
 
     Surface(color = MaterialTheme.colorScheme.background) {
         NavHost(navController = navigator, startDestination = "auth") {
-            composable("debug",
+            composable(
+                "debug",
                 enterTransition = {
-                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
                     )
                 },
                 exitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
-                        animationSpec = tween(
-                            durationMillis = 200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
                     )
                 }
             ) {
@@ -67,7 +73,33 @@ fun App(
                 }, navigateToDebugLogin = { navigator.navigate("auth") })
             }
 
-            composable("auth") {
+            composable(
+                "auth",
+                enterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                }
+            ) {
                 val viewmodel = viewModel {
                     LoginViewmodel(ApiClient, navigator, context)
                 }
@@ -85,21 +117,27 @@ fun App(
             composable(
                 "home",
                 enterTransition = {
-                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
                     )
                 },
                 exitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
-                        animationSpec = tween(
-                            durationMillis = 200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
                     )
                 }
             ) {
@@ -112,52 +150,64 @@ fun App(
                     navigateToChat = { navigator.navigate("messages/${it}") },
                     navigateToDebug = { navigator.navigate("debug") },
                     navigateToSettings = { navigator.navigate("settings") },
-                    navigateToStartConversation = { navigator.navigate("home/startconversation") }
+                    navigateToStartConversation = { navigator.navigate("home/start_conversation") }
                 )
             }
 
             composable(
-                "home/startconversation",
+                "home/start_conversation",
                 enterTransition = {
-                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
                     )
                 },
                 exitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
-                        animationSpec = tween(
-                            durationMillis = 200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
                     )
                 }
             ) {
-                StartConversationPage (goBack = { navigator.popBackStack() })
+                StartConversationPage(goBack = { navigator.popBackStack() })
             }
 
             composable(
                 "messages/{id}",
                 enterTransition = {
-                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
                     )
                 },
                 exitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
-                        animationSpec = tween(
-                            durationMillis = 200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
                     )
                 },
                 arguments = listOf(navArgument("id") { type = NavType.StringType })
@@ -181,21 +231,27 @@ fun App(
             composable(
                 "settings",
                 enterTransition = {
-                    fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
                     )
                 },
                 exitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
-                        animationSpec = tween(
-                            durationMillis = 200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
                     )
                 }
             ) {
@@ -210,24 +266,33 @@ fun App(
                     }
                 )
             }
-            composable("settings/profile", enterTransition = {
-                fadeIn(animationSpec = tween(durationMillis = 250)) + slideIntoContainer(
-                    animationSpec = tween(
-                        durationMillis = 250,
-                        easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-                    ),
-                    towards = AnimatedContentTransitionScope.SlideDirection.Left
-                )
-            },
-                exitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutOfContainer(
-                        animationSpec = tween(
-                            durationMillis = 200,
-                            easing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-                        ),
-                        towards = AnimatedContentTransitionScope.SlideDirection.Right
+            composable(
+                "settings/profile",
+                enterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
                     )
-                }) {
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                }
+            ) {
                 ProfileSettingsPage(goBack = { navigator.popBackStack() })
             }
         }
