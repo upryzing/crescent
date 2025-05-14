@@ -263,3 +263,11 @@ fun AccountSettingsPagePreview() {
         AccountSettingsPage()
     }
 }
+
+@Preview(device = "spec:width=1280dp,height=800dp,dpi=240")
+@Composable
+fun AccountSettingsPagePreviewTablet() {
+    RevoltTheme {
+        AccountSettingsPage()
+    }
+}
