@@ -125,7 +125,7 @@ fun PeopleListItem(
             },
             sheetState = sheetState
         ) {
-            Surface (
+            Row (
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surfaceContainerLow)
@@ -139,31 +139,29 @@ fun PeopleListItem(
                         }
                     }
                 ).padding(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Row (horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Icon(painterResource(R.drawable.material_symbols_block), "Not Localized yet")
                     Text("Block $name")
-                }
             }
-            Surface (
+            Row (
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surfaceContainerLow)
                     .clickable(
-                    onClick = {
-                        /* TODO: Do something! */
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                showBottomSheet = false
+                        onClick = {
+                            /* TODO: Do something! */
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
                             }
                         }
-                    }
-                ).padding(12.dp),
+                    ).padding(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Row (horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Icon(painterResource(R.drawable.material_symbols_flag), "Not Localized yet")
-                    Text("Report $name")
-                }
+                Icon(painterResource(R.drawable.material_symbols_flag), "Not Localized yet")
+                Text("Report $name")
             }
         }
     }
