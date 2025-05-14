@@ -41,4 +41,6 @@
     <string name="settings_about_description">Reads information about the client</string>
     <string name="chat_fab_options_new_chat">Start Conversation</string>
     <string name="chat_fab_options_new_group">New Group</string>
+    <string name="ui_url_github" translatable="false">https://github.com/upryzing/crescent</string>
+    <string name="ui_url_bluesky" translatable="false">https://bsky.app/profile/did:plc:nwxosyxswrvi5daqnawcgfno</string>
 </resources>

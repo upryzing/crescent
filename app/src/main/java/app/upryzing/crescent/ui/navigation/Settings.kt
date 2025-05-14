@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +13,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -52,11 +57,12 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsPage(
-    goBack: () -> Unit,
-    navigateToAccount: () -> Unit,
-    navigateToProfile: () -> Unit,
-    navigateToClientSettings: () -> Unit,
-    onSessionDropped: () -> Unit
+    goBack: () -> Unit = {},
+    navigateToAccount: () -> Unit = {},
+    navigateToProfile: () -> Unit = {},
+    navigateToClientSettings: () -> Unit = {},
+    navigateToAbout: () -> Unit = {},
+    onSessionDropped: () -> Unit = {}
 ) {
     var shouldShowDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -77,11 +83,12 @@ fun SettingsPage(
             dismissCallback = { shouldShowDialog = false })
     }
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier
+            .safeDrawingPadding()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(
                 title = { Text(stringResource(R.string.settings_header)) },
-                scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = { goBack() }) {
                         Icon(
@@ -89,11 +96,12 @@ fun SettingsPage(
                             stringResource(R.string.ui_go_back)
                         )
                     }
-                }
+                },
+                scrollBehavior = scrollBehavior
             )
         }
     ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState()).padding(innerPadding)) {
             // TODO: Needed navigation for each categories
             Column(
                 Modifier
@@ -160,7 +168,9 @@ fun SettingsPage(
                     color = MaterialTheme.colorScheme.outlineVariant
                 )
                 ListItem(
-                    modifier = Modifier.clickable { /* TODO */ },
+                    modifier = Modifier.clickable {
+                        navigateToAbout()
+                    },
                     colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
                     leadingContent = {
                         Icon(
@@ -210,6 +220,6 @@ fun SettingsPage(
 @Composable
 fun SettingsPagePreview() {
     RevoltTheme {
-        SettingsPage({}, {}, {}, {},{})
+        SettingsPage()
     }
 }
