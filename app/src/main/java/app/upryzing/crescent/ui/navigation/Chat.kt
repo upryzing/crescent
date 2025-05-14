@@ -1,6 +1,5 @@
 package app.upryzing.crescent.ui.navigation
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
@@ -32,15 +31,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.motionScheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.layout.AnimatedPane
-import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
-import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
-import androidx.compose.material3.adaptive.layout.SupportingPaneScaffoldRole
-import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -73,7 +69,8 @@ import kotlinx.coroutines.launch
 
 // TODO: Currently it's buggy and might crash.
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class,
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class,
     ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
@@ -83,18 +80,21 @@ fun ChatPage(
     navigateToUserProfile: () -> Unit = {},
     goBack: () -> Unit
 ) {
-    // TODO: Fix user not getting data
-    val user = ApiClient.cache[ulid]
+    val user by remember { mutableStateOf(ApiClient.cache[ulid]) }
 
     println("User: $user")
 
     var messageValue by remember { mutableStateOf("") }
     val messages = remember { viewmodel.messages }
-    val navigator = rememberSupportingPaneScaffoldNavigator()
+
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = false
+    )
 
     val avatar = when (user) {
-        is Channel.Group -> "${ApiClient.S3_ROOT_URL}icons/${user.icon?.id}?max_side=256"
-        is User -> "${ApiClient.S3_ROOT_URL}avatars/${user.avatar?.id}?max_side=256"
+        is Channel.Group -> "${ApiClient.S3_ROOT_URL}icons/${(user as Channel.Group).icon?.id}?max_side=256"
+        is User -> "${ApiClient.S3_ROOT_URL}avatars/${(user as User).avatar?.id}?max_side=256"
         else -> null
     }
 
@@ -108,54 +108,40 @@ fun ChatPage(
         }
     }
 
-    BackHandler(navigator.canNavigateBack()) {
-        scope.launch {
-            navigator.navigateBack()
-        }
-    }
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    ProfileImage(
-                        fallback = when (user) {
-                            is User -> user.username
-                            is Channel.Group -> user.name
-                            else -> "Unknown"
-                        }, url = avatar, size = 26.dp
-                    )
-                    Text(
-                        text = when (user) {
-                            is Channel.Group -> user.name
-                            is User -> user.displayName ?: "${user.username}#${user.discriminator}"
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        ProfileImage(
+                            fallback = when (user) {
+                                is User -> (user as User).username
+                                is Channel.Group -> (user as Channel.Group).name
+                                else -> "Unknown"
+                            }, url = avatar, size = 26.dp
+                        )
+                        Text(
+                            text = when (user) {
+                                is Channel.Group -> (user as Channel.Group).name
+                                is User -> (user as User).displayName
+                                    ?: "${(user as User).username}#${(user as User).discriminator}"
 
-                            else -> "Unknown"
-                        }, maxLines = 1, overflow = TextOverflow.Ellipsis
-                    )
-                }
-            },
+                                else -> "Unknown"
+                            }, maxLines = 1, overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                },
                 actions = {
                     IconButton(onClick = {
-                        if (navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden) {
-                            scope.launch {
-                                navigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
-                            }
-                        } else {
-                            scope.launch {
-                                navigator.navigateBack()
-                            }
-                        }
+                        showBottomSheet = true
                     }) {
-                        if (navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden) {
-                            Icon(painterResource(R.drawable.material_symbols_info), stringResource(R.string.chat_show_user_profile))
-                        } else {
-                            Icon(painterResource(R.drawable.material_symbols_filled_info), stringResource(R.string.chat_hide_user_profile))
-                        }
+                        Icon(
+                            painterResource(R.drawable.material_symbols_info),
+                            stringResource(R.string.chat_show_user_profile)
+                        )
                     }
                 },
                 navigationIcon = {
@@ -167,7 +153,7 @@ fun ChatPage(
 
                 })
         }, bottomBar = {
-            Surface (
+            Surface(
                 tonalElevation = 2.dp,
                 contentColor = MaterialTheme.colorScheme.secondary
             ) {
@@ -181,7 +167,7 @@ fun ChatPage(
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surface)
                     .imePadding()
-                    .padding(12.dp),
+                    .padding(bottom = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -251,70 +237,58 @@ fun ChatPage(
         }
 
     ) {
-        SupportingPaneScaffold(
-            modifier = Modifier.safeContentPadding().padding(it),
-            directive = navigator.scaffoldDirective,
-            value = navigator.scaffoldValue,
-            mainPane = {
-                AnimatedPane {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        reverseLayout = true
-                    ) {
-                        items(messages) { message ->
-                            val isSelf = message.authorId == ApiClient.currentSession?.userId
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .safeContentPadding(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            reverseLayout = true
+        ) {
+            items(messages) { message ->
+                val isSelf = message.authorId == ApiClient.currentSession?.userId
 
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                when (message.system != null) {
-                                    true -> SystemMessageDisplay(message.system)
-                                    false -> ChatBubble(
-                                        message,
-                                        modifier = if (isSelf)
-                                            Modifier.align(Alignment.BottomEnd)
-                                        else
-                                            Modifier.align(Alignment.BottomStart),
-                                        isSelf
-                                    )
-                                }
-                            }
-                        }
-
-                    }
-                }
-            },
-            supportingPane = {
-                AnimatedPane (Modifier.safeContentPadding()) {
-                    Column(
-                        modifier = Modifier
-                            .padding(end = 12.dp)
-                            .clip(MaterialTheme.shapes.large)
-                            .background(MaterialTheme.colorScheme.surfaceContainer)
-                            .padding(12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(5.dp)
-                    ) {
-                        when (user) {
-                            is User -> {
-                                ProfileImage(
-                                    fallback = user.username,
-                                    url = avatar,
-                                    presence = user.status?.presence
-                                )
-                                user.displayName?.let { it1 ->
-                                    Text(
-                                        it1,
-                                        style = MaterialTheme.typography.headlineSmall
-                                    )
-                                }
-                            }
-                            else -> Text("Unknown", style = MaterialTheme.typography.headlineMedium)
-                        }
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    when (message.system != null) {
+                        true -> SystemMessageDisplay(message.system)
+                        false -> ChatBubble(
+                            message,
+                            modifier = if (isSelf)
+                                Modifier.align(Alignment.BottomEnd)
+                            else
+                                Modifier.align(Alignment.BottomStart),
+                            isSelf
+                        )
                     }
                 }
             }
-        )
+        }
+
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                modifier = Modifier.fillMaxSize(),
+                sheetState = sheetState,
+                onDismissRequest = { showBottomSheet = false }
+            ) {
+                when (user) {
+                    is User -> {
+                        ProfileImage(
+                            fallback = (user as User).username,
+                            url = avatar,
+                            presence = (user as User).status?.presence
+                        )
+                        (user as User).displayName?.let { it1 ->
+                            Text(
+                                it1,
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+                        }
+                    }
+
+                    else -> Text("Unknown", style = MaterialTheme.typography.headlineMedium)
+                }
+            }
+        }
     }
 }
 
