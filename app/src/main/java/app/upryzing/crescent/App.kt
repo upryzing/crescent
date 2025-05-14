@@ -24,6 +24,7 @@ import app.upryzing.crescent.models.viewmodels.MainViewmodel
 import app.upryzing.crescent.ui.composables.LoginMFA
 import app.upryzing.crescent.ui.composables.MFADialog
 import app.upryzing.crescent.ui.navigation.ChatPage
+import app.upryzing.crescent.ui.navigation.ClientSettingsPage
 import app.upryzing.crescent.ui.navigation.DebugScreen
 import app.upryzing.crescent.ui.navigation.HomePage
 import app.upryzing.crescent.ui.navigation.LoginPage
@@ -259,6 +260,7 @@ fun App(
                     goBack = { navigator.popBackStack() },
                     navigateToAccount = {},
                     navigateToProfile = { navigator.navigate("settings/profile") },
+                    navigateToClientSettings = { navigator.navigate("settings/client") },
                     onSessionDropped = {
                         navigator.navigate("auth") {
                             popUpTo("settings") { inclusive = true }
@@ -294,6 +296,35 @@ fun App(
                 }
             ) {
                 ProfileSettingsPage(goBack = { navigator.popBackStack() })
+            }
+            composable(
+                "settings/client",
+                enterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                }
+            ) {
+                ClientSettingsPage(goBack = { navigator.popBackStack() })
             }
         }
     }

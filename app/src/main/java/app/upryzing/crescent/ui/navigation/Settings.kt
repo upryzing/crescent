@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -57,6 +55,7 @@ fun SettingsPage(
     goBack: () -> Unit,
     navigateToAccount: () -> Unit,
     navigateToProfile: () -> Unit,
+    navigateToClientSettings: () -> Unit,
     onSessionDropped: () -> Unit
 ) {
     var shouldShowDialog by remember { mutableStateOf(false) }
@@ -143,7 +142,7 @@ fun SettingsPage(
                     .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 ListItem(
-                    modifier = Modifier.clickable { /* TODO */ },
+                    modifier = Modifier.clickable { navigateToClientSettings() },
                     colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
                     leadingContent = {
                         Icon(
@@ -211,6 +210,6 @@ fun SettingsPage(
 @Composable
 fun SettingsPagePreview() {
     RevoltTheme {
-        SettingsPage({}, {}, {}, {})
+        SettingsPage({}, {}, {}, {},{})
     }
 }
