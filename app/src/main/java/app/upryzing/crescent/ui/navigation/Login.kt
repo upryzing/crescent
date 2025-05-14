@@ -74,7 +74,7 @@ fun LoginPage(
     else PasswordVisualTransformation()
 
     AnimatedContent(
-        targetState = viewmodel.isLoggingIn,
+        targetState = viewmodel.isAuthenticating,
     ) { isLoading ->
         when (isLoading) {
             true -> {

@@ -21,7 +21,7 @@ class LoginViewmodel(
     context: Context
 ) :
     ViewModel() {
-    var isLoading by mutableStateOf(false)
+    var isAuthenticating by mutableStateOf(false)
     private val preferenceDataStoreHelper = PreferenceDataStoreHelper(context)
 
     init {
@@ -53,14 +53,14 @@ class LoginViewmodel(
                 popUpTo("auth") { inclusive = true }
             }
         } else {
-            isLoading = false
+            isAuthenticating = false
             Log.d("Login", "SerializedSession does not exist.")
         }
     }
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            isLoading = true
+            isAuthenticating = true
             when (val response = client.loginWithPassword(email, password)) {
                 is SessionResponse.NeedsMultiFactorAuth ->
                     navigation.navigate(
@@ -69,7 +69,7 @@ class LoginViewmodel(
 
                 is SessionResponse.AccountDisabled -> println("Account has been disabled")
                 is SessionResponse.Success -> {
-                    isLoading = false
+                    isAuthenticating = false
                     val serializedSession = ApiClient.jsonDeserializer.encodeToString(response)
                     Log.d("Preferences", "Login Completed, saving current session")
                     preferenceDataStoreHelper.putPreference(
