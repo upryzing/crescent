@@ -6,7 +6,6 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,8 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.motionScheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -153,21 +151,12 @@ fun ChatPage(
 
                 })
         }, bottomBar = {
-            Surface(
-                tonalElevation = 2.dp,
-                contentColor = MaterialTheme.colorScheme.secondary
-            ) {
-                Column {
-
-                }
-            }
             Row(
                 modifier = Modifier
-                    .safeContentPadding()
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
+                    .navigationBarsPadding()
                     .imePadding()
-                    .padding(bottom = 12.dp),
+                    .padding(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -191,7 +180,6 @@ fun ChatPage(
                         .padding(bottom = 2.dp)
                         .clip(RoundedCornerShape(30.dp))
                         .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                        .padding(end = 7.dp)
                         .weight(1f),
                     horizontalArrangement = Arrangement.spacedBy(7.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -241,7 +229,7 @@ fun ChatPage(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .safeContentPadding(),
+                .padding(12.dp,12.dp,12.dp,0.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             reverseLayout = true
         ) {
