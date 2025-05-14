@@ -1,6 +1,9 @@
 package app.upryzing.crescent.api
 
+import android.content.Context
 import android.util.Log
+import app.upryzing.crescent.datastore.ConfigDataStoreKeys
+import app.upryzing.crescent.datastore.PreferenceDataStoreHelper
 import app.upryzing.crescent.models.api.authentication.EmailSessionRequest
 import app.upryzing.crescent.models.api.authentication.MFAResponse
 import app.upryzing.crescent.models.api.authentication.MFASessionRequest
@@ -40,7 +43,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -55,6 +57,12 @@ private fun intervalPing(ws: DefaultWebSocketSession) = GlobalScope.launch {
 }
 
 object ApiClient {
+    private lateinit var preferenceDataStoreHelper: PreferenceDataStoreHelper
+
+    fun initialize(context: Context) {
+        preferenceDataStoreHelper = PreferenceDataStoreHelper(context)
+    }
+
     var useStaging = false
         set(value) {
             when (value) {
@@ -208,7 +216,7 @@ object ApiClient {
         return response
     }
 
-    suspend fun startSession(response: SessionResponse.Success) {
+    fun startSession(response: SessionResponse.Success) {
         Log.d("Client", "Got response from API: $response")
         currentSession = response
         CoroutineScope(Dispatchers.IO).launch {
@@ -244,6 +252,7 @@ object ApiClient {
         return try {
             removeExistingSession(currentSession!!)
             currentSession = null
+            preferenceDataStoreHelper.removePreference(ConfigDataStoreKeys.SerializedCurrentSession)
 
             websocket?.close()
 

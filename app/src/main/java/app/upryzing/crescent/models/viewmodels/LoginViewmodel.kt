@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -15,7 +14,6 @@ import app.upryzing.crescent.datastore.PreferenceDataStoreHelper
 import app.upryzing.crescent.models.api.authentication.SessionResponse
 import app.upryzing.crescent.ui.composables.LoginMFA
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 
 class LoginViewmodel(
     private val client: ApiClient,
@@ -23,6 +21,7 @@ class LoginViewmodel(
     context: Context
 ) :
     ViewModel() {
+    var isLoading by mutableStateOf(false)
     private val preferenceDataStoreHelper = PreferenceDataStoreHelper(context)
 
     init {
@@ -33,7 +32,7 @@ class LoginViewmodel(
 
     private suspend fun checkSession() {
         Log.d("Login", "Login Launched")
-        var currentSession: String = ""
+        var currentSession: String
         currentSession = preferenceDataStoreHelper.getFirstPreference(
             ConfigDataStoreKeys.SerializedCurrentSession,
             ""
@@ -43,9 +42,10 @@ class LoginViewmodel(
 
         if (currentSession.isNotEmpty()) {
             Log.d("Login", "SerializedSession exists, attempting deserialization.")
-            val availableSession = ApiClient.jsonDeserializer.decodeFromString<SessionResponse.Success>(
-                currentSession
-            )
+            val availableSession =
+                ApiClient.jsonDeserializer.decodeFromString<SessionResponse.Success>(
+                    currentSession
+                )
             ApiClient.currentSession = availableSession
 
             ApiClient.startSession(availableSession)
@@ -53,12 +53,14 @@ class LoginViewmodel(
                 popUpTo("auth") { inclusive = true }
             }
         } else {
+            isLoading = false
             Log.d("Login", "SerializedSession does not exist.")
         }
     }
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
+            isLoading = true
             when (val response = client.loginWithPassword(email, password)) {
                 is SessionResponse.NeedsMultiFactorAuth ->
                     navigation.navigate(
@@ -67,6 +69,7 @@ class LoginViewmodel(
 
                 is SessionResponse.AccountDisabled -> println("Account has been disabled")
                 is SessionResponse.Success -> {
+                    isLoading = false
                     val serializedSession = ApiClient.jsonDeserializer.encodeToString(response)
                     Log.d("Preferences", "Login Completed, saving current session")
                     preferenceDataStoreHelper.putPreference(
