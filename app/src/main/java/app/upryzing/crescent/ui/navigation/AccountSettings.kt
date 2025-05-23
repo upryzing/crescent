@@ -31,7 +31,9 @@ import app.upryzing.crescent.ui.theme.RevoltTheme
 // TODO: Add resource strings for translation
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AccountSettingsPage() {
+fun AccountSettingsPage(
+    goBack: () -> Unit = {}
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -82,16 +84,17 @@ fun AccountSettingsPage() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(MaterialTheme.shapes.large)
-                        .clickable { /* TODO: Show the dialog here :) */ }
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                        .padding(12.dp),
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh),
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .clickable { /* TODO: Show the dialog here :) */ }
+                                .padding(start = 12.dp, end = 12.dp, bottom = 8.dp, top = 8.dp)
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -113,7 +116,10 @@ fun AccountSettingsPage() {
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .clickable { /* TODO: Show the dialog here :) */ }
+                                .padding(start = 12.dp, end = 12.dp, bottom = 8.dp, top = 8.dp)
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -240,7 +246,8 @@ fun AccountSettingsPage() {
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Icon(painterResource(R.drawable.material_symbols_delete_outlined),
+                            Icon(
+                                painterResource(R.drawable.material_symbols_delete_outlined),
                                 "",
                                 tint = MaterialTheme.colorScheme.onErrorContainer
                             )
