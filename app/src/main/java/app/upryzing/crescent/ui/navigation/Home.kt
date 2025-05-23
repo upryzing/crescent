@@ -67,15 +67,15 @@ fun HomePage(
             modifier = Modifier.align(Alignment.Center),
             enter = scaleIn() + slideIn(
                 animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
-                initialOffset = {IntOffset(0, -50)}
+                initialOffset = {IntOffset(0, -60)}
             ),
             exit = scaleOut() + slideOut(
                 animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
-                targetOffset = {IntOffset(0, -50)}
+                targetOffset = {IntOffset(0, -60)}
             )
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(top = 50.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = 60.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LoadingIndicator(
