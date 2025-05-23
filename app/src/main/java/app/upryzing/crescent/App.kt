@@ -24,6 +24,7 @@ import app.upryzing.crescent.models.viewmodels.MainViewmodel
 import app.upryzing.crescent.ui.composables.LoginMFA
 import app.upryzing.crescent.ui.composables.MFADialog
 import app.upryzing.crescent.ui.navigation.AboutPage
+import app.upryzing.crescent.ui.navigation.AccountSettingsPage
 import app.upryzing.crescent.ui.navigation.ChatPage
 import app.upryzing.crescent.ui.navigation.ClientSettingsPage
 import app.upryzing.crescent.ui.navigation.DebugScreen
@@ -42,6 +43,7 @@ fun App(
     val navigator = rememberNavController()
 
     Surface(color = MaterialTheme.colorScheme.background) {
+        // TODO)) Rewrite the goddamn NavHost since it's a fucking mess right now.
         NavHost(navController = navigator, startDestination = "auth") {
             composable(
                 "debug",
@@ -259,7 +261,7 @@ fun App(
             ) {
                 SettingsPage(
                     goBack = { navigator.popBackStack() },
-                    navigateToAccount = {},
+                    navigateToAccount = { navigator.navigate("settings/account") },
                     navigateToProfile = { navigator.navigate("settings/profile") },
                     navigateToClientSettings = { navigator.navigate("settings/client") },
                     navigateToAbout = { navigator.navigate("settings/about") },
@@ -269,6 +271,35 @@ fun App(
                         }
                     }
                 )
+            }
+            composable(
+                "settings/account",
+                enterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(durationMillis = 400)
+                    )
+                }
+            ) {
+                AccountSettingsPage(goBack = { navigator.popBackStack() })
             }
             composable(
                 "settings/profile",
