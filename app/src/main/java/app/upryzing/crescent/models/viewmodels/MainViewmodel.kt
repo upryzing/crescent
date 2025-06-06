@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.upryzing.crescent.api.ApiClient
+import app.upryzing.crescent.api.ConnectionDetails
+import app.upryzing.crescent.api.RevoltAPI
 import app.upryzing.crescent.utilities.EventBus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope

@@ -121,7 +121,7 @@ fun App(
                     navigateToChat = { navController.navigate("messages/${it}") },
                     navigateToDebug = { navController.navigate("debug") },
                     navigateToSettings = { navController.navigate("settings") },
-                    navigateToStartConversation = { navigator.navigate("home/startconversation") }
+                    navigateToStartConversation = { navController.navigate("home/startconversation") }
                 )
             }
 
@@ -146,7 +146,7 @@ fun App(
                     )
                 }
             ) {
-                StartConversationPage (goBack = { navigator.popBackStack() })
+                // TODO: StartConversationPage (goBack = { navController.popBackStack() })
             }
 
             composable(

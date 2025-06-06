@@ -68,9 +68,9 @@ class Session(private val client: RevoltAPI) {
 
         val selfUser = response.body<User>()
 
-            client.self = Self(
-                selfUser,
-                client
-            )
+        client.self = Self(
+            selfUser,
+            client
+        )
     }
 }

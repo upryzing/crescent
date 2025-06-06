@@ -32,6 +32,7 @@ import app.upryzing.crescent.R
 import app.upryzing.crescent.api.ApiClient
 import app.upryzing.crescent.api.models.user.User
 import app.upryzing.crescent.api.models.user.Status
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -137,7 +138,7 @@ fun PeopleListItem(
             )
             ListItem(
                 headlineContent = { Text("Report $name") },
-                leadingContent = { Icon(painterResource(R.drawable.material_symbols_flag), "Not Localized yet") },
+                // TODO: leadingContent = { Icon(painterResource(R.drawable.material_symbols_flag), "Not Localized yet") },
                 modifier = Modifier.clickable {
                     /* TODO: Do something! */
                     scope.launch { sheetState.hide() }.invokeOnCompletion {
