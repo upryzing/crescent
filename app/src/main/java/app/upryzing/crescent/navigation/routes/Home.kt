@@ -1,4 +1,4 @@
-package app.upryzing.crescent.ui.navigation
+package app.upryzing.crescent.navigation.routes
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility

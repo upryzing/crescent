@@ -1,4 +1,4 @@
-package app.upryzing.crescent.ui.navigation
+package app.upryzing.crescent.navigation.routes
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth

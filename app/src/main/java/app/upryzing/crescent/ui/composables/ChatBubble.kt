@@ -46,6 +46,7 @@ import app.upryzing.crescent.models.api.websocket.PartialMessage
 import app.upryzing.crescent.ui.theme.RevoltTheme
 import com.vdurmont.emoji.EmojiParser
 import kotlinx.coroutines.launch
+import kotlin.collections.get
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable

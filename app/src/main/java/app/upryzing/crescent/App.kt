@@ -24,16 +24,16 @@ import app.upryzing.crescent.models.viewmodels.LoginViewmodel
 import app.upryzing.crescent.models.viewmodels.MainViewmodel
 import app.upryzing.crescent.ui.composables.LoginMFA
 import app.upryzing.crescent.ui.composables.MFADialog
-import app.upryzing.crescent.ui.navigation.AboutPage
-import app.upryzing.crescent.ui.navigation.AccountSettingsPage
-import app.upryzing.crescent.ui.navigation.ChatPage
-import app.upryzing.crescent.ui.navigation.ClientSettingsPage
-import app.upryzing.crescent.ui.navigation.DebugScreen
-import app.upryzing.crescent.ui.navigation.HomePage
-import app.upryzing.crescent.ui.navigation.LoginPage
-import app.upryzing.crescent.ui.navigation.ProfileSettingsPage
-import app.upryzing.crescent.ui.navigation.SettingsPage
-import app.upryzing.crescent.ui.navigation.StartConversationPage
+import app.upryzing.crescent.navigation.routes.AboutPage
+import app.upryzing.crescent.navigation.routes.AccountSettingsPage
+import app.upryzing.crescent.navigation.routes.ChatPage
+import app.upryzing.crescent.navigation.routes.ClientSettingsPage
+import app.upryzing.crescent.navigation.routes.DebugScreen
+import app.upryzing.crescent.navigation.routes.HomePage
+import app.upryzing.crescent.navigation.routes.LoginPage
+import app.upryzing.crescent.navigation.routes.ProfileSettingsPage
+import app.upryzing.crescent.navigation.routes.SettingsPage
+import app.upryzing.crescent.navigation.routes.StartConversationPage
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
