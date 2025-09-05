@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -21,6 +22,7 @@ import app.upryzing.crescent.models.viewmodels.ChatViewmodel
 import app.upryzing.crescent.models.viewmodels.HomeViewmodel
 import app.upryzing.crescent.models.viewmodels.LoginViewmodel
 import app.upryzing.crescent.models.viewmodels.MainViewmodel
+import app.upryzing.crescent.navigation.Routes // <-- Import Routes
 import app.upryzing.crescent.ui.composables.LoginMFA
 import app.upryzing.crescent.ui.composables.MFADialog
 import app.upryzing.crescent.ui.navigation.AboutPage
@@ -37,16 +39,16 @@ import app.upryzing.crescent.ui.navigation.StartConversationPage
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun App(
+    windowSizeClass: WindowSizeClass,
     mainViewmodel: MainViewmodel = viewModel()
 ) {
     val context = LocalContext.current
     val navigator = rememberNavController()
 
     Surface(color = MaterialTheme.colorScheme.background) {
-        // TODO)) Rewrite the goddamn NavHost since it's a fucking mess right now.
-        NavHost(navController = navigator, startDestination = "auth") {
+        NavHost(navController = navigator, startDestination = Routes.AUTH) {
             composable(
-                "debug",
+                Routes.DEBUG,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
@@ -74,11 +76,11 @@ fun App(
             ) {
                 DebugScreen(mainViewmodel.messageList, goBack = {
                     navigator.popBackStack()
-                }, navigateToDebugLogin = { navigator.navigate("auth") })
+                }, navigateToDebugLogin = { navigator.navigate(Routes.AUTH) })
             }
 
             composable(
-                "auth",
+                Routes.AUTH,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
@@ -112,14 +114,14 @@ fun App(
             dialog<LoginMFA> { backStackEntry ->
                 val data: LoginMFA = backStackEntry.toRoute()
                 MFADialog(data, dismissCallback = { navigator.popBackStack() }, successCallback = {
-                    navigator.navigate("home") {
-                        popUpTo("auth") { inclusive = true }
+                    navigator.navigate(Routes.HOME) {
+                        popUpTo(Routes.AUTH) { inclusive = true }
                     }
                 })
             }
 
             composable(
-                "home",
+                Routes.HOME,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
@@ -151,15 +153,16 @@ fun App(
 
                 HomePage(
                     homeViewmodel,
-                    navigateToChat = { navigator.navigate("messages/${it}") },
-                    navigateToDebug = { navigator.navigate("debug") },
-                    navigateToSettings = { navigator.navigate("settings") },
-                    navigateToStartConversation = { navigator.navigate("home/start_conversation") }
+                    windowSizeClass,
+                    navigateToChat = { navigator.navigate(Routes.Messages.destination(it)) },
+                    navigateToDebug = { navigator.navigate(Routes.DEBUG) },
+                    navigateToSettings = { navigator.navigate(Routes.SETTINGS) },
+                    navigateToStartConversation = { navigator.navigate(Routes.START_CONVERSATION) }
                 )
             }
 
             composable(
-                "home/start_conversation",
+                Routes.START_CONVERSATION,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
@@ -189,7 +192,7 @@ fun App(
             }
 
             composable(
-                "messages/{id}",
+                Routes.Messages.ROUTE_PATTERN,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
@@ -233,7 +236,7 @@ fun App(
             }
 
             composable(
-                "settings",
+                Routes.SETTINGS,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
@@ -261,19 +264,19 @@ fun App(
             ) {
                 SettingsPage(
                     goBack = { navigator.popBackStack() },
-                    navigateToAccount = { navigator.navigate("settings/account") },
-                    navigateToProfile = { navigator.navigate("settings/profile") },
-                    navigateToClientSettings = { navigator.navigate("settings/client") },
-                    navigateToAbout = { navigator.navigate("settings/about") },
+                    navigateToAccount = { navigator.navigate(Routes.SettingsSubRoutes.ACCOUNT) },
+                    navigateToProfile = { navigator.navigate(Routes.SettingsSubRoutes.PROFILE) },
+                    navigateToClientSettings = { navigator.navigate(Routes.SettingsSubRoutes.CLIENT) },
+                    navigateToAbout = { navigator.navigate(Routes.SettingsSubRoutes.ABOUT) },
                     onSessionDropped = {
-                        navigator.navigate("auth") {
-                            popUpTo("settings") { inclusive = true }
+                        navigator.navigate(Routes.AUTH) {
+                            popUpTo(Routes.SETTINGS) { inclusive = true }
                         }
                     }
                 )
             }
             composable(
-                "settings/account",
+                Routes.SettingsSubRoutes.ACCOUNT,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
@@ -302,7 +305,7 @@ fun App(
                 AccountSettingsPage(goBack = { navigator.popBackStack() })
             }
             composable(
-                "settings/profile",
+                Routes.SettingsSubRoutes.PROFILE,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
@@ -331,7 +334,7 @@ fun App(
                 ProfileSettingsPage(goBack = { navigator.popBackStack() })
             }
             composable(
-                "settings/client",
+                Routes.SettingsSubRoutes.CLIENT,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
@@ -360,7 +363,7 @@ fun App(
                 ClientSettingsPage(goBack = { navigator.popBackStack() })
             }
             composable(
-                "settings/about",
+                Routes.SettingsSubRoutes.ABOUT,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
