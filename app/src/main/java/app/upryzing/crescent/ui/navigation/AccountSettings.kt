@@ -41,7 +41,7 @@ fun AccountSettingsPage(
                     Text(stringResource(R.string.settings_account))
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = { goBack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = stringResource(R.string.ui_go_back)
