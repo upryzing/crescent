@@ -47,7 +47,13 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
+/*
+* TODO)) Handle websocket disconnections on some scenario
+*  For example, the wifi/cellular suddenly disconnects, connection being reset, etc...
+*/
+
 @OptIn(DelicateCoroutinesApi::class)
+
 private fun intervalPing(ws: DefaultWebSocketSession) = GlobalScope.launch {
     while (true) {
         delay(20 * 1000)
