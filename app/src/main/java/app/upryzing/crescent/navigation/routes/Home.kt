@@ -43,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -72,12 +73,17 @@ fun HomePage(
     navigateToSettings: () -> Unit,
     navigateToStartConversation: () -> Unit,
 ) {
-    val singlePaneTopAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val singlePaneTopAppBarScrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     var selectedChannelId by rememberSaveable { mutableStateOf<String?>(null) }
     val isTwoPane = windowSizeClass.widthSizeClass >= WindowWidthSizeClass.Medium
 
     @Composable
-    fun MyAppBar(scrollBehavior: TopAppBarScrollBehavior) {
+    fun PageAppBar(
+        scrollBehavior: TopAppBarScrollBehavior,
+        targetContainerColor: Color,
+        targetScrolledContainerColor: Color
+    ) {
         MediumTopAppBar(
             title = {
                 Text(
@@ -104,7 +110,11 @@ fun HomePage(
                     )
                 }
             },
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = targetContainerColor,
+                scrolledContainerColor = targetScrolledContainerColor
+            )
         )
     }
 
@@ -122,7 +132,8 @@ fun HomePage(
                     text = stringResource(R.string.chat_fab_options_new_chat),
                     onClick = {
                         if (isTwoPane && selectedChannelId != null) {
-                            selectedChannelId = null // Clear detail view when starting new chat in two-pane
+                            selectedChannelId =
+                                null // Clear detail view when starting new chat in two-pane
                         }
                         navigateToStartConversation()
                     }
@@ -176,7 +187,10 @@ fun HomePage(
                                 callback = onItemClickActual
                             )
                         } else if (author == null) {
-                            Log.w("HomePage", "DM Channel ${'$'}{channel.id} has no suitable author found in cache.")
+                            Log.w(
+                                "HomePage",
+                                "DM Channel ${'$'}{channel.id} has no suitable author found in cache."
+                            )
                         }
                     }
 
@@ -186,6 +200,7 @@ fun HomePage(
                             callback = onItemClickActual
                         )
                     }
+
                     else -> {}
                 }
             }
@@ -193,7 +208,11 @@ fun HomePage(
     }
 
     // Loading indicator overlay
-    Box(Modifier.zIndex(1f).fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        Modifier
+            .zIndex(1f)
+            .fillMaxSize(), contentAlignment = Alignment.Center
+    ) {
         AnimatedVisibility(
             visible = !homeViewmodel.channels.isNotEmpty(),
             enter = scaleIn() + slideIn(
@@ -206,7 +225,9 @@ fun HomePage(
             )
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(top = 60.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 60.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LoadingIndicator(
@@ -219,16 +240,24 @@ fun HomePage(
         }
     }
 
+    val pageContainerColor = if (isTwoPane) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.background
+
     Scaffold(
         modifier = Modifier
+            .background(pageContainerColor)
             .safeDrawingPadding()
             .then(
-                // Only apply nested scroll for single pane\'s top app bar
+                // Only apply nested scroll for single pane's top app bar
                 if (!isTwoPane) Modifier.nestedScroll(singlePaneTopAppBarScrollBehavior.nestedScrollConnection) else Modifier
             ),
+        containerColor = pageContainerColor,
         topBar = {
             if (!isTwoPane) {
-                MyAppBar(scrollBehavior = singlePaneTopAppBarScrollBehavior)
+                PageAppBar(
+                    scrollBehavior = singlePaneTopAppBarScrollBehavior,
+                    targetContainerColor = pageContainerColor,
+                    targetScrolledContainerColor = pageContainerColor
+                )
             }
         },
         floatingActionButton = {
@@ -240,16 +269,25 @@ fun HomePage(
         if (isTwoPane) {
             Row(
                 Modifier
-                    .padding(outerScaffoldPadding) // Apply main scaffold\'s padding to the Row
+                    .padding(outerScaffoldPadding)
+                    .background(pageContainerColor) // Use pageContainerColor for the two-pane area
                     .fillMaxSize()
             ) {
                 // Left Pane (Chat List with its own AppBar and FAB)
-                val listPaneScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+                val listPaneScrollBehavior =
+                    TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
                 Scaffold(
                     modifier = Modifier
                         .weight(0.4f)
                         .nestedScroll(listPaneScrollBehavior.nestedScrollConnection),
-                    topBar = { MyAppBar(scrollBehavior = listPaneScrollBehavior) },
+                    containerColor = pageContainerColor, // Use pageContainerColor for list content
+                    topBar = { 
+                        PageAppBar(
+                            scrollBehavior = listPaneScrollBehavior,
+                            targetContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            targetScrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                        ) 
+                    },
                     floatingActionButton = { NewChatFAB() }
                 ) { listPaneInnerScaffoldPadding ->
                     ChatListContent(
@@ -260,23 +298,33 @@ fun HomePage(
 
                 // Right Pane (Chat Detail)
                 if (selectedChannelId != null) {
-                    key(selectedChannelId) {
-                        Box(modifier = Modifier.weight(0.6f).fillMaxSize()) {
-                            val detailChatViewModel: ChatViewmodel = viewModel(
-                                key = "detail_chat_vm_${'$'}{selectedChannelId}",
-                            ) {
-                                ChatViewmodel(selectedChannelId!!)
-                            }
+                    Box(
+                        modifier = Modifier
+                            .weight(0.6f)
+                            .padding(12.dp)
+                            .clip(MaterialTheme.shapes.large)
+                            .background(MaterialTheme.colorScheme.surface) 
+                            .fillMaxSize()
+                    ) { 
+                        val currentChannelId = selectedChannelId!! 
+                        val detailChatViewModel: ChatViewmodel = viewModel(
+                            key = "detail_chat_vm_${'$'}{currentChannelId}", 
+                        ) {
+                            ChatViewmodel(currentChannelId)
+                        }
+                        key(currentChannelId) { 
                             ChatPage(
                                 viewmodel = detailChatViewModel,
-                                ulid = selectedChannelId!!,
+                                ulid = currentChannelId,
                                 goBack = { selectedChannelId = null }
                             )
                         }
                     }
                 } else {
                     Box(
-                        modifier = Modifier.weight(0.6f).fillMaxSize(),
+                        modifier = Modifier
+                            .weight(0.6f)
+                            .fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(stringResource(R.string.home_select_chat_text))

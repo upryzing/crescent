@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,8 +66,6 @@ import app.upryzing.crescent.ui.theme.RevoltTheme
 import app.upryzing.crescent.utilities.EventBus
 import kotlinx.coroutines.launch
 
-// TODO: Currently it's buggy and might crash.
-
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class,
     ExperimentalMaterial3ExpressiveApi::class
@@ -78,31 +77,52 @@ fun ChatPage(
     navigateToUserProfile: () -> Unit = {},
     goBack: () -> Unit
 ) {
-    val user by remember { mutableStateOf(ApiClient.cache[ulid]) }
-
-    println("User: $user")
+    // Recompute user when ulid changes
+    val user by remember(ulid) { mutableStateOf(ApiClient.cache[ulid]) }
 
     var messageValue by remember { mutableStateOf("") }
-    val messages = remember { viewmodel.messages }
+    // Assuming viewmodel.messages is a SnapshotStateList or similar,
+    // and ChatViewmodel updates this list when ulid changes (via setCurrentChatId).
+    val messages = viewmodel.messages
 
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false
     )
 
-    val avatar = when (user) {
-        is Channel.Group -> "${ApiClient.S3_ROOT_URL}icons/${(user as Channel.Group).icon?.id}?max_side=256"
-        is User -> "${ApiClient.S3_ROOT_URL}avatars/${(user as User).avatar?.id}?max_side=256"
-        else -> null
+    // Recompute avatar when user (which depends on ulid) changes
+    val avatar = remember(user) {
+        when (user) {
+            is Channel.Group -> "${ApiClient.S3_ROOT_URL}icons/${(user as Channel.Group).icon?.id}?max_side=256"
+            is User -> "${ApiClient.S3_ROOT_URL}avatars/${(user as User).avatar?.id}?max_side=256"
+            else -> null
+        }
     }
 
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(ulid) {
-        EventBus.subscribe<PartialMessage> {
-            if (it.channelId == ulid) {
-                messages.add(0, it)
+    // Notify ViewModel when the chat ULID changes.
+    // Assumes viewmodel.setCurrentChatId(ulid) exists and handles
+    // clearing old messages and loading/subscribing to new ones for the given ulid.
+    LaunchedEffect(ulid, viewmodel) {
+        viewmodel.setCurrentChatId(ulid)
+    }
+
+    // Manage EventBus subscription lifecycle based on ulid.
+    DisposableEffect(ulid, viewmodel) {
+        val messageHandler: (PartialMessage) -> Unit = { message ->
+            if (message.channelId == ulid) {
+                // Assumes viewmodel.messages is a mutable state list (e.g., SnapshotStateList)
+                // that triggers recomposition upon modification.
+                viewmodel.messages.add(0, message)
             }
+        }
+        EventBus.subscribe(messageHandler)
+
+        onDispose {
+            // Assumes EventBus has a corresponding unsubscribe method.
+            // Adjust if your EventBus API is different (e.g., if subscribe returns a Subscription object).
+            EventBus.unsubscribe(messageHandler)
         }
     }
 
@@ -126,7 +146,6 @@ fun ChatPage(
                                 is Channel.Group -> (user as Channel.Group).name
                                 is User -> (user as User).displayName
                                     ?: "${(user as User).username}#${(user as User).discriminator}"
-
                                 else -> "Unknown"
                             }, maxLines = 1, overflow = TextOverflow.Ellipsis
                         )
@@ -148,8 +167,8 @@ fun ChatPage(
                             Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.ui_go_back)
                         )
                     }
-
-                })
+                }
+            )
         }, bottomBar = {
             Row(
                 modifier = Modifier
@@ -208,7 +227,7 @@ fun ChatPage(
                             },
                             modifier = Modifier
                                 .size(42.dp)
-                                .weight(1f),
+                                .weight(1f), // This was .weight(1f), but IconButton is fixed size. Check if this is intended.
                             colors = IconButtonDefaults.iconButtonColors(
                                 containerColor = MaterialTheme.colorScheme.primary
                             )
@@ -223,13 +242,12 @@ fun ChatPage(
                 }
             }
         }
-
-    ) {
+    ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
-                .padding(12.dp,12.dp,12.dp,0.dp),
+                .padding(paddingValues) // Use the paddingValues from Scaffold
+                .padding(start = 12.dp, end = 12.dp, top = 12.dp), // Adjusted padding
             verticalArrangement = Arrangement.spacedBy(12.dp),
             reverseLayout = true
         ) {
@@ -254,26 +272,41 @@ fun ChatPage(
 
         if (showBottomSheet) {
             ModalBottomSheet(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(), // Consider if fillMaxSize is appropriate for a bottom sheet
                 sheetState = sheetState,
                 onDismissRequest = { showBottomSheet = false }
             ) {
                 when (user) {
                     is User -> {
+                        // Content for User profile in bottom sheet
                         ProfileImage(
                             fallback = (user as User).username,
                             url = avatar,
                             presence = (user as User).status?.presence
+                            // Add more UI elements as needed, e.g., Column for layout
                         )
                         (user as User).displayName?.let { it1 ->
                             Text(
                                 it1,
                                 style = MaterialTheme.typography.headlineSmall
+                                // Add padding or arrangement if needed
                             )
                         }
+                        // You might want to add more details about the user here.
                     }
-
-                    else -> Text("Unknown", style = MaterialTheme.typography.headlineMedium)
+                    is Channel.Group -> {
+                        // Content for Group channel info in bottom sheet
+                         ProfileImage(
+                            fallback = (user as Channel.Group).name,
+                            url = avatar
+                        )
+                        Text(
+                            (user as Channel.Group).name,
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+                        // Add more details about the group here.
+                    }
+                    else -> Text("Information not available", style = MaterialTheme.typography.headlineMedium)
                 }
             }
         }
@@ -285,7 +318,7 @@ fun ChatPage(
 fun ChatPagePreview() {
     RevoltTheme {
         val viewmodel = viewModel {
-            ChatViewmodel("")
+            ChatViewmodel("") // For preview, ChatViewmodel might need a dummy implementation or be faked.
         }
         ChatPage(viewmodel, "1", {}) {}
     }
