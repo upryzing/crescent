@@ -35,6 +35,7 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -108,7 +109,7 @@ fun HomePage(
     }
 
     @Composable
-    fun MyFloatingActionButton() {
+    fun NewChatFAB() {
         FloatingActionButtonWithOptions(
             options = listOf(
                 FloatingActionButtonListItem(
@@ -175,7 +176,7 @@ fun HomePage(
                                 callback = onItemClickActual
                             )
                         } else if (author == null) {
-                            Log.w("HomePage", "DM Channel ${channel.id} has no suitable author found in cache.")
+                            Log.w("HomePage", "DM Channel ${'$'}{channel.id} has no suitable author found in cache.")
                         }
                     }
 
@@ -222,7 +223,7 @@ fun HomePage(
         modifier = Modifier
             .safeDrawingPadding()
             .then(
-                // Only apply nested scroll for single pane's top app bar
+                // Only apply nested scroll for single pane\'s top app bar
                 if (!isTwoPane) Modifier.nestedScroll(singlePaneTopAppBarScrollBehavior.nestedScrollConnection) else Modifier
             ),
         topBar = {
@@ -232,14 +233,14 @@ fun HomePage(
         },
         floatingActionButton = {
             if (!isTwoPane) {
-                MyFloatingActionButton()
+                NewChatFAB()
             }
         }
     ) { outerScaffoldPadding ->
         if (isTwoPane) {
             Row(
                 Modifier
-                    .padding(outerScaffoldPadding) // Apply main scaffold's padding to the Row
+                    .padding(outerScaffoldPadding) // Apply main scaffold\'s padding to the Row
                     .fillMaxSize()
             ) {
                 // Left Pane (Chat List with its own AppBar and FAB)
@@ -249,7 +250,7 @@ fun HomePage(
                         .weight(0.4f)
                         .nestedScroll(listPaneScrollBehavior.nestedScrollConnection),
                     topBar = { MyAppBar(scrollBehavior = listPaneScrollBehavior) },
-                    floatingActionButton = { MyFloatingActionButton() } // FAB for list pane
+                    floatingActionButton = { NewChatFAB() }
                 ) { listPaneInnerScaffoldPadding ->
                     ChatListContent(
                         modifier = Modifier.fillMaxSize(),
@@ -259,17 +260,19 @@ fun HomePage(
 
                 // Right Pane (Chat Detail)
                 if (selectedChannelId != null) {
-                    Box(modifier = Modifier.weight(0.6f).fillMaxSize()) {
-                        val detailChatViewModel: ChatViewmodel = viewModel(
-                            key = "detail_chat_vm_${selectedChannelId}",
-                        ) {
-                            ChatViewmodel(selectedChannelId!!)
+                    key(selectedChannelId) {
+                        Box(modifier = Modifier.weight(0.6f).fillMaxSize()) {
+                            val detailChatViewModel: ChatViewmodel = viewModel(
+                                key = "detail_chat_vm_${'$'}{selectedChannelId}",
+                            ) {
+                                ChatViewmodel(selectedChannelId!!)
+                            }
+                            ChatPage(
+                                viewmodel = detailChatViewModel,
+                                ulid = selectedChannelId!!,
+                                goBack = { selectedChannelId = null }
+                            )
                         }
-                        ChatPage(
-                            viewmodel = detailChatViewModel,
-                            ulid = selectedChannelId!!,
-                            goBack = { selectedChannelId = null }
-                        )
                     }
                 } else {
                     Box(
