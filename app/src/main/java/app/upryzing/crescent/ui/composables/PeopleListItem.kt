@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.upryzing.crescent.R
@@ -47,6 +48,7 @@ fun PeopleListItem(
     status: UserStatus? = null,
     unreads: Int? = null,
     disableBottomSheet: Boolean = false,
+    isSelected: Boolean = false, // Added isSelected parameter
     callback: (() -> Unit)
 ) {
     // BottomSheet states
@@ -65,6 +67,9 @@ fun PeopleListItem(
 
     val presence = user?.status?.presence
 
+    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
+    val textColor = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
+
     Surface(
         modifier = Modifier.combinedClickable(
             onClick = callback,
@@ -74,7 +79,7 @@ fun PeopleListItem(
                 }
             }
         ),
-        color = Color.Transparent // Ensure Surface is also transparent
+        color = backgroundColor // Use backgroundColor for the Surface
     ) {
         Column {
             ListItem(
@@ -87,7 +92,9 @@ fun PeopleListItem(
                 },
                 headlineContent = {
                     Text(
-                        name
+                        name,
+                        fontWeight = FontWeight.Bold,
+                        color = textColor
                     )
                 },
                 supportingContent = {
@@ -98,7 +105,8 @@ fun PeopleListItem(
                                     it1,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    softWrap = false
+                                    softWrap = false,
+                                    color = textColor.copy(alpha = 0.6f)
                                 )
                             }
                         }
@@ -116,7 +124,7 @@ fun PeopleListItem(
                         }
                     }
                 },
-                colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                colors = ListItemDefaults.colors(containerColor = Color.Transparent) // ListItem itself is transparent, Surface handles background
             )
             HorizontalDivider(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
         }

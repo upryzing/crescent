@@ -184,6 +184,7 @@ fun HomePage(
                             PeopleListItem(
                                 user = author,
                                 status = author.status,
+                                isSelected = (channel.id == selectedChannelId && isTwoPane), // Pass isSelected
                                 callback = onItemClickActual
                             )
                         } else if (author == null) {
@@ -197,6 +198,7 @@ fun HomePage(
                     is Channel.Group -> {
                         PeopleListItem(
                             channel = channel,
+                            isSelected = (channel.id == selectedChannelId && isTwoPane), // Pass isSelected
                             callback = onItemClickActual
                         )
                     }
@@ -301,7 +303,7 @@ fun HomePage(
                     Box(
                         modifier = Modifier
                             .weight(0.6f)
-                            .padding(12.dp)
+                            .padding(start = 0.dp, end = 12.dp, top = 12.dp, bottom = 12.dp)
                             .clip(MaterialTheme.shapes.large)
                             .background(MaterialTheme.colorScheme.surface) 
                             .fillMaxSize()
