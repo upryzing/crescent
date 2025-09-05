@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.androidx.adaptive)
     implementation(libs.androidx.adaptive.layout)
     implementation(libs.androidx.adaptive.navigation)
+    implementation(libs.androidx.compose.material3.window.size.class1)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
