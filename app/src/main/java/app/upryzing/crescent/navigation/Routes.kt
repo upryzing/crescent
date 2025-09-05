@@ -3,6 +3,11 @@ package app.upryzing.crescent.navigation
 object Routes {
     const val DEBUG = "debug"
     const val AUTH = "auth"
+
+    object AuthSubRoutes {
+        const val MFA = "auth/mfa"
+    }
+
     const val HOME = "home"
     const val START_CONVERSATION = "home/start_conversation"
 
