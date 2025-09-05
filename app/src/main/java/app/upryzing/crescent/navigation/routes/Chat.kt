@@ -77,51 +77,58 @@ fun ChatPage(
     navigateToUserProfile: () -> Unit = {},
     goBack: () -> Unit
 ) {
-    // Recompute user when ulid changes
-    val user by remember(ulid) { mutableStateOf(ApiClient.cache[ulid]) }
+    val user by remember(ulid, ApiClient.cache.keys) { mutableStateOf(ApiClient.cache[ulid]) }
 
     var messageValue by remember { mutableStateOf("") }
-    // Assuming viewmodel.messages is a SnapshotStateList or similar,
-    // and ChatViewmodel updates this list when ulid changes (via setCurrentChatId).
     val messages = viewmodel.messages
 
     var showBottomSheet by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = false
-    )
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
 
-    // Recompute avatar when user (which depends on ulid) changes
-    val avatar = remember(user) {
-        when (user) {
-            is Channel.Group -> "${ApiClient.S3_ROOT_URL}icons/${(user as Channel.Group).icon?.id}?max_side=256"
-            is User -> "${ApiClient.S3_ROOT_URL}avatars/${(user as User).avatar?.id}?max_side=256"
-            else -> null
-        }
+    val chatAvatarUrl by remember(user) {
+        mutableStateOf(
+            when (val u = user) {
+                is Channel.Group -> u.icon?.id?.let { iconId -> "${ApiClient.S3_ROOT_URL}icons/$iconId?max_side=256" }
+                is User -> u.avatar?.id?.let { avatarId -> "${ApiClient.S3_ROOT_URL}avatars/$avatarId?max_side=256" }
+                else -> null
+            }
+        )
+    }
+
+    val chatDisplayName by remember(user) {
+        mutableStateOf(
+            when (val u = user) {
+                is User -> u.displayName ?: "${u.username}#${u.discriminator}"
+                is Channel.Group -> u.name
+                else -> "Unknown"
+            }
+        )
+    }
+
+    val chatProfileFallbackName by remember(user) {
+        mutableStateOf(
+            when (val u = user) {
+                is User -> u.username
+                is Channel.Group -> u.name
+                else -> "Unknown"
+            }
+        )
     }
 
     val scope = rememberCoroutineScope()
 
-    // Notify ViewModel when the chat ULID changes.
-    // Assumes viewmodel.setCurrentChatId(ulid) exists and handles
-    // clearing old messages and loading/subscribing to new ones for the given ulid.
     LaunchedEffect(ulid, viewmodel) {
         viewmodel.setCurrentChatId(ulid)
     }
 
-    // Manage EventBus subscription lifecycle based on ulid.
     DisposableEffect(ulid, viewmodel) {
         val messageHandler: (PartialMessage) -> Unit = { message ->
             if (message.channelId == ulid) {
-                // Assumes viewmodel.messages is a mutable state list (e.g., SnapshotStateList)
-                // that triggers recomposition upon modification.
                 viewmodel.messages.add(0, message)
             }
         }
         EventBus.subscribe(messageHandler)
-
         onDispose {
-            // Assumes EventBus has a corresponding unsubscribe method.
-            // Adjust if your EventBus API is different (e.g., if subscribe returns a Subscription object).
             EventBus.unsubscribe(messageHandler)
         }
     }
@@ -135,26 +142,19 @@ fun ChatPage(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         ProfileImage(
-                            fallback = when (user) {
-                                is User -> (user as User).username
-                                is Channel.Group -> (user as Channel.Group).name
-                                else -> "Unknown"
-                            }, url = avatar, size = 26.dp
+                            fallback = chatProfileFallbackName,
+                            url = chatAvatarUrl,
+                            size = 26.dp
                         )
                         Text(
-                            text = when (user) {
-                                is Channel.Group -> (user as Channel.Group).name
-                                is User -> (user as User).displayName
-                                    ?: "${(user as User).username}#${(user as User).discriminator}"
-                                else -> "Unknown"
-                            }, maxLines = 1, overflow = TextOverflow.Ellipsis
+                            text = chatDisplayName,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        showBottomSheet = true
-                    }) {
+                    IconButton(onClick = { showBottomSheet = true }) {
                         Icon(
                             painterResource(R.drawable.material_symbols_info),
                             stringResource(R.string.chat_show_user_profile)
@@ -246,23 +246,20 @@ fun ChatPage(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Use the paddingValues from Scaffold
-                .padding(start = 12.dp, end = 12.dp, top = 12.dp), // Adjusted padding
+                .padding(paddingValues)
+                .padding(start = 12.dp, end = 12.dp, top = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             reverseLayout = true
         ) {
             items(messages) { message ->
                 val isSelf = message.authorId == ApiClient.currentSession?.userId
-
                 Box(modifier = Modifier.fillMaxWidth()) {
                     when (message.system != null) {
                         true -> SystemMessageDisplay(message.system)
                         false -> ChatBubble(
                             message,
-                            modifier = if (isSelf)
-                                Modifier.align(Alignment.BottomEnd)
-                            else
-                                Modifier.align(Alignment.BottomStart),
+                            modifier = if (isSelf) Modifier.align(Alignment.BottomEnd)
+                            else Modifier.align(Alignment.BottomStart),
                             isSelf
                         )
                     }
@@ -272,39 +269,31 @@ fun ChatPage(
 
         if (showBottomSheet) {
             ModalBottomSheet(
-                modifier = Modifier.fillMaxSize(), // Consider if fillMaxSize is appropriate for a bottom sheet
+                modifier = Modifier.fillMaxSize(),
                 sheetState = sheetState,
                 onDismissRequest = { showBottomSheet = false }
             ) {
-                when (user) {
+                when (val u = user) {
                     is User -> {
-                        // Content for User profile in bottom sheet
                         ProfileImage(
-                            fallback = (user as User).username,
-                            url = avatar,
-                            presence = (user as User).status?.presence
-                            // Add more UI elements as needed, e.g., Column for layout
-                        )
-                        (user as User).displayName?.let { it1 ->
-                            Text(
-                                it1,
-                                style = MaterialTheme.typography.headlineSmall
-                                // Add padding or arrangement if needed
-                            )
-                        }
-                        // You might want to add more details about the user here.
-                    }
-                    is Channel.Group -> {
-                        // Content for Group channel info in bottom sheet
-                         ProfileImage(
-                            fallback = (user as Channel.Group).name,
-                            url = avatar
+                            fallback = chatProfileFallbackName,
+                            url = chatAvatarUrl,
+                            presence = u.status?.presence
                         )
                         Text(
-                            (user as Channel.Group).name,
+                            chatDisplayName,
                             style = MaterialTheme.typography.headlineSmall
                         )
-                        // Add more details about the group here.
+                    }
+                    is Channel.Group -> {
+                        ProfileImage(
+                            fallback = chatProfileFallbackName,
+                            url = chatAvatarUrl
+                        )
+                        Text(
+                            chatDisplayName,
+                            style = MaterialTheme.typography.headlineSmall
+                        )
                     }
                     else -> Text("Information not available", style = MaterialTheme.typography.headlineMedium)
                 }
@@ -318,7 +307,7 @@ fun ChatPage(
 fun ChatPagePreview() {
     RevoltTheme {
         val viewmodel = viewModel {
-            ChatViewmodel("") // For preview, ChatViewmodel might need a dummy implementation or be faked.
+            ChatViewmodel("")
         }
         ChatPage(viewmodel, "1", {}) {}
     }
