@@ -105,7 +105,9 @@ fun ChatPage(
     }
 
     BackHandler(navigator.canNavigateBack()) {
-        navigator.navigateBack()
+        scope.launch {
+            navigator.navigateBack()
+        }
     }
 
     Scaffold(
@@ -135,10 +137,12 @@ fun ChatPage(
             },
                 actions = {
                     IconButton(onClick = {
-                        if (navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden) {
-                            navigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
-                        } else {
-                            navigator.navigateBack()
+                        scope.launch {
+                            if (navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden) {
+                                navigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
+                            } else {
+                                navigator.navigateBack()
+                            }
                         }
                     }) {
                         if (navigator.scaffoldValue[SupportingPaneScaffoldRole.Supporting] == PaneAdaptedValue.Hidden) {
